@@ -1,0 +1,31 @@
+<div class="form">
+    <form action="post" id="login" [formGroup]="login" *ngIf="LoginBool">
+        <h3> {{head}}</h3>
+        <label for=""><sup style="color: red;font-weight: bold;">*</sup>Username</label>
+        <input type="text" name="" id="" class="user" placeholder="Username">
+        <label for=""><sup style="color: red;font-weight: bold;">*</sup>Password</label>
+        <input type="password" name="" id="" class="user" placeholder="Password">
+        <button type="submit">Login </button>
+    </form>
+    <form id="signup" *ngIf="signUpBool">
+        <h3> {{head}}</h3>
+        <label>E-mail</label>
+        <input type="email" name="email" class="user" id="email">
+        <label>PhoneNumber</label>
+        <input type="number" name="" id="" class="user" maxlength="10">
+        <label for="">Password</label>
+        <input type="password" name="" id="" class="user" placeholder="Password">
+        <label for="">Confirm Password</label>
+        <input type="password" name="" id="" class="user" placeholder="Password">
+        <button type="submit">SignUp</button>
+    </form>
+    <form id="change" *ngIf="changeBool">
+        <h3> {{head}}</h3>
+
+    </form>
+    <div class="links">
+        <p (click)="changeForm('F')" *ngIf="!changeBool">Forgot Password?</p>
+        <p (click)="changeForm('S')" *ngIf="!signUpBool">SignUp!</p>
+        <p (click)="changeForm('L')" *ngIf="!LoginBool"> Login!</p>
+    </div>
+</div>
