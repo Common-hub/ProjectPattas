@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { OtpVerification, userRegisration } from '../models/user';
+import { ApiInteractionService } from '../Services/api-interaction.service';
 
 @Component({
   selector: 'login',
@@ -13,9 +15,11 @@ export class LoginComponentComponent implements OnInit {
   LoginBool: boolean = true;
   signUpBool: boolean = false;
   changeBool: boolean = false;
+  EmailVerify: boolean = false
   head: string = "Login";
+  response: string = "";
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService) { }
 
   ngOnInit(): void {
     this.login = this.formBuilder.group({
@@ -23,10 +27,12 @@ export class LoginComponentComponent implements OnInit {
       password: ['',[Validators.required, Validators.minLength(8)]]
     });
     this.sign = this.formBuilder.group({
+      name: ['', Validators.required],
       email: ['',[Validators.required, Validators.email]],
+      OTP: ['',[Validators.minLength(6)]],
       mobile: ['',[Validators.required, Validators.maxLength(10)]],
-      password: ['',[Validators.required, Validators.minLength(8)]],
-      cPassword: ['',[Validators.required, Validators.minLength(8)]]
+      password: ['',[Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
+      cPassword: ['',[Validators.required, Validators.minLength(8), Validators.maxLength(16)]]
     });
 
   }
@@ -56,7 +62,38 @@ export class LoginComponentComponent implements OnInit {
     }
   }
 
-  validate(){
-    return 0
+  register(){
+    console.log("hi");
+    
+    if( this.passwordMatchValidator() ){      
+    let registration: userRegisration = {
+      name: this.sign.controls['name'].value,
+      email: this.sign.controls['email'].value,
+      phoneNumber: ''+this.sign.controls['mobile'].value,
+      password: this.sign.controls['password'].value
+    }
+    this.api.userRegistration(registration).subscribe(resp=>{
+      this.EmailVerify = true;
+      this.response = resp;
+      console.log(resp);      
+    })
+    }
   }
+  verify(){
+    let Otp: OtpVerification = {
+      email: this.sign.controls['email'].value,
+      otp: this.sign.controls['OTP'].value
+    }
+    this.api.verifyOtp(Otp).subscribe(resp =>{
+      console.log(resp)
+    })
+  }
+
+  passwordMatchValidator() {
+    const password =this.sign.controls['password'].value;
+    const confirmPassword = this.sign.controls['cPassword'].value;
+
+    return password !== confirmPassword  ? false : true;
+  }
+
 }
