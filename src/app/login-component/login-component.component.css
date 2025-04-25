@@ -44,7 +44,11 @@ button:hover{
     outline: none;
     border-radius: 5px;
 }
-
+button:disabled{
+    color: whitesmoke;
+    background-color: cornflowerblue;
+    cursor: not-allowed;
+}
 .links {
     display: flex;
     justify-content: space-around;

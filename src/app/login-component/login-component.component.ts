@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'login',
@@ -9,33 +9,54 @@ import { FormGroup } from '@angular/forms';
 export class LoginComponentComponent implements OnInit {
 
   login!: FormGroup
+  sign!: FormGroup
   LoginBool: boolean = true;
   signUpBool: boolean = false;
   changeBool: boolean = false;
   head: string = "Login";
 
-  constructor() { }
+  constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    this.login = this.formBuilder.group({
+      userName: ['', [Validators.required, Validators.email]],
+      password: ['',[Validators.required, Validators.minLength(8)]]
+    });
+    this.sign = this.formBuilder.group({
+      email: ['',[Validators.required, Validators.email]],
+      mobile: ['',[Validators.required, Validators.maxLength(10)]],
+      password: ['',[Validators.required, Validators.minLength(8)]],
+      cPassword: ['',[Validators.required, Validators.minLength(8)]]
+    });
+
   }
 
   changeForm(hint: string) {
-    if(hint === 'S'){
-      this.head = "SignUp";
-      this.signUpBool = true;
-      this.LoginBool = false;
-      this.changeBool = false;
-    }
-    else if(hint === 'F'){
-      this.head = "Change Password";
-      this.signUpBool = false;
-      this.LoginBool = false;
-      this.changeBool = true
-    }else{
-        this.head = "Login";
-        this.signUpBool = false;
+    switch (hint) {
+      case "L":
+        this.head = "Login USER"
         this.LoginBool = true;
+        this.signUpBool = false;
         this.changeBool = false;
-      }
+        break;
+      case "S":
+        this.head = "New User Registration"
+        this.signUpBool = true;
+        this.LoginBool = false;
+        this.changeBool = false;
+        break;
+      case "F":
+        this.head = "Forget Password"
+        this.signUpBool = false;
+        this.LoginBool = false;
+        this.changeBool = true;
+        break;
+      default:
+        break;
+    }
+  }
+
+  validate(){
+    return 0
   }
 }

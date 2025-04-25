@@ -1,27 +1,49 @@
 <div class="form">
-    <form action="post" id="login" [formGroup]="login" *ngIf="LoginBool">
+    <form action="post" id="login"[formGroup] = "login" (ngSubmit)="validate()" *ngIf="LoginBool">
         <h3> {{head}}</h3>
         <label for=""><sup style="color: red;font-weight: bold;">*</sup>Username</label>
-        <input type="text" name="" id="" class="user" placeholder="Username">
+        <input type="text" name="" id="" class="user" placeholder="Username" formControlName = "userName">
+        <p *ngIf="login.controls['userName'].touched && login.controls['userName'].invalid">
+            <small *ngIf="login.controls['userName'].errors?.['required']">UserName is a Mandatory Field</small>
+            <small *ngIf="login.controls['userName'].errors?.['email']">Enter a valid email</small>
+        </p>
         <label for=""><sup style="color: red;font-weight: bold;">*</sup>Password</label>
-        <input type="password" name="" id="" class="user" placeholder="Password">
-        <button type="submit">Login </button>
+        <input type="password" name="" id="" class="user" placeholder="Password" formControlName = "password">
+        <p *ngIf="(login.controls['password'].touched && login.controls['password'].invalid)">
+            <small *ngIf="login.controls['password'].errors?.['required']"> password is a Mandatory Field</small>
+        </p>
+        <button type="submit" [disabled] = "login.invalid">Login </button>
     </form>
     <form id="signup" *ngIf="signUpBool">
         <h3> {{head}}</h3>
         <label>E-mail</label>
-        <input type="email" name="email" class="user" id="email">
+        <input type="email" name="email" class="user" id="email" formControlName = "email" placeholder="Enter Email">
         <label>PhoneNumber</label>
-        <input type="number" name="" id="" class="user" maxlength="10">
+        <input type="number" name="" id="" class="user" maxlength="10" formControlName = "mobile" placeholder="Enter contact Number">
+        <label for="">Password</label>
+        <input type="password" name="" id="" class="user" placeholder="Password" formControlName = "password">
+        <label for="">Confirm Password</label>
+        <input type="password" name="" id="" class="user" placeholder="Password" formControlName = "cPassword">
+        <button type="submit">SignUp</button>
+    </form>
+    <!-- 
+        note:
+        1. check email, send otp then otp visible
+        2. email disabled
+        3. otp vaild pssword visible
+        4. then change password
+     -->
+    <form id="change" *ngIf="changeBool">
+        <h3> {{head}}</h3>
+        <label for="">Enter E-mail address to send OTP</label>
+        <input type="email" name="email"class="user" class="user"  placeholder="Enter Email" id="E-mail">
+        <label for=""><p>Enter <abbr title="One Time Password">OTP</abbr> and verify</p></label>
+        <input type="number" name="" id="" class="user" placeholder="Enter OTP" maxlength="10">
         <label for="">Password</label>
         <input type="password" name="" id="" class="user" placeholder="Password">
         <label for="">Confirm Password</label>
         <input type="password" name="" id="" class="user" placeholder="Password">
-        <button type="submit">SignUp</button>
-    </form>
-    <form id="change" *ngIf="changeBool">
-        <h3> {{head}}</h3>
-
+        <button type="submit">Change</button>
     </form>
     <div class="links">
         <p (click)="changeForm('F')" *ngIf="!changeBool">Forgot Password?</p>
