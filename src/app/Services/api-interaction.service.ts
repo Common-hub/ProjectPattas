@@ -16,6 +16,10 @@ export class ApiInteractionService {
   }
   
   verifyOtp(details:any): Observable<any>{    
-    return this.http.post(this.url +'verify-otp',details)
+    return this.http.post(this.url +'verify-otp',details, { responseType: 'text' })
+  }
+
+  loguser(details:any): Observable<any>{
+    return this.http.post(this.url+'login', details, { responseType: 'text' });
   }
 }

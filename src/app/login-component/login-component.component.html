@@ -1,5 +1,8 @@
+<div class="ico" style="border: 1px solid white;">
+    <img src="../../assets/SPP.png" height="100px" width="100px" alt="" style="float: right;">
+</div>
 <div class="form">
-    <form action="post" id="login" [formGroup]="login" (ngSubmit)="verify()" *ngIf="LoginBool">
+    <form action="post" id="login" [formGroup]="login" *ngIf="LoginBool">
         <h3> {{head}}</h3>
         <label for=""><sup style="color: red;font-weight: bold;">*</sup>Username</label>
         <input type="text" name="" id="" class="user" placeholder="Username" formControlName="userName">
@@ -12,7 +15,7 @@
         <p style="color: red; display: flex; flex-direction: column;" *ngIf="(login.controls['password'].touched && login.controls['password'].invalid)">
             <small *ngIf="login.controls['password'].errors?.['required']"> password is a Mandatory Field</small>
         </p>
-        <button type="submit" [disabled]="login.invalid">Login </button>
+        <button type="submit" [disabled]="login.invalid" (click)="loguser()">Login </button>
     </form>
     <form id="signup" *ngIf="signUpBool" [formGroup]="sign">
         <h3> {{head}}</h3>
