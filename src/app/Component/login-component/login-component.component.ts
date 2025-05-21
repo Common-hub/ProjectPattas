@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OtpVerification, userRegisration } from '../models/user';
-import { ApiInteractionService } from '../Services/api-interaction.service';
+import { OtpVerification, userRegisration } from '../../models/user';
+import { ApiInteractionService } from '../../Services/api-interaction.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -106,9 +106,10 @@ export class LoginComponentComponent implements OnInit {
         password: this.login.controls['password'].value
     }
     this.api.loguser(login).subscribe(res=>{
-      this.route.navigate(['/productsList']);
-      console.log(res);
-      
+      localStorage.setItem('isLoggedin','true');0
+      localStorage.setItem('token',res.token)
+      localStorage.setItem('uRole',res.role)
+      this.route.navigate(['/productsList']);      
     })
   }
 }

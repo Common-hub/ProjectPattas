@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { userRegisration } from '../models/user';
@@ -7,6 +7,7 @@ import { userRegisration } from '../models/user';
   providedIn: 'root'
 })
 export class ApiInteractionService {
+  header = new HttpHeaders();
   url: string = "http://localhost:8080/api/auth/"
 
   constructor(private http: HttpClient) { }
@@ -21,5 +22,9 @@ export class ApiInteractionService {
 
   loguser(details:any): Observable<any>{
     return this.http.post(this.url+'login', details, { responseType: 'text' });
+  }
+
+  getProducts(): Observable<any>{
+    return this.http.get('https://dummyjson.com/products');
   }
 }
