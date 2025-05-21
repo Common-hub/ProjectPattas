@@ -1,7 +1,7 @@
 .form{
-    margin-top: 10%;
-    margin-left: 38%;
-    width: 317px;
+    margin: 7% 35%;
+    z-index: 10000;
+    width: auto;
     height: auto;
     border: 1px solid grey;
     border-radius: 20px;
