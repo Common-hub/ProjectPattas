@@ -9,7 +9,7 @@
     font-size: large;
     font-weight: bold;
     z-index: 1000000;
-    transition: opacity 0.5s;
+    transition: opacity 0.5s;   
 }
 
 .success {
