@@ -4,13 +4,14 @@ import { LoginComponentComponent } from './Component/login-component/login-compo
 import { ProductComponent } from './Component/product-component/product-component.component';
 import { AuthGuardGuard } from './Services/auth-guard.guard';
 import { KartItemsComponent } from './Component/kart-items/kart-items.component';
+import { AddCrackersComponent } from './Component/add-crackers/add-crackers.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'productsList', pathMatch:"full"},
   {path: 'login',component: LoginComponentComponent},
   {path: 'productsList',component:ProductComponent},
-  {path: 'AddProducts',component:ProductComponent, canActivate: [AuthGuardGuard], data:{role: 'admin'}},
-  {path: 'ViewCart',component:KartItemsComponent, canActivate: [AuthGuardGuard], data:{role: 'user'}},
+  {path: 'AddProducts',component:AddCrackersComponent, canActivate: [AuthGuardGuard], data:{role: 'admin'}},
+  {path: 'viewCart',component:KartItemsComponent, canActivate: [AuthGuardGuard], data:{role: ['user', 'admin']}},
+  {path: '**', redirectTo: '/productsList', pathMatch:"full"}
 ];
 
 @NgModule({

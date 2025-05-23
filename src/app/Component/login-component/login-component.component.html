@@ -1,6 +1,7 @@
 <div class="ico" style="border: 1px solid white;">
     <img src="../../assets/SPP.png" height="100px" width="100px" alt="" style="float: right;">
 </div>
+<alert message="{{errorMsg}}" *ngIf="errorMsg !== ''" alertType="{{type}}"></alert>
 <div class="form">
     <form action="post" id="login" [formGroup]="login" *ngIf="LoginBool">
         <h3> {{head}}</h3>
@@ -57,7 +58,7 @@
         </div>
         <div class="verify" id="signup" *ngIf="EmailVerify">
             <p>{{response}}</p>
-            <input type="number" name="" id="" class="user" placeholder="Enter OTP" formControlName="OTP" maxlength="6">
+            <input type="text" name="" id="" class="user" placeholder="Enter OTP" formControlName="OTP" maxlength="6">
             <p style="color: red; display: flex; flex-direction: column;" *ngIf="sign.controls['OTP'].touched && sign.controls['OTP'].invalid">
                 <small *ngIf="sign.controls['OTP'].errors?.['required']">OTP is a Mandatory Field</small>
                 <small *ngIf="sign.controls['OTP']?.errors?.['minlength']">OTP must have ateast 6 character</small>

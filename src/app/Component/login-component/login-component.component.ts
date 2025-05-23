@@ -19,6 +19,8 @@ export class LoginComponentComponent implements OnInit {
   EmailVerify: boolean = false
   head: string = "Login";
   response: string = "";
+  errorMsg: string = "";
+  type: string = "";
 
   constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route:Router) { }
 
@@ -63,6 +65,13 @@ export class LoginComponentComponent implements OnInit {
     }
   }
 
+  // isNumber(event: KeyboardEvent) {
+  //   const char = String.fromCharCode(event.keyCode);
+  //   if (!/^[0-9]*$/.test(char)) {
+  //     event.preventDefault();
+  //   }
+  // }
+
   register() {
     if (this.passwordMatchValidator()) {
       let registration: userRegisration = {
@@ -74,7 +83,6 @@ export class LoginComponentComponent implements OnInit {
       this.api.userRegistration(registration).subscribe(resp => {
         this.EmailVerify = true;
         this.response = resp;
-        console.log(resp);
       },
         (error) => {
           console.log(error);
@@ -85,12 +93,26 @@ export class LoginComponentComponent implements OnInit {
   verify() {
     let Otp: OtpVerification = {
       email: this.sign.controls['email'].value,
-      otp: ''+this.sign.controls['OTP'].value
+      otp: this.sign.controls['OTP'].value.toString()
     }
     this.api.verifyOtp(Otp).subscribe(resp => {
       this.LoginBool = true;
       this.signUpBool = false;
-    })
+      this.changeForm('L')
+      this.EmailVerify = false;
+      this.errorMsg = resp;
+      this.type = "success"
+      setTimeout(() => {
+        this.errorMsg = ""
+      }, 3000);
+    },
+  (error)=>{
+    this.errorMsg = error.error;
+    this.type = "error"
+    setTimeout(() => {
+        this.errorMsg = ""
+      }, 3000);
+  })
   }
 
   passwordMatchValidator() {
@@ -106,10 +128,15 @@ export class LoginComponentComponent implements OnInit {
         password: this.login.controls['password'].value
     }
     this.api.loguser(login).subscribe(res=>{
-      localStorage.setItem('isLoggedin','true');0
-      localStorage.setItem('token',res.token)
-      localStorage.setItem('uRole',res.role)
+      const response = JSON.parse(res);
+      sessionStorage.setItem('token',response.token)
       this.route.navigate(['/productsList']);      
-    })
-  }
+    },
+    (error)=> {
+      if(error.error !== '') {this.errorMsg = error.error; this.type="warning"}
+      setTimeout(() => {
+        this.errorMsg = ""
+      }, 3000);
+    }
+  )}
 }

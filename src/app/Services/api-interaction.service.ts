@@ -8,23 +8,27 @@ import { userRegisration } from '../models/user';
 })
 export class ApiInteractionService {
   header = new HttpHeaders();
-  url: string = "http://localhost:8080/api/auth/"
+  url: string = "http://localhost:8080/"
 
   constructor(private http: HttpClient) { }
 
   userRegistration(details:userRegisration): Observable<any>{ 
-    return this.http.post(this.url +'register',  details, { responseType: 'text' })
+    return this.http.post(this.url +'api/auth/register',  details, { responseType: 'text' })
   }
   
   verifyOtp(details:any): Observable<any>{    
-    return this.http.post(this.url +'verify-otp',details, { responseType: 'text' })
+    return this.http.post(this.url +'api/auth/verify-otp',details, { responseType: 'text' })
   }
 
   loguser(details:any): Observable<any>{
-    return this.http.post(this.url+'login', details, { responseType: 'text' });
+    return this.http.post(this.url+'api/auth/login', details, { responseType: 'text' });
   }
 
   getProducts(): Observable<any>{
-    return this.http.get('https://dummyjson.com/products');
+    return this.http.get(this.url + 'products?page=0&size=10', { responseType: 'json' });
+  }
+
+  addCart(cartitems:any): Observable<any>{
+    return this.http.post(this.url + 'cart/add', cartitems, {responseType: 'text'})
   }
 }

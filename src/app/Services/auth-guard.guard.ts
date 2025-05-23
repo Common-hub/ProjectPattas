@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,16 +11,28 @@ export class AuthGuardGuard implements CanActivate {
   constructor (private router: Router){}
 
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if(localStorage.getItem('isLoggedin')){
-      if(route.data?.['role'].indexOf(localStorage.getItem('uRole')) === -1){
+   const token = sessionStorage.getItem('token');
+   
+   if(!token){
+    this.router.navigate(['/login']);
+    return false;
+   }
+   const decodedrole = this.tokenDecoder(token)
+
+    if(route.data?.['role'].indexOf(decodedrole.role) === -1){
         this.router.navigate(['/productsList']);
         return false
       }
       return true;
+  }
+
+  private tokenDecoder(token: string){
+    try{
+      const payloadData = token.split('.')[1];
+      return JSON.parse(atob(payloadData.replace(/-/g,'+').replace(/_/g, '/')));
     }
-    else{
-      this.router.navigate(['/login']);
-      return false;
+    catch (e){
+      return null;
     }
   }
   

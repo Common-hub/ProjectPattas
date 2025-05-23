@@ -11,6 +11,7 @@ import { MyInterceptorInterceptor } from './interceptors/my-interceptor.intercep
 import { HeaderComponent } from './Component/header/header.component';
 import { AddCrackersComponent } from './Component/add-crackers/add-crackers.component';
 import { KartItemsComponent } from './Component/kart-items/kart-items.component';
+import { AlertWindowComponent } from './Component/alert-window/alert-window.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { KartItemsComponent } from './Component/kart-items/kart-items.component'
     ProductComponent,
     HeaderComponent,
     AddCrackersComponent,
-    KartItemsComponent
+    KartItemsComponent,
+    AlertWindowComponent
   ],
   imports: [
     BrowserModule,

@@ -1,1 +1,8 @@
-<p>header works!</p>
+<div class="header">
+        <input type="text" name="search" id="searchtext" placeholder=" Search">
+    <div class="buttons">
+        <span  (click)="showCart()"> <i class="bi bi-cart4 cartItems"></i></span>
+       <span class="user" (click)="showProfile()">  <img src="../../../assets/usermale.png" alt="userIcon" height="51px"> </span>
+    </div>
+</div>
+<alert [message]="errorMsg" *ngIf="errorMsg !== ''" [alertType]="type"></alert>

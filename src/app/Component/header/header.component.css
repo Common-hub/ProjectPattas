@@ -1,0 +1,53 @@
+.header {
+    height: 45px;
+    width: 99%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: #2980b9;
+    border-radius: 7px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 86%);
+    position: fixed;
+    z-index: 100000;
+    margin-top: -7.51px;
+}
+
+.buttons {
+    margin-left: 25%;
+    height: 44px;
+    width: 121px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    float: left;
+}
+
+.user {
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+input[type="text"] {
+    outline: none;
+    border: none;
+    width: 857px;
+    border-radius: 7px;
+    padding: 4px;
+    height: 25px;
+    color: #716d6d;
+    font-family: monospace;
+    font-size: larger;
+    background: #ffffffb7;
+    border-bottom: 1px solid #ffffff;
+}
+
+.cartItems {
+    color: white;
+    font-size: xx-large;
+    cursor: pointer;
+}
+
+::placeholder {
+    color: #716d6d;
+}
