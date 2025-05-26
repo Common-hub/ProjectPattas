@@ -1,29 +1,33 @@
 .alert {
     position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px;
-    border-radius: 5px;
-    /* color: white; */
-    font-size: large;
-    font-weight: bold;
-    z-index: 1000000;
-    transition: opacity 0.5s;   
+    top: 50px;
+    right: 20px;
+    padding: 16px 24px;
+    border-radius: 6px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 9999;
+    color: white;
+}
+
+.isVisible{
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .success {
-    background-color: rgba(76, 175, 79, 0.514);
+    background-color: #4caf50;
     border: solid 1px rgb(172 129 0);
 }
 
 .warning {
-    background-color: rgba(247, 207, 85, 0.514);
+    background-color: #ff9800;
     border: solid 1px rgb(172 129 0);
 }
 
 .error {
-    background-color: rgba(244, 67, 54, 0.514);
+    background-color: #f44336;
     border: solid 1px rgb(172 129 0);
 }
 

@@ -1,19 +1,21 @@
 <div class="ico" style="border: 1px solid white;">
     <img src="../../assets/SPP.png" height="100px" width="100px" alt="" style="float: right;">
 </div>
-<alert message="{{errorMsg}}" *ngIf="errorMsg !== ''" alertType="{{type}}"></alert>
+<alert message="{{errorMsg}}"  alertType="{{type}}"></alert>
 <div class="form">
     <form action="post" id="login" [formGroup]="login" *ngIf="LoginBool">
         <h3> {{head}}</h3>
         <label for=""><sup style="color: red;font-weight: bold;">*</sup>Username</label>
         <input type="text" name="" id="" class="user" placeholder="Username" formControlName="userName">
-        <p style="color: red; display: flex; flex-direction: column;" *ngIf="login.controls['userName'].touched && login.controls['userName'].invalid">
+        <p style="color: red; display: flex; flex-direction: column;"
+            *ngIf="login.controls['userName'].touched && login.controls['userName'].invalid">
             <small *ngIf="login.controls['userName'].errors?.['required']">UserName is a Mandatory Field</small>
             <small *ngIf="login.controls['userName'].errors?.['email']">Enter a valid email</small>
         </p>
         <label for=""><sup style="color: red;font-weight: bold;">*</sup>Password</label>
         <input type="password" name="" id="" class="user" placeholder="Password" formControlName="password">
-        <p style="color: red; display: flex; flex-direction: column;" *ngIf="(login.controls['password'].touched && login.controls['password'].invalid)">
+        <p style="color: red; display: flex; flex-direction: column;"
+            *ngIf="(login.controls['password'].touched && login.controls['password'].invalid)">
             <small *ngIf="login.controls['password'].errors?.['required']"> password is a Mandatory Field</small>
         </p>
         <button type="submit" [disabled]="login.invalid" (click)="loguser()">Login </button>
@@ -23,46 +25,58 @@
         <div id="signup" *ngIf="!EmailVerify">
             <label for="">Name</label>
             <input type="text" name="email" class="user" id="email" formControlName="name" placeholder="Enter username">
-            <p style="color: red; display: flex; flex-direction: column;" *ngIf="sign.controls['name'].touched && sign.controls['name'].invalid">
+            <p style="color: red; display: flex; flex-direction: column;"
+                *ngIf="sign.controls['name'].touched && sign.controls['name'].invalid">
                 <small *ngIf="sign.controls['name'].errors?.['required']">UserName is a Mandatory Field</small>
             </p>
             <label>E-mail</label>
             <input type="email" name="email" class="user" id="email" formControlName="email" placeholder="Enter Email">
-            <p style="color: red; display: flex; flex-direction: column;" *ngIf="sign.controls['email'].touched && sign.controls['email'].invalid">
+            <p style="color: red; display: flex; flex-direction: column;"
+                *ngIf="sign.controls['email'].touched && sign.controls['email'].invalid">
                 <small *ngIf="sign.controls['email'].errors?.['required']">UserName is a Mandatory Field</small>
                 <small *ngIf="sign.controls['email'].errors?.['email']">Enter a valid email</small>
             </p>
             <label>PhoneNumber</label>
             <input type="number" name="" id="" class="user" maxlength="10" formControlName="mobile"
                 placeholder="Enter contact Number">
-            <p style="color: red; display: flex; flex-direction: column;" *ngIf="sign.controls['mobile'].touched && sign.controls['mobile'].invalid">
+            <p style="color: red; display: flex; flex-direction: column;"
+                *ngIf="sign.controls['mobile'].touched && sign.controls['mobile'].invalid">
                 <small *ngIf="sign.controls['mobile'].errors?.['required']">UserName is a Mandatory Field</small>
             </p>
             <label for="">Password</label>
             <input type="password" name="Password" id="" class="user" placeholder="Password" formControlName="password"
                 minlength="8">
-            <p style="color: red; display: flex; flex-direction: column;" *ngIf="sign.controls['password'].touched && sign.controls['password'].invalid">
+            <p style="color: red; display: flex; flex-direction: column;"
+                *ngIf="sign.controls['password'].touched && sign.controls['password'].invalid">
                 <small *ngIf="sign.controls['password'].errors?.['required']">Password is a Mandatory Field</small>
                 <small *ngIf="sign.controls['password']?.errors?.['minlength']">Password must have ateast 8
                     character</small>
             </p>
             <label for="">Confirm Password</label>
-            <input type="password" name="cPassword" id="" class="user" placeholder="Password" formControlName="cPassword"
-                minlength="8">
-            <p style="color: red; display: flex; flex-direction: column;" *ngIf="(sign.controls['cPassword'].touched && sign.controls['cPassword'].invalid) || !passwordMatchValidator()">
+            <input type="password" name="cPassword" id="" class="user" placeholder="Password"
+                formControlName="cPassword" minlength="8">
+            <p style="color: red; display: flex; flex-direction: column;"
+                *ngIf="(sign.controls['cPassword'].touched && sign.controls['cPassword'].invalid) || !passwordMatchValidator()">
                 <small *ngIf="sign.controls['cPassword'].errors?.['required']">Password is a Mandatory Field</small>
-                <small *ngIf="sign.controls['cPassword']?.errors?.['minlength']">Password must have ateast 8 character</small>
+                <small *ngIf="sign.controls['cPassword']?.errors?.['minlength']">Password must have ateast 8
+                    character</small>
                 <small *ngIf="!passwordMatchValidator()">Password and ConfirmPassword should match</small>
             </p>
-            <button type="submit" [disabled]="!passwordMatchValidator() || sign.invalid" (click)="register()">SignUp</button>
+            <button type="submit" [disabled]="!passwordMatchValidator() || sign.invalid"
+                (click)="register()">SignUp</button>
         </div>
         <div class="verify" id="signup" *ngIf="EmailVerify">
-            <p>{{response}}</p>
+            <p>check your mail Inbox for OTP</p>
             <input type="text" name="" id="" class="user" placeholder="Enter OTP" formControlName="OTP" maxlength="6">
-            <p style="color: red; display: flex; flex-direction: column;" *ngIf="sign.controls['OTP'].touched && sign.controls['OTP'].invalid">
+            <p style="color: red; display: flex; flex-direction: column;"
+                *ngIf="sign.controls['OTP'].touched && sign.controls['OTP'].invalid">
                 <small *ngIf="sign.controls['OTP'].errors?.['required']">OTP is a Mandatory Field</small>
                 <small *ngIf="sign.controls['OTP']?.errors?.['minlength']">OTP must have ateast 6 character</small>
             </p>
+            <div>
+                <p>Time remaining: {{ minutes }}:{{ seconds < 10 ? '0' : '' }}{{ seconds }}</p>
+                        <button [disabled]="!canResend" (click)="resendOtp()">Resend OTP</button>
+            </div>
             <button type="submit" [disabled]="sign.invalid" (click)="verify()">Verify</button>
         </div>
     </form>

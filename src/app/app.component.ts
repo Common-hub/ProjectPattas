@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'crackerShop';
+  title = 'Suriya Pryo Park';
+  isLoggedIn: boolean = false;
+  
+  constructor(private router: Router){
+    
+    this.router.events.subscribe(event =>{
+      if(event instanceof NavigationEnd){
+        const currentRoute = event.urlAfterRedirects;
+
+        this.isLoggedIn = !!sessionStorage.getItem('token') || currentRoute.startsWith('/productsList')
+      }
+    })
+  }
 }

@@ -16,11 +16,15 @@ export class LoginComponentComponent implements OnInit {
   LoginBool: boolean = true;
   signUpBool: boolean = false;
   changeBool: boolean = false;
-  EmailVerify: boolean = false
+  EmailVerify: boolean = false;
+  canResend: boolean = false;
   head: string = "Login";
   response: string = "";
   errorMsg: string = "";
   type: string = "";
+  minutes: number = 3;
+  seconds: number = 0;
+  private interval: any;
 
   constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route:Router) { }
 
@@ -44,12 +48,14 @@ export class LoginComponentComponent implements OnInit {
     switch (hint) {
       case "L":
         this.head = "Login USER"
+        this.login.reset();
         this.LoginBool = true;
         this.signUpBool = false;
         this.changeBool = false;
         break;
       case "S":
         this.head = "New User Registration"
+        this.sign.reset();
         this.signUpBool = true;
         this.LoginBool = false;
         this.changeBool = false;
@@ -72,6 +78,22 @@ export class LoginComponentComponent implements OnInit {
   //   }
   // }
 
+   startTimer() {
+    this.interval = setInterval(() => {
+      if (this.seconds === 0) {
+        if (this.minutes === 0) {
+          clearInterval(this.interval);
+          this.canResend = true;
+        } else {
+          this.minutes--;
+          this.seconds = 59;
+        }
+      } else {
+        this.seconds--;
+      }
+    }, 1000);
+  }
+
   register() {
     if (this.passwordMatchValidator()) {
       let registration: userRegisration = {
@@ -82,14 +104,30 @@ export class LoginComponentComponent implements OnInit {
       }
       this.api.userRegistration(registration).subscribe(resp => {
         this.EmailVerify = true;
-        this.response = resp;
+        this.errorMsg = resp;
+        this.type = 'success';
+        this.startTimer();
       },
         (error) => {
-          console.log(error);
+          this.errorMsg = error.error;
+          this.type = 'error';
         }
       )
     }
   }
+
+  resendOtp() {
+    this.resetTimer();
+  }
+
+  resetTimer() {
+    clearInterval(this.interval);
+    this.minutes = 3;
+    this.seconds = 0;
+    this.canResend = false;
+    this.startTimer();
+  }
+
   verify() {
     let Otp: OtpVerification = {
       email: this.sign.controls['email'].value,
@@ -101,17 +139,11 @@ export class LoginComponentComponent implements OnInit {
       this.changeForm('L')
       this.EmailVerify = false;
       this.errorMsg = resp;
-      this.type = "success"
-      setTimeout(() => {
-        this.errorMsg = ""
-      }, 3000);
+      this.type = "success";
     },
   (error)=>{
     this.errorMsg = error.error;
-    this.type = "error"
-    setTimeout(() => {
-        this.errorMsg = ""
-      }, 3000);
+    this.type = "error";
   })
   }
 
@@ -121,7 +153,7 @@ export class LoginComponentComponent implements OnInit {
 
     return password !== confirmPassword ? false : true;
   }
-
+  
   loguser(){
     let login = {
         email: this.login.controls['userName'].value,
@@ -130,13 +162,10 @@ export class LoginComponentComponent implements OnInit {
     this.api.loguser(login).subscribe(res=>{
       const response = JSON.parse(res);
       sessionStorage.setItem('token',response.token)
-      this.route.navigate(['/productsList']);      
+      response.role === 'admin' ? this.route.navigate(['/addProducts']) : this.route.navigate(['/productsList']);            
     },
     (error)=> {
-      if(error.error !== '') {this.errorMsg = error.error; this.type="warning"}
-      setTimeout(() => {
-        this.errorMsg = ""
-      }, 3000);
+      if(error.error !== '') {this.errorMsg = error.error; this.type="error"}
     }
   )}
 }

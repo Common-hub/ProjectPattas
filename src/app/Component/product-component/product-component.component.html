@@ -1,37 +1,55 @@
-<alert message="{{errorMsg}}" *ngIf="errorMsg !== ''" alertType="{{type}}"></alert>
-  <header></header>
-<div class="container page-wrapper">
-  <div class="page-inner" *ngFor="let product of productList; let i = index">
-    <div class="row">
-      <div class="el-wrapper col-6">
-        <div class="box-up">
-          <img class="img" src="./../../../assets/products/istockphoto-604020296-1024x1024.jpg" alt="" height="200px">
-          <div class="img-info">
-            <div class="info-inner">
-              <span class="p-name">{{product.name}}</span>
-              <span class="p-company">{{product.description}}</span>
+<alert message="{{errorMsg}}" alertType="{{type}}"></alert>
+<div class="container products">
+  <div class="filter">
+    <button type="button">filter</button>
+    <label for="sort"> Sort </label>
+    <select name="sort" id="1">
+      <option value="">Name: Asc</option>
+      <option value="">Name: Asc</option>
+      <option value="">price: Asc</option>
+      <option value="">price: Des</option>
+    </select>
+  </div>
+  <div class="container page-wrapper">
+    <div class="page-inner" *ngFor="let product of productList; let i = index">
+      <div class="row">
+        <div class="el-wrapper col-12">
+          <div class="box-up">
+            <img class="img" [src]="product.imageUrl" alt="" height="200px">
+            <div class="img-info">
+              <div class="info-inner">
+                <span class="p-name">{{product.name}}</span>
+                <span class="p-company">{{product.description}}</span>
+              </div>
+              <!-- <div class="a-size">Available sizes : <span class="size">S , M , L , XL</span></div> -->
             </div>
-            <!-- <div class="a-size">Available sizes : <span class="size">S , M , L , XL</span></div> -->
           </div>
-        </div>
 
-        <div class="box-down">
-           <div class="quantity" *ngIf="quantity[i] > 0">
+          <div class="box-down">
+            <div class="quantity" *ngIf="quantity[i] > 0">
               <button class="minus" aria-label="Decrease" (click)="cartQty('d', i)">&minus;</button>
               <input type="number" class="input-box" value="{{quantity[i]}}" min="1" max="10">
-              <button class="plus" aria-label="Increase" (click) = "cartQty('in', i)">&plus;</button>
+              <button class="plus" aria-label="Increase" (click)="cartQty('in', i)">&plus;</button>
             </div>
-          <div class="h-bg" *ngIf="quantity[i] == 0">
-            <div class="h-bg-inner"></div>
-          </div>
-          <div class="cart" href="#" (click)="cartQty('in', i)" *ngIf="quantity[i] == 0">
+            <div class="h-bg" *ngIf="quantity[i] == 0">
+              <div class="h-bg-inner"></div>
+            </div>
+            <div class="cart" href="#" (click)="cartQty('in', i)" *ngIf="quantity[i] == 0">
               <span class="price">₹ {{product.price}} /-</span>
               <span class="add-to-cart">
                 <span class="txt">Add in cart</span>
               </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="pagination" *ngIf="productList.length > 0 ">
+    <button type="button" [disabled]="currentpage === 0" (click)="goToFirst()">
+      << First</button>
+        <button type="button" *ngFor="let page of pages; let i = index" (click)="fetchProducts(page-1, 12)"
+          [ngClass]="{'active': currentpage === page-1}">{{page}}</button>
+        <button type="button" [disabled]="currentpage === totalPages-1" (click)="goToLast()">Last >></button>
   </div>
 </div>

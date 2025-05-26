@@ -8,6 +8,7 @@ import { userRegisration } from '../models/user';
 })
 export class ApiInteractionService {
   header = new HttpHeaders();
+  // url: string = "https://lp-patents-installations-apt.trycloudflare.com/api/";
   url: string = "http://localhost:8080/"
 
   constructor(private http: HttpClient) { }
@@ -24,11 +25,20 @@ export class ApiInteractionService {
     return this.http.post(this.url+'api/auth/login', details, { responseType: 'text' });
   }
 
-  getProducts(): Observable<any>{
-    return this.http.get(this.url + 'products?page=0&size=10', { responseType: 'json' });
+  getProducts(page: number, size: number): Observable<any>{
+    return this.http.get(this.url + `products?page=${page}&size=${size}`, { responseType: 'json' });
   }
 
   addCart(cartitems:any): Observable<any>{
     return this.http.post(this.url + 'cart/add', cartitems, {responseType: 'text'})
+  }
+
+  getCart(): Observable<any>
+  {
+    return this.http.get(this.url + 'cart', {responseType: 'json'})
+  }
+
+  deleteCart(pId: number): Observable<any>{
+    return this.http.delete(this.url + 'cart/remove/'+ pId, {responseType: 'text'})
   }
 }

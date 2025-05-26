@@ -25,6 +25,16 @@ body {
   background-color: #f7f7f7;
 }
 
+.filter {
+  margin-top: 4%;
+  border: 1px solid;
+  display: flex;
+  padding: 0.5%;
+  justify-content: end;
+  text-align: center;
+  align-items: baseline;
+}
+
 .page-wrapper {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -45,7 +55,7 @@ body {
   display: flex;
   /* border: 2px solid #3498db; */
   width: 107px;
-  float:inline-end;
+  float: inline-end;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -98,6 +108,33 @@ body {
   }
 }
 
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-self: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-top: 20px
+}
+
+.pagination button {
+  background: #eee;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: #007bff;
+  color: white;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 @media (max-width: 767px) {
   .el-wrapper {
     width: 180px;
@@ -107,6 +144,12 @@ body {
   .page-wrapper {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1288px !important;
   }
 }
 

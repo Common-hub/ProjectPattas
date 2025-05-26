@@ -12,6 +12,7 @@ import { HeaderComponent } from './Component/header/header.component';
 import { AddCrackersComponent } from './Component/add-crackers/add-crackers.component';
 import { KartItemsComponent } from './Component/kart-items/kart-items.component';
 import { AlertWindowComponent } from './Component/alert-window/alert-window.component';
+import { OrderDetailsComponent } from './Component/order-details/order-details.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { AlertWindowComponent } from './Component/alert-window/alert-window.comp
     HeaderComponent,
     AddCrackersComponent,
     KartItemsComponent,
-    AlertWindowComponent
+    AlertWindowComponent,
+    OrderDetailsComponent
   ],
   imports: [
     BrowserModule,

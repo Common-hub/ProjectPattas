@@ -1,8 +1,24 @@
 <div class="header">
-        <input type="text" name="search" id="searchtext" placeholder=" Search">
+    <div class="search">
+        <input type="text" name="search" id="searchtext" placeholder=" Search..." [(ngModel)]="searchKey"
+            (input)="onsearch($event)">
+        <ul *ngIf="suggest.length" class="suggest">
+            <li *ngFor="let name of suggest; let i = index" (click)="onsearch(name)">{{name}}</li>
+        </ul>
+    </div>
+    <div class="logo">
+        <!-- <img src="/assets/SPP.png" alt="shop logo" height="49px"> -->
+        <p>
+            <a class="txt1">Suriya</a><a class="txt2">Pyro Park</a>
+        </p>
+    </div>
     <div class="buttons">
-        <span  (click)="showCart()"> <i class="bi bi-cart4 cartItems"></i></span>
-       <span class="user" (click)="showProfile()">  <img src="../../../assets/usermale.png" alt="userIcon" height="51px"> </span>
+        <!-- <button type="submit" class="b1 vc" (click)="showCart()"> View Cart</button>
+        <button type="submit" class="b1 mo" <a [routerLink]="[ '/path', routeParam ]">name</a>> My Orders</button> -->
+        <a class="b1" [routerLink]="[ '/productsList']">Home</a>
+        <a class="b1" [routerLink]="[ '/viewCart']">View Cart</a>
+        <a class="b1" [routerLink]="[ '/orderStatus']">My Orders</a>
+        <button type="submit"  (click)="showProfile()"><i class="bi bi-person-circle"></i></button>
     </div>
 </div>
-<alert [message]="errorMsg" *ngIf="errorMsg !== ''" [alertType]="type"></alert>
+<alert [message] = "errorMsg" [alertType]="type"></alert>
