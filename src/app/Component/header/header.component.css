@@ -130,3 +130,31 @@ input:focus {
 .vc :hover ::after{
     content: 'bi bi-cart-plus';
 }
+
+ @media (max-width: 767px) {
+    .header {
+        height: 60px; /* Increased height for better touch targets */
+        padding: 10px 5px; /* Adjusted padding for smaller screens */
+    }
+
+    .search input {
+        height: 40px; /* Increased input height for easier interaction */
+        font-size: medium; /* Adjusted font size for readability */
+    }
+
+    .logo {
+        width: 30%; /* Adjusted logo width for better alignment */
+    }
+
+    .buttons {
+        flex-direction: row;
+        row-gap: 10px; /* Stack buttons vertically */
+        margin-left: 0; /* Remove left margin for better alignment */
+    }
+
+    .buttons a, button {
+        font-size: medium; /* Adjusted font size for buttons */
+        margin-left: 0; /* Remove left margin for buttons */
+    }
+
+}

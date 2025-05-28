@@ -8,6 +8,10 @@ import { Router } from '@angular/router';
 })
 export class OrderDetailsComponent implements OnInit {
 
+  userAddress: string[] = [];
+  isAdd: boolean = false;
+  isOrder: boolean = true;
+
   constructor(private route: Router){ }
 
   ngOnInit(): void {

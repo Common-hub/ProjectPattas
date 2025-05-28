@@ -9,7 +9,8 @@ import { userRegisration } from '../models/user';
 export class ApiInteractionService {
   header = new HttpHeaders();
   // url: string = "https://lp-patents-installations-apt.trycloudflare.com/api/";
-  url: string = "http://localhost:8080/"
+  // url: string = "http://localhost:8080/"
+  url: string = "http://192.168.29.76:8080/"
 
   constructor(private http: HttpClient) { }
 

@@ -12,6 +12,7 @@ import { debounceTime, Subject } from 'rxjs';
 })
 export class ProductComponent implements OnInit {
   productList: products[] = []
+  unSortedProduct: products[] = []
   _filterdList: products[] = [];
   quantity: number[] = [];
   pages: number[] = [];
@@ -80,8 +81,7 @@ export class ProductComponent implements OnInit {
         })
       }
       this.updatepages();
-      console.log(this.pages);
-      
+      this.unSortedProduct = [...this.productList]      
     });
   }
 
@@ -96,6 +96,26 @@ export class ProductComponent implements OnInit {
       if (mode === 'in') this.quantity[i]++;
     }
     this.updatedQty.next({productId: this.productList[i].id, quantity: this.quantity[i]})
+  }
+
+  sortProduct(type: string){
+    switch(type){
+      case 'aPrice': 
+       this.productList = this.productList.sort((a,b)=> a.price - b.price);
+       break;
+      case 'dPrice': 
+       this.productList = this.productList.sort((a,b)=> b.price - a.price);
+       break;
+      case 'aName': 
+       this.productList = this.productList.sort((a,b)=> a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+       break;
+      case 'dName': 
+       this.productList = this.productList.sort((a,b)=> b.name.toLowerCase().localeCompare(a.name.toLowerCase()));
+       break;
+      default: 
+       this.productList = this.unSortedProduct;
+       break;
+    }
   }
 
 }

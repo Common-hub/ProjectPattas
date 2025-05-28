@@ -29,6 +29,7 @@ export class KartItemsComponent implements OnInit {
   }
 
   getCartItems() {
+    this.cartItems = []
     this.apiInteraction.getCart().subscribe((resp: any[]) => {
       if (resp.length == 0) this.router.navigate(['productsList']);
       else {
@@ -75,7 +76,7 @@ export class KartItemsComponent implements OnInit {
         this.type = 'success'
         setTimeout(() => {
           this.getCartItems();
-        }, 3000);
+        }, 10);
       })
     }
   }

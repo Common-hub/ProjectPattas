@@ -12,7 +12,7 @@ export class products {
     id: string = '';
     name: string = '';
     description: string = '';
-    price: string = '';
+    price: number = 0;
     imageUrl: string = '';
     quantity: string = '';
 }

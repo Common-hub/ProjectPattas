@@ -16,7 +16,7 @@ export class AppComponent {
       if(event instanceof NavigationEnd){
         const currentRoute = event.urlAfterRedirects;
 
-        this.isLoggedIn = !!sessionStorage.getItem('token') || currentRoute.startsWith('/productsList')
+        this.isLoggedIn = !!sessionStorage.getItem('token') || currentRoute.startsWith('/productsList');
       }
     })
   }

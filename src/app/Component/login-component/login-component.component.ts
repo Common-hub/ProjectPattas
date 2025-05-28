@@ -44,32 +44,23 @@ export class LoginComponentComponent implements OnInit {
 
   }
 
-  changeForm(hint: string) {
-    switch (hint) {
-      case "L":
-        this.head = "Login USER"
-        this.login.reset();
-        this.LoginBool = true;
-        this.signUpBool = false;
-        this.changeBool = false;
-        break;
-      case "S":
-        this.head = "New User Registration"
-        this.sign.reset();
-        this.signUpBool = true;
-        this.LoginBool = false;
-        this.changeBool = false;
-        break;
-      case "F":
-        this.head = "Forget Password"
-        this.signUpBool = false;
-        this.LoginBool = false;
-        this.changeBool = true;
-        break;
-      default:
-        break;
+  changeForm(hint: string): void {
+    const formConfig: {[key: string]: any}= {
+        L: { head: "Login USER", resetForm: () => this.login.reset(), login: true, signUp: false, change: false },
+        S: { head: "New User Registration", resetForm: () => this.sign.reset(), login: false, signUp: true, change: false },
+        F: { head: "Forget Password", resetForm: () => {}, login: false, signUp: false, change: true }
+    };
+
+    const config = formConfig[hint];
+    if (config) {
+        this.head = config.head;
+        config.resetForm();
+        this.LoginBool = config.login;
+        this.signUpBool = config.signUp;
+        this.changeBool = config.change;
     }
-  }
+}
+
 
   // isNumber(event: KeyboardEvent) {
   //   const char = String.fromCharCode(event.keyCode);
