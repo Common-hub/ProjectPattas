@@ -108,7 +108,6 @@ ul.timeline>li.active:before {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 700;
-    margin-top: 60px;
 }
 
 .form__container {
@@ -239,7 +238,7 @@ ul.timeline>li.active:before {
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
-    appearance: none;
+    /* appearance: none; */
     width: 20px;
     height: 20px;
     background-color: transparent;
@@ -249,7 +248,7 @@ ul.timeline>li.active:before {
 }
 
 .form__question input[type=checkbox]:checked {
-    background-color: var(--hint);
+    background-color: #ffc107;
 }
 
 /* GLOBALS */
@@ -290,7 +289,7 @@ input::placeholder {
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 1px;
-    background-color: #18c2c0;
+    background-color: #ffc107;
     border: 1px solid var(--outline);
     color: #fff;
     padding: 18px;
@@ -346,8 +345,13 @@ section:nth-child(1) {
 }
 
 @media (max-width: 768px) {
+    .personal--form .email {
+        display: block;
+    }
+
     .form__name {
         margin-top: 30px;
+        font-size: 1.4rem;
         /* Reduce margin */
     }
 
@@ -378,12 +382,6 @@ section:nth-child(1) {
     .personal--form .email input {
         display: block;
         min-width: 250px;
-    }
-
-    .personal--form .first,
-    .personal--form .last,
-    .personal--form .email {
-        display: inline-block;
     }
 
     .form__confirmation button {
