@@ -161,9 +161,6 @@ ul.timeline>li.active:before {
     margin-top: 20px;
 }
 
-.personal--form .email input {
-    width: 540px;
-}
 
 /* Shipping Address */
 .shipping--form {
@@ -225,13 +222,13 @@ ul.timeline>li.active:before {
 .form__question {
     padding: 10px 55px;
     color: var(--header);
+    align-items: center;
 }
 
 .form__question p {
     display: inline-block;
     margin-left: 10px;
     font-weight: 500;
-    vertical-align: middle;
 }
 
 .form__question input[type=checkbox] {
@@ -301,11 +298,12 @@ input::placeholder {
 }
 
 .form__confirmation button:hover {
-    background-color: #15aeac;
+    background-color: #ffc107d3;
 }
 
-.form__confirmation button:active {
-    background-color: #139b99;
+.form__confirmation button:disabled {
+    cursor: none;
+    background-color: #ffc10742;
 }
 
 /* UTILITIES */

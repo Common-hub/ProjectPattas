@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { userRegisration } from '../models/user';
+import { order, userRegisration } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -9,21 +9,21 @@ import { userRegisration } from '../models/user';
 export class ApiInteractionService {
   header = new HttpHeaders();
   // url: string = "https://lp-patents-installations-apt.trycloudflare.com/api/";
-  // url: string = "http://localhost:8080/"
-  url: string = "http://192.168.29.76:8080/"
+  // url: string = "http://localhost:8080/api/"
+  url: string = "http://192.168.29.76:8080/api/"
 
   constructor(private http: HttpClient) { }
 
   userRegistration(details:userRegisration): Observable<any>{ 
-    return this.http.post(this.url +'api/auth/register',  details, { responseType: 'text' })
+    return this.http.post(this.url +'auth/register',  details, { responseType: 'text' })
   }
   
   verifyOtp(details:any): Observable<any>{    
-    return this.http.post(this.url +'api/auth/verify-otp',details, { responseType: 'text' })
+    return this.http.post(this.url +'auth/verify-otp',details, { responseType: 'text' })
   }
 
   loguser(details:any): Observable<any>{
-    return this.http.post(this.url+'api/auth/login', details, { responseType: 'text' });
+    return this.http.post(this.url+'auth/login', details, { responseType: 'text' });
   }
 
   getProducts(page: number, size: number): Observable<any>{
@@ -37,6 +37,11 @@ export class ApiInteractionService {
   getCart(): Observable<any>
   {
     return this.http.get(this.url + 'cart', {responseType: 'json'})
+  }
+
+  getOrder(): Observable<order[]>
+  {
+    return this.http.get<order[]>(this.url + 'order', {responseType: 'json'})
   }
 
   deleteCart(pId: number): Observable<any>{
