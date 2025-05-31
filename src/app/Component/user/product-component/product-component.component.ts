@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiInteractionService } from '../../Services/api-interaction.service';
+import { ApiInteractionService } from '../../../Services/api-interaction.service';
 import { products } from 'src/app/models/user';
 import { Router } from '@angular/router';
 import { SearchService } from 'src/app/Services/search.service';

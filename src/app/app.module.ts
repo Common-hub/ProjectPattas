@@ -6,13 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponentComponent } from './Component/login-component/login-component.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { ProductComponent } from './Component/product-component/product-component.component';
+import { ProductComponent } from './Component/user/product-component/product-component.component';
 import { MyInterceptorInterceptor } from './interceptors/my-interceptor.interceptor';
 import { HeaderComponent } from './Component/header/header.component';
-import { AddCrackersComponent } from './Component/add-crackers/add-crackers.component';
-import { KartItemsComponent } from './Component/kart-items/kart-items.component';
+import { AddCrackersComponent } from './Component/admin/add-crackers/add-crackers.component';
+import { KartItemsComponent } from './Component/user/kart-items/kart-items.component';
 import { AlertWindowComponent } from './Component/alert-window/alert-window.component';
-import { OrderDetailsComponent } from './Component/order-details/order-details.component';
+import { DashboardComponent } from './Component/admin/dashboard/dashboard.component';
+import { OrderDetailsComponent } from './Component/user/order-details/order-details.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { OrderDetailsComponent } from './Component/order-details/order-details.c
     AddCrackersComponent,
     KartItemsComponent,
     AlertWindowComponent,
-    OrderDetailsComponent
+    OrderDetailsComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
