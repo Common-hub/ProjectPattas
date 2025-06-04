@@ -6,11 +6,13 @@ import { AuthGuardGuard } from './Services/auth-guard.guard';
 import { KartItemsComponent } from './Component/user/kart-items/kart-items.component';
 import { AddCrackersComponent } from './Component/admin/add-crackers/add-crackers.component';
 import { OrderDetailsComponent } from './Component/user/order-details/order-details.component';
+import { DashboardComponent } from './Component/admin/dashboard/dashboard.component';
 
 const routes: Routes = [
   {path: 'login',component: LoginComponentComponent},
   {path: 'productsList',component:ProductComponent},
   {path: 'addProducts',component:AddCrackersComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
+  {path: 'dash',component:DashboardComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
   {path: 'viewCart',component:KartItemsComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},
   {path: 'orderStatus',component:OrderDetailsComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},
   {path: '**', redirectTo: '/productsList', pathMatch:"full"}

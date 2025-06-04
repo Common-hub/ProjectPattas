@@ -1,1 +1,61 @@
-<p>dashboard works!</p>
+<alert message="{{errorMsg}}" alertType="{{type}}"></alert>
+<div class="container">
+    <div class="card-body p-0 table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th scope="col" colspan="2">
+                        <strong>
+                            <span class="badge badge-success">Compeled Order &nbsp;&nbsp; 0</span> &nbsp; &nbsp; &nbsp;
+                            &nbsp; &nbsp;
+                            <span class="badge badge-warning">Pending Order &nbsp;&nbsp; 0</span>
+                        </strong>
+                    </th>
+                    <th colspan="9">
+                    </th>
+                    <th>
+                        <button type="button" style="float: right;">+AddProducts</button>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">SLNo</th>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">View Bill</th>
+                    <th scope="col">Logistics Partner</th>
+                    <th scope="col">Tracking Number</th>
+                    <th scope="col" colspan="2">Status</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>OrderId</td>
+                    <td>Date</td>
+                    <td><a (click)="exportToPdf()" style="cursor: pointer;">View Bill</a></td>
+                    <td><input type="text" name="partner" id="part"></td>
+                    <td><input type="text" name="trackno" id="track"></td>
+                    <td colspan="2"><strong><span class="badge badge-warning">PENDING</span></strong></td>
+                    <td><strong>₹</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>OrderId</td>
+                    <td>Date</td>
+                    <td>BillNo</td>
+                    <td><input type="text" name="partner" id="part"></td>
+                    <td><input type="text" name="trackno" id="track"></td>
+                    <td colspan="2"><strong><span class="badge badge-warning">PENDING</span></strong></td>
+                    <td><strong>₹</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

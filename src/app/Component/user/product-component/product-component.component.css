@@ -21,10 +21,6 @@
   align-items: center;
 }
 
-body {
-  background-color: #f7f7f7;
-}
-
 .filter {
   margin-top: 4%;
   column-gap: 18px;

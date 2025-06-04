@@ -153,7 +153,7 @@ export class LoginComponentComponent implements OnInit {
     this.api.loguser(login).subscribe(res=>{
       const response = JSON.parse(res);
       sessionStorage.setItem('token',response.token)
-      response.role === 'admin' ? this.route.navigate(['/addProducts']) : this.route.navigate(['/productsList']);            
+      response.role === 'admin' ? this.route.navigate(['/dash']) : this.route.navigate(['/productsList']);            
     },
     (error)=> {
       if(error.error !== '') {this.errorMsg = error.error; this.type="error"}

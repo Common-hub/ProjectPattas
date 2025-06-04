@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "response" : "ng serve --host 192.168.29.76 --disable-host-check",
+    "response": "ng serve --host 192.168.29.76 --disable-host-check",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -21,6 +21,8 @@
     "@angular/router": "^14.0.0",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.13.1",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "jwt-decode": "^4.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

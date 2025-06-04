@@ -23,8 +23,6 @@ export class AuthGuardGuard implements CanActivate {
       this.router.navigate(['/productsList']);
       return false
     }
-
-    sessionStorage.setItem('role', route.data?.['role']?.includes('admin'))
     return true;
   }
 
