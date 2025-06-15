@@ -142,7 +142,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .filter{
+  .filter {
     margin-top: 15%;
   }
 }

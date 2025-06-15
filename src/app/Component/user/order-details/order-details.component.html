@@ -37,7 +37,7 @@
                                 <div class="top-status">
                                     <h5>ORDER #{{orders[0]?.id}}</h5>
                                     <ul>
-                                        <li class="active">
+                                        <li [ngClass]="{'active': orders[0].status === 'PLACED'}">
                                             <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
                                                 viewBox="0 0 512 512" width="50" height="50">
                                                 <title> Clock Delivery package </title>
@@ -89,7 +89,7 @@
                                             </svg>
                                             <span>Confimed</span>
                                         </li>
-                                        <li>
+                                        <li [ngClass]="{'active': orders[0].status === 'PLACED'}">
                                             <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
                                                 viewBox="0 0 512 512" width="50" height="50">
                                                 <title> Clock Delivery package </title>
@@ -362,7 +362,7 @@
                                             <th scope="col">Order ID</th>
                                             <th scope="col">Date</th>
                                             <th scope="col" colspan="2">Status</th>
-                                            <th scope="col">Amount</th>
+                                            <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -371,8 +371,8 @@
                                             </td>
                                             <td>{{order.orderDate | date: 'd/MM'}}</td>
                                             <td colspan="2"><strong><span
-                                                        class="badge badge-warning">PENDING</span></strong></td>
-                                            <td><strong>₹ {{order.totalPrice}}</strong></td>
+                                                        class="badge badge-warning">{{order.status}}</span></strong></td>
+                                            <td><span class="badge badge-danger" *ngIf="order.status !== 'COMPLETED'"> Cancel</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -450,7 +450,8 @@
                     </div>
                 </div>
                 <div class="col-lg-8" *ngIf="isAdd">
-                    <div class="form__name">Shipping and Billing Form</div>
+                    <!-- <div class="form__name">Shipping and Billing Form</div> -->
+                    <div class="form__name"> Billing Form</div>
                     <div class="form__container">
                         <section class="form__personal">
                             <div class="sections">
@@ -506,7 +507,7 @@
                                     <div class="row three">
                                         <div class="zip">
                                             <label for="zip">Zip / Postal Code</label>
-                                            <input placeholder="e.g. 95014" id="zip" type="text" name="zip"  formControlName="zip"/>
+                                            <input placeholder="e.g. 95014" id="zip" type="text" name="zip"  formControlName="zip" maxlength="6"/>
                                         </div>
                                         <div class="country">
                                             <label for="country">Country</label>
@@ -516,7 +517,7 @@
                                 </form>
                             </div>
                         </section>                       
-                        <div class="form__question">
+                        <!-- <div class="form__question">
                             <input type="checkbox" (change)="sameAddress(iSame.checked)" #iSame />
                             <p>Is your shipping address the same as your billing address ?</p>
                         </div>
@@ -558,9 +559,9 @@
                                     </div>
                                 </form>
                             </div>
-                        </section>
+                        </section> -->
                         <div class="form__confirmation">
-                            <button [disabled]="addressForm.invalid">Confirm Information</button>
+                            <button [disabled]="addressForm.invalid" (click)="confirmOrder()">Confirm Information</button>
                         </div>
                     </div>
                 </div>

@@ -3,7 +3,7 @@
   <span class="back"> <a [routerLink]="[ '/productsList']">Back to Shop</a></span>
   <div class="cart-header cf">
     <strong>Items in Your Cart</strong>
-    <span class="btn">Checkout</span>
+    <span class="btn" (click)="onCheckout()">Checkout</span>
   </div>
   <div class="cart-table">
     <ul>
@@ -18,7 +18,7 @@
             </div>
           </div>
           <div class="item-block ib-qty">
-            <input type="text" [(ngModel)]="cartItem.qty" class="qty" (input)="updateCart(i); getSubtotal();" />
+            <input type="text" [(ngModel)]="cartItem.qty" class="qty" (focusout)="updateCart(i); getSubtotal();" />
             <span class="price"><span>x</span>₹ {{cartItem.product.price}}</span>
           </div>
           <div class="item-block ib-total-price">
@@ -63,7 +63,7 @@
   </div>
 
   <div class="cart-footer cf">
-    <span class="btn">Checkout</span>
+    <span class="btn" (click)="onCheckout()">Checkout</span>
     <span class="cont-shopping" (click)="navigate()"><i class="i-angle-left"></i>Continue Shopping</span>
   </div>
 </div>

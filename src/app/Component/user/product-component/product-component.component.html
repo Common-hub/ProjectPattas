@@ -35,10 +35,16 @@
             <div class="h-bg" *ngIf="quantity[i] == 0">
               <div class="h-bg-inner"></div>
             </div>
-            <div class="cart" href="#" (click)="cartQty('in', i)" *ngIf="quantity[i] == 0">
+            <div class="cart" href="#" (click)="cartQty('in', i)" *ngIf="quantity[i] == 0 && product.stockQuantity > 0 ">
               <span class="price">₹ {{product.price}} /-</span>
               <span class="add-to-cart">
                 <span class="txt">Add in cart</span>
+              </span>
+            </div>
+            <div class="cart" href="#" *ngIf="product.stockQuantity == 0">
+              <span class="price">Out Of Stock</span>
+              <span class="add-to-cart">
+                <span class="txt"></span>
               </span>
             </div>
           </div>

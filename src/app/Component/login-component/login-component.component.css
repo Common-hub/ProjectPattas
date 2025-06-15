@@ -1,4 +1,4 @@
-.form{
+.form {
     margin: 7% 35%;
     z-index: 10000;
     width: auto;
@@ -6,13 +6,17 @@
     border: 1px solid grey;
     border-radius: 20px;
 }
-#login, #signup, #change{
+
+#login,
+#signup,
+#change {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
     align-items: center;
 }
-.user{
+
+.user {
     margin-top: 15px;
     background-color: transparent;
     border: 0;
@@ -20,44 +24,86 @@
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
 }
-label{
+
+label {
     margin-top: 10px;
 }
-.user:focus{
+
+.user:focus {
     outline: none;
     font-weight: bold;
     border-bottom-color: teal;
 }
 
-button{
-    margin-top: 20px;
-    width: 112px;
-    color: whitesmoke;
-    background-color: royalblue;
-    font-size: larger;
-    font-weight: bolder;
-    font-family: monospace;
+/* button {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background-color: #ffc107;
+    border: 1px solid var(--outline);
+    color: #fff;
+    padding: 18px;
+    border-radius: 5px;
+    outline: none;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    margin-top: 10%;
 }
-button:hover{
+
+button:hover {
     cursor: pointer;
-    background-color: royalblue;
+    background-color: #ffc107;
     outline: none;
     border-radius: 5px;
 }
-button:disabled{
+
+button:disabled {
     color: whitesmoke;
-    background-color: cornflowerblue;
+    background-color: #ffc10742;
     cursor: not-allowed;
+} */
+
+.form__confirmation {
+    padding: 10px 55px;
 }
+
+.form__confirmation button {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background-color: #ffc107;
+    border: 1px solid var(--outline);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    left: 40%;
+}
+
+.form__confirmation button:hover {
+    background-color: #ffc107d3;
+}
+
+.form__confirmation button:disabled {
+    cursor: none;
+    background-color: #ffc10742;
+}
+
 .links {
     display: flex;
     justify-content: space-around;
 }
-.links :hover{
+
+.links :hover {
     color: red;
     text-decoration: underline;
     cursor: pointer;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;

@@ -9,8 +9,8 @@ import { order, userRegisration } from '../models/user';
 export class ApiInteractionService {
   header = new HttpHeaders();
   // url: string = "https://lp-patents-installations-apt.trycloudflare.com/api/";
-  // url: string = "http://localhost:8080/api/"
-  url: string = "http://192.168.29.76:8080/api/"
+  url: string = "http://localhost:8080/api/";
+  // url: string = "http://192.168.29.76:8080/api/";
 
   constructor(private http: HttpClient) { }
 
@@ -42,6 +42,9 @@ export class ApiInteractionService {
   getOrder(): Observable<order[]>
   {
     return this.http.get<order[]>(this.url + 'order', {responseType: 'json'})
+  }
+  postOrder(address:any):Observable<any>{
+    return this.http.post(this.url +`order/place?address=${JSON.stringify(address).toString()}`,{responseType: 'text'})
   }
 
   deleteCart(pId: number): Observable<any>{

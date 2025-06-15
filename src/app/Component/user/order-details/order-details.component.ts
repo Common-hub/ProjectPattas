@@ -32,16 +32,21 @@ export class OrderDetailsComponent implements OnInit {
       zip: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
       country: ['', Validators.required],
       //shiipping Address
-      bAddressL1: ['', Validators.required],
-      bAddressL2: ['', Validators.required],
-      bCity: ['', Validators.required],
-      bState: ['', Validators.required],
-      bZip: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
-      bCountry: ['', Validators.required]
+      // bAddressL1: ['', Validators.required],
+      // bAddressL2: ['', Validators.required],
+      // bCity: ['', Validators.required],
+      // bState: ['', Validators.required],
+      // bZip: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
+      // bCountry: ['', Validators.required]
     })
+
+    if (sessionStorage.getItem('address') === 'true') {
+      this.isAdd = true;
+      this.isOrder = false;
+    }
     this.apiInteraction.getOrder().subscribe((order: order[]) => {
       this.orders = order;
-      console.log(order, this.orders);
+      console.log(order, this.orders[0].id);
     })
   }
 
@@ -59,23 +64,23 @@ export class OrderDetailsComponent implements OnInit {
     this.isSpecorder = true;
   }
 
-  sameAddress(iSame: boolean) {
-    if (iSame) {
-      this.addressForm.controls['bAddressL1'].setValue(this.addressForm.controls['addressL1'].value);
-      this.addressForm.controls['bAddressL2'].setValue(this.addressForm.controls['addressL2'].value);
-      this.addressForm.controls['bCountry'].setValue(this.addressForm.controls['country'].value);
-      this.addressForm.controls['bState'].setValue(this.addressForm.controls['state'].value);
-      this.addressForm.controls['bZip'].setValue(this.addressForm.controls['zip'].value);
-      this.addressForm.controls['bCity'].setValue(this.addressForm.controls['city'].value);
-    }else{
-      this.addressForm.controls['bAddressL1'].setValue('');
-      this.addressForm.controls['bAddressL2'].setValue('');
-      this.addressForm.controls['bCountry'].setValue('');
-      this.addressForm.controls['bState'].setValue('');
-      this.addressForm.controls['bZip'].setValue('');
-      this.addressForm.controls['bCity'].setValue('');
-    }
-  }
+  // sameAddress(iSame: boolean) {
+  //   if (iSame) {
+  //     this.addressForm.controls['bAddressL1'].setValue(this.addressForm.controls['addressL1'].value);
+  //     this.addressForm.controls['bAddressL2'].setValue(this.addressForm.controls['addressL2'].value);
+  //     this.addressForm.controls['bCountry'].setValue(this.addressForm.controls['country'].value);
+  //     this.addressForm.controls['bState'].setValue(this.addressForm.controls['state'].value);
+  //     this.addressForm.controls['bZip'].setValue(this.addressForm.controls['zip'].value);
+  //     this.addressForm.controls['bCity'].setValue(this.addressForm.controls['city'].value);
+  //   }else{
+  //     this.addressForm.controls['bAddressL1'].setValue('');
+  //     this.addressForm.controls['bAddressL2'].setValue('');
+  //     this.addressForm.controls['bCountry'].setValue('');
+  //     this.addressForm.controls['bState'].setValue('');
+  //     this.addressForm.controls['bZip'].setValue('');
+  //     this.addressForm.controls['bCity'].setValue('');
+  //   }
+  // }
 
   screentoggle(screen: string) {
     switch (screen) {
@@ -89,6 +94,18 @@ export class OrderDetailsComponent implements OnInit {
         this.isAdd = false;
         this.isSpecorder = false;
     }
+  }
+
+  confirmOrder(){
+    const address = this.addressForm.controls['addressL1'].value +','+ this.addressForm.controls['addressL2'].value +','+
+    this.addressForm.controls['country'].value +','+ this.addressForm.controls['state'].value +','+
+    this.addressForm.controls['zip'].value +','+ this.addressForm.controls['city'].value +','
+
+    this.apiInteraction.postOrder(address).subscribe(resp=>{
+      console.log(resp);
+      this.isAdd = false;
+      this.isOrder = true;      
+    })
   }
 
 }

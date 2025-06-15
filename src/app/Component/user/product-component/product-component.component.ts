@@ -75,7 +75,7 @@ export class ProductComponent implements OnInit {
       if (this.token) {
         this.apiIteraction.getCart().subscribe((cartItems: any[]) => {
           cartItems.forEach(cart => {
-            const index = this.productList.findIndex(product => product.id === cart.product.id);
+            const index = this.productList.findIndex(product => product.id === cart.product.productId);
             this.quantity.splice(index, 0, cart.quantity)
           })
         })

@@ -14,7 +14,7 @@ export class products {
     description: string = '';
     price: number = 0;
     imageUrl: string = '';
-    quantity: string = '';
+    stockQuantity: number = 0;
 }
 
 export class order {
@@ -23,6 +23,7 @@ export class order {
     totalPrice: number = 0;
     items: { id: number, product: products, quantity: number }[] = [];
     price: number = 0;
+    status: string = '';
 }
 
 export class address {

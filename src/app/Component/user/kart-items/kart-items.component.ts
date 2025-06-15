@@ -53,10 +53,13 @@ export class KartItemsComponent implements OnInit {
   }
 
   updateCart(i: number) {
+    console.log(this.cartItems[i].product);
+    console.log(this.cartItems[i].product.id);
+    
     // Update item quantity    
     if(this.cartItems[i].qty > 0 ){
       this.apiInteraction.addCart({
-      productId: this.cartItems[i].product.id,
+      productId: this.cartItems[i].product.productId,
       quantity: Number(this.cartItems[i].qty)
     }).subscribe(resp => {
       this.cartItems = [];
@@ -68,23 +71,24 @@ export class KartItemsComponent implements OnInit {
       this.getCartItems();
     });
     }else{
-      this.apiInteraction.deleteCart(this.cartItems[i].product.id).subscribe(resp => {
+      this.apiInteraction.deleteCart(this.cartItems[i].product.productId).subscribe(resp => {
         this.errorMsg = '';
         setTimeout(() => {
           this.errorMsg = resp;
         }, 10);
         this.type = 'success'
-        setTimeout(() => {
           this.getCartItems();
-        }, 10);
       })
     }
   }
 
-  onCheckout(){}
+  onCheckout(){
+    sessionStorage.setItem('address','true');
+    this.router.navigate(['orderStatus']);
+  }
 
   navigate() {
-    this.router.navigate(['productsList'])
+    this.router.navigate(['productsList']);
   }
 
 }

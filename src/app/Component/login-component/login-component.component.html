@@ -1,7 +1,7 @@
 <div class="ico" style="border: 1px solid white;">
     <img src="../../assets/SPP.png" height="100px" width="100px" alt="" style="float: right;">
 </div>
-<alert message="{{errorMsg}}"  alertType="{{type}}"></alert>
+<alert message="{{errorMsg}}" alertType="{{type}}"></alert>
 <div class="form">
     <form action="post" id="login" [formGroup]="login" *ngIf="LoginBool">
         <h3> {{head}}</h3>
@@ -18,7 +18,6 @@
             *ngIf="(login.controls['password'].touched && login.controls['password'].invalid)">
             <small *ngIf="login.controls['password'].errors?.['required']"> password is a Mandatory Field</small>
         </p>
-        <button type="submit" [disabled]="login.invalid" (click)="loguser()">Login </button>
     </form>
     <form id="signup" *ngIf="signUpBool" [formGroup]="sign">
         <h3> {{head}}</h3>
@@ -62,8 +61,7 @@
                     character</small>
                 <small *ngIf="!passwordMatchValidator()">Password and ConfirmPassword should match</small>
             </p>
-            <button type="submit" [disabled]="!passwordMatchValidator() || sign.invalid"
-                (click)="register()">SignUp</button>
+
         </div>
         <div class="verify" id="signup" *ngIf="EmailVerify">
             <p>check your mail Inbox for OTP</p>
@@ -75,9 +73,8 @@
             </p>
             <div>
                 <p>Time remaining: {{ minutes }}:{{ seconds < 10 ? '0' : '' }}{{ seconds }}</p>
-                        <button [disabled]="!canResend" (click)="resendOtp()">Resend OTP</button>
             </div>
-            <button type="submit" [disabled]="sign.invalid" (click)="verify()">Verify</button>
+
         </div>
     </form>
     <!-- 
@@ -99,8 +96,17 @@
         <input type="password" name="" id="" class="user" placeholder="Password">
         <label for="">Confirm Password</label>
         <input type="password" name="" id="" class="user" placeholder="Password">
-        <button type="submit">Change</button>
+
     </form>
+
+    <div class="form__confirmation">
+        <button *ngIf="LoginBool" type="submit" [disabled]="login.invalid" (click)="loguser()">Login </button>
+        <button *ngIf="signUpBool" type="submit" [disabled]="!passwordMatchValidator() || sign.invalid"
+            (click)="register()">SignUp</button>
+        <button *ngIf="EmailVerify" [disabled]="!canResend" (click)="resendOtp()">Resend OTP</button>
+        <button *ngIf="EmailVerify"type="submit" [disabled]="sign.invalid" (click)="verify()">Verify</button>
+        <button *ngIf="changeBool" type="submit">Change</button>
+    </div>
     <div class="links">
         <p (click)="changeForm('F')" *ngIf="!changeBool">Forgot Password?</p>
         <p (click)="changeForm('S')" *ngIf="!signUpBool">SignUp!</p>
