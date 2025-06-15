@@ -1,15 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { order, userRegisration } from '../models/user';
+import { order, products, userRegisration } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiInteractionService {
   header = new HttpHeaders();
-  url: string = "https://project-pattasu.onrender.com/api/";
-  // url: string = "http://localhost:8080/api/";
+  // url: string = "https://project-pattasu.onrender.com/api/";
+  url: string = "http://localhost:8080/api/";
   // url: string = "http://192.168.29.76:8080/api/";
 
   constructor(private http: HttpClient) { }
@@ -24,6 +24,10 @@ export class ApiInteractionService {
 
   loguser(details:any): Observable<any>{
     return this.http.post(this.url+'auth/login', details, { responseType: 'text' });
+  }
+
+  addproducts(product: products| products[]){
+    return this.http.post(this.url+ 'products', product, {responseType: 'text'})
   }
 
   getProducts(page: number, size: number): Observable<any>{

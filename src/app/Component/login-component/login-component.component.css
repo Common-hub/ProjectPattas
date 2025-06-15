@@ -5,15 +5,14 @@
     height: auto;
     border: 1px solid grey;
     border-radius: 20px;
+    padding: 2%;
 }
 
 #login,
-#signup,
-#change {
+#signup {
+    text-align: start;
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
-    align-items: center;
 }
 
 .user {
@@ -34,35 +33,6 @@ label {
     font-weight: bold;
     border-bottom-color: teal;
 }
-
-/* button {
-    font-size: 12px;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 1px;
-    background-color: #ffc107;
-    border: 1px solid var(--outline);
-    color: #fff;
-    padding: 18px;
-    border-radius: 5px;
-    outline: none;
-    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    margin-top: 10%;
-}
-
-button:hover {
-    cursor: pointer;
-    background-color: #ffc107;
-    outline: none;
-    border-radius: 5px;
-}
-
-button:disabled {
-    color: whitesmoke;
-    background-color: #ffc10742;
-    cursor: not-allowed;
-} */
 
 .form__confirmation {
     padding: 10px 55px;

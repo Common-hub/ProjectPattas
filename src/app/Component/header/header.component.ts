@@ -17,11 +17,13 @@ export class HeaderComponent implements OnInit {
   page: number = 0;
   size: number = 10;
   totalPages: number = 0;
+  isAdmin: boolean = false;
 
   constructor(private router: Router, private search: SearchService, private api: ApiInteractionService) { }
 
   ngOnInit(): void {
     this.fetchproducts(this.page, this.size);
+    this.isAdmin = sessionStorage.getItem('Autorized') === 'true' ? true : false;
   }
 
   fetchproducts(page: number, size: number) {

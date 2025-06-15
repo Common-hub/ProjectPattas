@@ -6,15 +6,16 @@
                 <tr>
                     <th scope="col" colspan="2">
                         <strong>
-                            <span class="badge badge-success">Compeled Order &nbsp;&nbsp; 0</span> &nbsp; &nbsp; &nbsp;
+                            <span class="badge badge-success" (click)="filter('compeled')">Compeled Order &nbsp;&nbsp; {{completeOrders}}</span> &nbsp; &nbsp; &nbsp;
                             &nbsp; &nbsp;
-                            <span class="badge badge-warning">Pending Order &nbsp;&nbsp; 0</span>
+                            <span class="badge badge-warning" (click)="filter('placed')">Pending Order &nbsp;&nbsp; {{pendingOrders}}</span>
                         </strong>
                     </th>
                     <th colspan="9">
                     </th>
                     <th>
-                        <button type="button" style="float: right;">+AddProducts</button>
+                        <!-- <button type="button" class="badge badge-success" style="float: right;">+AddProducts</button> -->
+                         <a [routerLink]="[ '/admin/addProducts']" class="badge badge-success">+AddProducts</a>
                     </th>
                 </tr>
             </thead>
@@ -34,32 +35,25 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td></td>
-                    <td>OrderId</td>
-                    <td>Date</td>
-                    <td><a (click)="exportToPdf(0)" style="cursor: pointer;">View Bill</a></td>
-                    <td><input type="text" name="partner" id="part"></td>
-                    <td><input type="text" name="trackno" id="track"></td>
-                    <td colspan="2"><strong><span class="badge badge-warning">PENDING</span></strong></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>OrderId</td>
-                    <td>Date</td>
-                    <td>BillNo</td>
-                    <td><input type="text" name="partner" id="part"></td>
-                    <td><input type="text" name="trackno" id="track"></td>
-                    <td colspan="2"><strong><span class="badge badge-warning">PENDING</span></strong></td>
+                <tr *ngIf="orders.length == 0"> 
+                    <td colspan="8" style="text-align: center;">Nothing to Display</td>
                 </tr>
                 <tr *ngFor="let order of orders; let i=index">
                     <td></td>
                     <td>{{order.OrderId}}</td>
                     <td>{{order.orderDate | date: 'dd-mm-yyy'}}</td>
-                    <td><span (click)="exportToPdf(i)">View Bill</span></td>
+                    <td><span (click)="exportToPdf(i)" style="cursor: pointer;">View Bill</span></td>
                     <td><input type="text" name="partner" id="part"></td>
                     <td><input type="text" name="trackno" id="track"></td>
-                    <td colspan="2"><strong><span class="badge badge-warning">{{order.status}}</span></strong></td>
+                    <td>
+                        <select name="status" id="orderStatus" class="badge" [ngClass]="getStatus(order.status)" [(ngModel)]="order.status">
+                           <option *ngFor="let status of statuses" [value]="status.value"> {{status.option}} </option>
+                        </select>
+                    </td>
+                    <!-- https://codepen.io/Timurtek/pen/mdYOGv -->
+                    <!-- <td colspan="2"><strong><span class="badge" [ngClass]="{'badge-warning': order.status === 'PLACED',
+                                                                            'badge-success': order.status === 'COMPLETE',
+                                                                            'badge-danger': order.status === 'CANCELLED'}">{{order.status}}</span></strong></td> -->
                 </tr>
             </tbody>
         </table>

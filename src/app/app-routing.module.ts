@@ -10,9 +10,9 @@ import { DashboardComponent } from './Component/admin/dashboard/dashboard.compon
 
 const routes: Routes = [
   {path: 'login',component: LoginComponentComponent},
-  {path: 'productsList',component:ProductComponent},
-  {path: 'addProducts',component:AddCrackersComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
-  {path: 'dash',component:DashboardComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
+  {path: 'productsList',component:ProductComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},
+  {path: 'admin/addProducts',component:AddCrackersComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
+  {path: 'admin/dashBoard',component:DashboardComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
   {path: 'viewCart',component:KartItemsComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},
   {path: 'orderStatus',component:OrderDetailsComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},
   {path: '**', redirectTo: '/productsList', pathMatch:"full"}

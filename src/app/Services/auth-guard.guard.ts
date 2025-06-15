@@ -16,13 +16,13 @@ export class AuthGuardGuard implements CanActivate {
       return false;
     }
     const decodedrole = this.tokenDecoder(token)
-    console.log(decodedrole);
-    
+    sessionStorage.setItem('Autorized', decodedrole.role === 'admin' ? 'true':'false');
 
     if (route.data?.['role'].indexOf(decodedrole.role) === -1) {
       this.router.navigate(['/productsList']);
       return false
     }
+     
     return true;
   }
 

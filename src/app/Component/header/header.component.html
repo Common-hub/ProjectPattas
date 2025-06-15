@@ -15,7 +15,8 @@
     <div class="buttons">
         <!-- <button type="submit" class="b1 vc" (click)="showCart()"> View Cart</button>
         <button type="submit" class="b1 mo" <a [routerLink]="[ '/path', routeParam ]">name</a>> My Orders</button> -->
-        <a class="b1" [routerLink]="[ '/productsList']">Home</a>
+        <a class="b1" [routerLink]="[ '/productsList']" *ngIf="!isAdmin">Home</a>
+        <a class="b1" [routerLink]="[ '/admin/dashBoard']" *ngIf="isAdmin">Dash</a>
         <a class="b1" [routerLink]="[ '/viewCart']">View Cart</a>
         <a class="b1" [routerLink]="[ '/orderStatus']">My Orders</a>
         <button type="submit"  (click)="showProfile()"><i class="bi bi-person-circle"></i></button>

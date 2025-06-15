@@ -77,13 +77,6 @@
 
         </div>
     </form>
-    <!-- 
-        note:
-        1. check email, send otp then otp visible
-        2. email disabled
-        3. otp vaild pssword visible
-        4. then change password
-     -->
     <form id="change" *ngIf="changeBool">
         <h3> {{head}}</h3>
         <label for="">Enter E-mail address to send OTP</label>
@@ -108,7 +101,7 @@
         <button *ngIf="changeBool" type="submit">Change</button>
     </div>
     <div class="links">
-        <p (click)="changeForm('F')" *ngIf="!changeBool">Forgot Password?</p>
+        <!-- <p (click)="changeForm('F')" *ngIf="!changeBool">Forgot Password?</p> -->
         <p (click)="changeForm('S')" *ngIf="!signUpBool">SignUp!</p>
         <p (click)="changeForm('L')" *ngIf="!LoginBool"> Login!</p>
     </div>
