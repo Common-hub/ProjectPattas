@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OtpVerification, userRegisration } from '../../models/user';
 import { ApiInteractionService } from '../../Services/api-interaction.service';
 import { Router } from '@angular/router';
+import { SearchService } from 'src/app/Services/search.service';
 
 @Component({
   selector: 'login',
@@ -20,13 +21,11 @@ export class LoginComponentComponent implements OnInit {
   canResend: boolean = false;
   head: string = "Login";
   response: string = "";
-  errorMsg: string = "";
-  type: string = "";
   minutes: number = 3;
   seconds: number = 0;
   private interval: any;
 
-  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route:Router) { }
+  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route:Router, private notification: SearchService) { }
 
   ngOnInit(): void {
     this.login = this.formBuilder.group({
@@ -95,13 +94,11 @@ export class LoginComponentComponent implements OnInit {
       }
       this.api.userRegistration(registration).subscribe(resp => {
         this.EmailVerify = true;
-        this.errorMsg = resp;
-        this.type = 'success';
+        this.notification.jobDone(resp);
         this.startTimer();
       },
         (error) => {
-          this.errorMsg = error.error;
-          this.type = 'error';
+          this.notification.jobError(error.error);
         }
       )
     }
@@ -129,12 +126,10 @@ export class LoginComponentComponent implements OnInit {
       this.signUpBool = false;
       this.changeForm('L')
       this.EmailVerify = false;
-      this.errorMsg = resp;
-      this.type = "success";
+      this.notification.jobDone(resp)
     },
   (error)=>{
-    this.errorMsg = error.error;
-    this.type = "error";
+    this.notification.jobError(error.error)
   })
   }
 
@@ -156,7 +151,7 @@ export class LoginComponentComponent implements OnInit {
       response.role === 'admin' ? this.route.navigate(['/admin/dashBoard']) : this.route.navigate(['/productsList']);            
     },
     (error)=> {
-      if(error.error !== '') {this.errorMsg = error.error; this.type="error"}
+      if(error.error !== '') {this.notification.jobError(error.error)}
     }
   )}
 }

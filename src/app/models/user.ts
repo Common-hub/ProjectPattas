@@ -9,11 +9,18 @@ export class OtpVerification {
     otp: string = '';
 }
 export class products {
-    id: string = '';
+    id: number  = 0;
     name: string = '';
     description: string = '';
-    price: number = 0;
+    price: number = 0.00;
     imageUrl: string = '';
+    stockQuantity: number = 0;
+}
+export class newProducts {
+    name: string = '';
+    description: string = '';
+    price: number = 0.00;
+    image?: File;
     stockQuantity: number = 0;
 }
 

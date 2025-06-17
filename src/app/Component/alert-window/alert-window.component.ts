@@ -1,24 +1,42 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { SearchService } from 'src/app/Services/search.service';
 
 @Component({
   selector: 'alert',
   templateUrl: './alert-window.component.html',
   styleUrls: ['./alert-window.component.css']
 })
-export class AlertWindowComponent implements OnChanges{
+export class AlertWindowComponent implements OnInit {
 
-  @Input() message: string = '';
-  @Input() alertType: string  = 'success';
-  isVisible: boolean = false;
+  message: string = '';
+  alertType: string = 'success';
 
-  constructor() {}
-  
-   ngOnChanges(changes: SimpleChanges): void {    
-    if(changes['message'] && this.message){
-      this.isVisible = true;
-      setTimeout(()=> this.isVisible = false, 3000)
-      setTimeout(()=> this.message = '', 3000)
-    }
-   }
+  isAlert: boolean = false;
+  alert: string = '';
+
+  constructor(private notification: SearchService) { }
+
+  ngOnInit() {
+    this.notification.notification$.subscribe(data => {
+      if (data) {
+        this.message = data.message;
+        this.alertType = data.type;
+      }
+      else {
+        this.message = '';
+      }
+    })
+
+    //alert
+    this.notification.type$.subscribe(data => this.alert = data);
+    this.notification.isAlert.subscribe(show => this.isAlert = show);
+  }
+
+  onSave(){
+    this.notification.task(true);
+  }
+  onCancel(){
+    this.notification.task(false);
+  }
 
 }

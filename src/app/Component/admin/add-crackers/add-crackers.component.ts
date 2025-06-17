@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { products } from 'src/app/models/user';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
+import { SearchService } from 'src/app/Services/search.service';
 
 @Component({
   selector: 'app-add-crackers',
@@ -11,90 +11,63 @@ import { ApiInteractionService } from 'src/app/Services/api-interaction.service'
 export class AddCrackersComponent implements OnInit {
 
   imageSrc: any = '';
-  product: products[] = [];
-  image: any = '';
+  image!: File;
   index: number = 0;
   isUpdate: boolean = false;
   addProducts!: FormGroup;
 
-  constructor(private fb: FormBuilder, private apiInteraction: ApiInteractionService) {
+  constructor(private fb: FormBuilder, private apiInteraction: ApiInteractionService, private notification: SearchService) {
     this.addProducts = fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       price: ['', Validators.required],
       stockQuantity: ['', Validators.required],
-      imageUrl: ['', Validators.required ]
+      imageUrl: ['', Validators.required]
     })
   }
 
   ngOnInit(): void {
   }
 
-  previewImg(image: any) {
-    const file = image.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imageSrc = reader.result as string;
-      };
-      reader.readAsDataURL(file)
+  restrictText(event: any, input: string){
+    const inputValue = event.target.value.trim();
+    
+    var regex: RegExp = /^\d+$/;
+    if(input === 'price') regex = /^\d+(\.\d{0,2})?$/;
+
+    if(inputValue !== '' && !regex.test(inputValue)){
+      event.target.value = inputValue.slice(0,-1);
     }
+  }
+
+  previewImg(image: Event) {
+    const input = (image.target as HTMLInputElement);
+    if (input.files && input.files.length > 0) {
+      this.image = input.files[0];
+      console.log(this.image); // This should log the file object
+    }
+    if (!input) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageSrc = reader.result as string
+    };
+    reader.readAsDataURL(this.image)
   }
 
   addProduct() {
-    const addedProduct = {
-      id: '',
-      name: this.addProducts.controls['name'].value,
-      description: this.addProducts.controls['description'].value,
-      price: this.addProducts.controls['price'].value,
-      imageUrl: this.imageSrc,
-      stockQuantity: this.addProducts.controls['stockQuantity'].value
-    }
-    this.product.push(addedProduct);
-    this.addProducts.reset();
-    this.imageSrc = '';  
+    const addedProduct = new FormData(); 
+    const price = parseFloat(this.addProducts.controls['price'].value).toFixed(2);   
+    addedProduct.append('name', this.addProducts.controls['name'].value);
+    addedProduct.append('description', this.addProducts.controls['description'].value);
+    addedProduct.append('price', price);
+    addedProduct.append('stockQuantity', this.addProducts.controls['stockQuantity'].value);
+    addedProduct.append('image', this.image);
+    this.apiInteraction.addproducts(addedProduct).subscribe(res => {
+      this.notification.jobDone('res');
+      this.imageSrc="";
+      this.addProducts.reset();
+    },error => {console.log(error.error);this.notification.jobfail(error.error)});
+
   }
 
-  updateItem(index: number) {
-    this.index = index;
-    this.isUpdate = true
-    this.addProducts.patchValue({
-      name: this.product[index].name,
-      description: this.product[index].description,
-      price: this.product[index].price,
-      stockQuantity: this.product[index].stockQuantity
-    });
-    this.imageSrc = this.product[index].imageUrl
-    this.addProducts.controls['imageUrl'].clearValidators();
-    this.addProducts.controls['imageUrl'].updateValueAndValidity();    
-  }
-
-  deleteItem(index: number){
-    this.product.splice(index,1);
-  }
-
-  updateProducts(){
-    this.apiInteraction.addproducts(this.product).subscribe((res:any)=>console.log(res))
-  }
-
-  update(){
-     const updatedProduct = {
-      id: '',
-      name: this.addProducts.controls['name'].value,
-      description: this.addProducts.controls['description'].value,
-      price: this.addProducts.controls['price'].value,
-      imageUrl: this.image,
-      stockQuantity: this.addProducts.controls['stockQuantity'].value
-    }
-    this.product[this.index] = updatedProduct;
-    this.addProducts.reset();
-    this.isUpdate = false;  
-  }
-
-  uploadImg(event: any) {
-    this.image = event.target.files[0];
-    const formData = new FormData();
-    formData.append('image', this.image);
-    formData.append('ProductName', '');
-  }
 }

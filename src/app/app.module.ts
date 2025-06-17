@@ -15,6 +15,7 @@ import { KartItemsComponent } from './Component/user/kart-items/kart-items.compo
 import { AlertWindowComponent } from './Component/alert-window/alert-window.component';
 import { DashboardComponent } from './Component/admin/dashboard/dashboard.component';
 import { OrderDetailsComponent } from './Component/user/order-details/order-details.component';
+import { ProductDataComponent } from './Component/admin/product-data/product-data.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { OrderDetailsComponent } from './Component/user/order-details/order-deta
     KartItemsComponent,
     AlertWindowComponent,
     OrderDetailsComponent,
-    DashboardComponent
+    DashboardComponent,
+    ProductDataComponent
   ],
   imports: [
     BrowserModule,

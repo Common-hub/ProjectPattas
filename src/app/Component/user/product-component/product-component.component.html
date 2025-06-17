@@ -1,7 +1,7 @@
-<alert message="{{errorMsg}}" alertType="{{type}}"></alert>
-<div class="container products">
+ 
+<div class="products">
   <div class="filter">
-    <button type="button">filter</button>
+    <!-- <button type="button">filter</button> -->
     <label for="sort"> Sort </label>
     <select name="sort" id="1" #sort class="sort" (change)="sortProduct(sort.value)">
       <option value="">clear</option>
@@ -11,7 +11,7 @@
       <option value="dPrice">Price High to Low</option>
     </select>
   </div>
-  <div class="container page-wrapper">
+  <div class="page-wrapper">
     <div class="page-inner" *ngFor="let product of productList; let i = index">
       <div class="row">
         <div class="el-wrapper col-12">

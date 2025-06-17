@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit {
       }
     } else {
       const search = term.target as HTMLInputElement;
-      if (search.value.length >= 3) {
+      if (search.value.length >= 1) {
         this.fetchproducts(this.page, this.size * this.totalPages)
         this.suggest = this.names.filter(name => name.toLowerCase().includes(search.value.toLowerCase()));;
         if (this.suggest.length == 0) {
@@ -77,6 +77,15 @@ export class HeaderComponent implements OnInit {
       setTimeout(() => {
         this.errorMsg = ""
       }, 3000);
+    }
+  }
+
+  logout(){
+    if (sessionStorage.getItem('token')) { 
+      sessionStorage.clear();
+    this.router.navigate(['/productsList'])
+    } else {
+      this.showProfile();
     }
   }
 }

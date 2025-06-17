@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
+import { SearchService } from 'src/app/Services/search.service';
 import { environment } from 'src/environments/environment.prod';
 
 @Component({
@@ -13,13 +14,19 @@ export class DashboardComponent implements OnInit {
   errorMsg: string = "";
   type: string = "Warning";
   pdfView: string = "";
+  tracker: string = "";
+  partner: string = "";
   orders: any[] = [];
+  updatedOrder: any[] = [];
+  originalState: any[] = [];
   unfilteredOrders: any[] = [];
   statuses: { value: string, option: string }[] = [{ value: 'PLACED', option: 'PLACED' }, { value: 'CONFIRMED', option: 'CONFIRMED' }, { value: 'PROCESSING', option: 'PROCESSING' }, { value: 'SHIPPED', option: 'SHIPPED' }, { value: 'DELIVERED', option: 'DELIVERED' }, { value: 'CANCELLED', option: 'CANCELLED' }, { value: 'RETURNED', option: 'RETURNED' }, { value: 'REFUNDED', option: 'REFUNDED' }, { value: 'FAILED', option: 'FAILED' }]
   pendingOrders: number = 0;
   completeOrders: number = 0;
+  updatedItem: number | null = null;
+  isUpdate: boolean = true;
 
-  constructor(private apiInterceptor: ApiInteractionService) { }
+  constructor(private apiInterceptor: ApiInteractionService, private notification: SearchService) { }
 
   ngOnInit(): void {
     this.apiInterceptor.getOrder().subscribe(res => {
@@ -27,9 +34,66 @@ export class DashboardComponent implements OnInit {
 
       this.orders = res;
       this.unfilteredOrders = this.orders;
+      this.notification.jobDone("Owners Dashboard loaded Succesfully")
       this.completeOrders = this.orders.filter(order => order.status === 'DELIVERED').length
       this.pendingOrders = this.orders.filter(order => order.status.toLowerCase() === 'PLACED' || 'PROCESSING' || 'SHIPPED').length
-    })
+    },
+      (error) => {
+        this.notification.jobError(error.error)
+      })
+  }
+
+  updatePartner(partner: Event, i: number) {
+    console.log("partner:", (partner.target as HTMLInputElement).value, i);
+    this.partner = (partner.target as HTMLInputElement).value;
+    if ((partner.target as HTMLInputElement).value !== '') this.orders[i].partner = (partner.target as HTMLInputElement).value
+  }
+
+  updateTracker(tracker: Event, i: number) {
+    console.log("tracker:", (tracker.target as HTMLInputElement).value, i);
+    this.tracker = (tracker.target as HTMLInputElement).value;
+    if ((tracker.target as HTMLInputElement).value !== '') this.orders[i].tracker = (tracker.target as HTMLInputElement).value
+  }
+
+  updatedStatus(status: Event, order: any, i: number) {
+    const changeIndex = this.originalState.length > 0 ? this.originalState.findIndex(state => state.id === order.id) : -1;
+    if (changeIndex < 0) {
+      if (order.status !== status) {
+        this.tracker = order.tracker;
+        this.partner = order.partner;
+        this.updatedItem = i;
+        this.originalState.push({ id: order.id, previousState: order.status, newState: status, ogIndex: i });
+        console.log("Updated State", this.originalState);
+        this.updatedOrder.push(this.orders[i]);
+      } else {
+        this.updatedItem = null;
+        this.tracker = "";
+        this.partner = "";
+      }
+    } else {
+      const updateIndex = this.updatedOrder.findIndex(update => update.id === this.originalState[changeIndex].id);
+      this.tracker = order.tracker;
+      this.partner = order.partner;
+      if (status === this.originalState[changeIndex].previousState) {
+        this.updatedItem = null;
+        this.orders[i].status = this.originalState[changeIndex].previousState;
+        this.originalState.splice(changeIndex, 1);
+        this.updatedOrder.splice(updateIndex, 1);
+        console.log("updatedState", this.updatedOrder, "changedStatus", this.originalState);
+      } else if (status !== this.originalState[changeIndex].previousState) {
+        this.originalState[changeIndex].newState = status;
+        this.updatedOrder[updateIndex].status = this.originalState[changeIndex].newState;
+        console.log("updatedState", this.updatedOrder, "changedStatus", this.originalState);
+      }
+    }
+  }
+  updateOrders(index: number) {
+    if (this.orders[index].status === 'SHIPPED' && (this.orders[index].tracker !== undefined && this.orders[index].partner !== undefined)) {
+      this.updatedItem = null;
+      this.tracker = "";
+      this.partner = "";
+      console.log("tracker", this.orders[index].tracker, "partner", this.orders[index].partner);
+    }
   }
 
   filter(type: string) {
@@ -49,85 +113,19 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  exportToPdf(i: number) {
-    const bill = new jsPDF();
-
-    const shopeName = 'Suriya Pryo Park';
-    const shopPhone = '';
-    const shopMail = '';
-    const ShopAddress = "";
-    //
-    const CustomerName = 'Suriya Pryo Park';
-    const customerMail = "";
-    const customerPhone = '';
-    const customerBilling = '';
-    const customerShopping = "";
-    //
-    const billNo = '';
-    const orderId = this.orders[i].orderId;
-    //
-    var total = 0;
-    const mark = environment.logo;
-
-    let currentY = 15;
-    bill.setFontSize(24);
-    bill.addImage(mark, 'PNG', 10, currentY - 10, 15, 15)
-    bill.text(shopeName, bill.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
-    currentY += 10;
-    bill.setFontSize(12);
-    bill.text(`Address: ${ShopAddress}`, bill.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
-    currentY += 6;
-    bill.text(`phone: ${shopPhone}`, bill.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
-    currentY += 6;
-    bill.text(`mail: ${shopMail}`, bill.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
-    currentY += 10;
-    bill.setFont('helvetica', 'normal');
-    bill.text(`Name: ${CustomerName}`, 10, currentY)
-    bill.text(`Phone: ${customerPhone}`, 130, currentY)
-    currentY += 10;
-    bill.text(`Mail: ${customerMail}`, 10, currentY)
-    currentY += 6;
-    bill.text(`Billing Address: ${customerBilling}`, 10, currentY);
-    currentY += 6;
-    bill.text(`shipping Address: ${customerShopping}`, 10, currentY);
-    currentY += 10;
-    bill.setFont('helvetica', 'bold');
-    bill.text(`Order Id: ${orderId}`, 10, currentY);
-    bill.text(`Bill No: ${billNo}`, 140, currentY);
-    currentY += 10;
-    const product = this.orders[i].orderItemDto;
-
-    const table = product.map((order: any) => [
-      order.product.name,
-      order.quantity,
-      order.product.price,
-      order.quantity * order.product.price
-    ])
-
-    autoTable(bill, {
-      head: [['ItemName', 'Qty', 'Rate', 'Total']],
-      body: table,
-      startY: currentY,
-      didDrawPage: (data) => {
-        if (data.cursor && typeof data.cursor.y === 'number')
-          currentY = (data.cursor.y)
-      }
+  downloadBill(index: number) {
+    this.apiInterceptor.getInvoice(this.orders[index].orderId).subscribe(invoice => {
+    const bill = new Blob([invoice], {type: 'application/pdf'});
+    const url = window.URL.createObjectURL(invoice);
+    const button = document.createElement('a');
+    button.href = url;
+    button.download = "Invoice-"+this.orders[index].orderId;
+    button.style.display = 'none';
+    document.body.appendChild(button);
+    button.click();
+    document.body.removeChild(button);
+    window.URL.revokeObjectURL(invoice);
     })
-
-    this.orders[i].orderItemDto.forEach((order: any) => {
-      total += order.quantity * order.product.price;
-    });
-
-    currentY = (typeof currentY === 'number' ? currentY : 80) + 10;
-    bill.setFont('helvetica', 'bold');
-    bill.text(`Total: RS. ${total.toFixed(2)} /-`, 155, currentY, { align: 'right' });
-    currentY += 5;
-    bill.setFont('helvetica', 'normal');
-    bill.text('Thank You for Shopping Here.', bill.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
-    //previewPdf
-    const blob = bill.output('blob');
-    this.pdfView = URL.createObjectURL(blob);
-    window.open(this.pdfView, '_blank');
   }
 
 }

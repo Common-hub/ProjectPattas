@@ -7,10 +7,12 @@ import { KartItemsComponent } from './Component/user/kart-items/kart-items.compo
 import { AddCrackersComponent } from './Component/admin/add-crackers/add-crackers.component';
 import { OrderDetailsComponent } from './Component/user/order-details/order-details.component';
 import { DashboardComponent } from './Component/admin/dashboard/dashboard.component';
+import { ProductDataComponent } from './Component/admin/product-data/product-data.component';
 
 const routes: Routes = [
   {path: 'login',component: LoginComponentComponent},
-  {path: 'productsList',component:ProductComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},
+  {path: 'productsList',component:ProductComponent},
+  {path: 'admin/productsList',component:ProductDataComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
   {path: 'admin/addProducts',component:AddCrackersComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
   {path: 'admin/dashBoard',component:DashboardComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
   {path: 'viewCart',component:KartItemsComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},

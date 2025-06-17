@@ -1,7 +1,6 @@
 <div class="ico" style="border: 1px solid white;">
     <img src="../../assets/SPP.png" height="100px" width="100px" alt="" style="float: right;">
 </div>
-<alert message="{{errorMsg}}" alertType="{{type}}"></alert>
 <div class="form">
     <form action="post" id="login" [formGroup]="login" *ngIf="LoginBool">
         <h3> {{head}}</h3>
@@ -97,7 +96,7 @@
         <button *ngIf="signUpBool" type="submit" [disabled]="!passwordMatchValidator() || sign.invalid"
             (click)="register()">SignUp</button>
         <button *ngIf="EmailVerify" [disabled]="!canResend" (click)="resendOtp()">Resend OTP</button>
-        <button *ngIf="EmailVerify"type="submit" [disabled]="sign.invalid" (click)="verify()">Verify</button>
+        <button *ngIf="EmailVerify" type="submit" [disabled]="sign.invalid" (click)="verify()">Verify</button>
         <button *ngIf="changeBool" type="submit">Change</button>
     </div>
     <div class="links">

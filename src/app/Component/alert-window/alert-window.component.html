@@ -1,3 +1,15 @@
-<div class="alert" [ngClass]="alertType" *ngIf="message" [class.isVisible]="isVisible">
-    <span>{{ message }}</span>
+<div class="alertWindow">
+    <div class="alert" [ngClass]="{'success': alertType === 'success', 'warning': alertType === 'warning', 'danger': alertType === 'danger'}" *ngIf="message">
+        <span>{{ message }}</span>
+    </div>
+</div>
+<div class="confirm" *ngIf="isAlert">
+    <div class="logoutLabel" *ngIf="alert === 'alert'">
+        <span><strong>Are you sure.</strong></span>
+        <span><strong>You want to logout?</strong></span>
+        <div class="buttons">
+            <button type="submit" class="btn btn-outline-success" (click)="onSave()">Save</button>
+            <button type="submit" class="btn btn-outline-danger" (click)="onCancel()">Revert</button>
+        </div>
+    </div>
 </div>

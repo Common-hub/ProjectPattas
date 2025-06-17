@@ -13,6 +13,9 @@ export class OrderDetailsComponent implements OnInit {
 
   userAddress: string[] = [];
   orders: order[] = [];
+  orderStatus: any[] = [{ value: 'PLACED', option: 'PLACED' }, { value: 'CONFIRMED', option: 'CONFIRMED' }, { value: 'PROCESSING', option: 'PROCESSING' }, { value: 'SHIPPED', option: 'SHIPPED' }, { value: 'DELIVERED', option: 'DELIVERED' }]
+  userDetails: any = '';
+  name: {fName: string, lName:string} = {fName: '', lName: ''};
   isAdd: boolean = false;
   isOrder: boolean = true;
   isSpecorder: boolean = false;
@@ -44,6 +47,14 @@ export class OrderDetailsComponent implements OnInit {
       this.isAdd = true;
       this.isOrder = false;
     }
+    this.apiInteraction.getUser().subscribe(user=>{
+      this.userDetails = user;
+      var names = this.userDetails.name.split(' ');
+      this.name = {fName: names[0], lName: names[1] ? names[1] : '--'};
+      console.log(this.userDetails);
+      
+    })
+
     this.apiInteraction.getOrder().subscribe((order: order[]) => {
       this.orders = order;
       console.log(order, this.orders[0].id);
@@ -108,4 +119,10 @@ export class OrderDetailsComponent implements OnInit {
     })
   }
 
+  getCurrentState(){    
+      const index = this.orderStatus.findIndex((status) => status.option === this.orders[0].status);
+      console.log(index);
+      
+    return index !== -1 ? index : 0; // Return 0 if status not foun
+  }
 }

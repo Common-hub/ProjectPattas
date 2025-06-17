@@ -1,57 +1,27 @@
-<div class="container">
 	<form action="" [formGroup]="addProducts">
 		<div id="product_information">
 			<div id="image_preview">
-				<span *ngIf="isUpdate"> Nopreview Available</span>
-				<div id="product_image" *ngIf="!isUpdate">
-					<img [src]=imageSrc height="228px" width="320px">
+				<div id="product_image">
+					<span *ngIf="imageSrc === ''"> <strong>Preview Image</strong> </span>
+					<img src={{imageSrc}} height="228px" width="320px" *ngIf="imageSrc !==''">
 				</div>
-				<div id="product_control" *ngIf="!isUpdate">
-					<input type="file" name="pic" accept="png" (change)="previewImg($event); uploadImg($event)"
+				<div id="product_control">
+					<input type="file" name="pic" accept="png" (change)="previewImg($event);"
 						formControlName="imageUrl">
 				</div>
 			</div>
 			<div id="product_details">
 				<label>name</label>
-				<input type="text" name="name" formControlName="name">
+				<input type="text" name="name" placeholder="ProductName" formControlName="name">
 				<label>Description</label>
-				<input type="text" name="desc" formControlName="description">
+				<input type="text" name="desc" placeholder="ProductDescription" formControlName="description">
 				<label>cost</label>
-				<input type="text" name="cost" placeholder=" Rupees" formControlName="price">
+				<input type="text" name="cost" placeholder="₹ Rupee." formControlName="price" (input)="restrictText($event,'price')">
 				<label>stock</label>
-				<input type="text" name="stock" formControlName="stockQuantity">
+				<input type="text" name="stock" placeholder="Avilable stockQuantity" formControlName="stockQuantity" (input)="restrictText($event,'stock')">
 				<button style="float: right;" [disabled]="addProducts.invalid" (click)="addProduct()"
-					*ngIf="!isUpdate">save</button>
-				<button style="float: right;" [disabled]="addProducts.invalid" (click)="update()"
-					*ngIf="isUpdate">updateItem</button>
+					*ngIf="!isUpdate"> Add Item</button>
 			</div>
 		</div>
 	</form>
 	<hr style="color: black;">
-	<div class="table-container" *ngIf="product.length > 0">
-		<table>
-			<thead>
-				<tr>
-					<th>Image</th>
-					<th>ItemName</th>
-					<th>ItemDescription</th>
-					<th>Price</th>
-					<th>inStock</th>
-					<th colspan="2">Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let item of product; let i = index">
-					<td>{{item.imageUrl}}</td>
-					<td>{{item.name}}</td>
-					<td>{{item.description}}</td>
-					<td>{{item.price}}</td>
-					<td>{{item.stockQuantity}}</td>
-					<td><span class="badge" (click)="updateItem(i)" style="cursor: pointer;">update</span></td>
-					<td><span class="badge badge-danger" (click)="deleteItem(i)" style="cursor: pointer;">delete</span></td>
-				</tr>
-			</tbody>
-		</table>
-		<button type="submit" style="margin: 2%;float: inline-end;" (click)="updateProducts()">Update ProductList</button>
-	</div>
-</div>
