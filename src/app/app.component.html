@@ -1,9 +1,7 @@
-<body>
-    <div class="header">
-        <header *ngIf="isLoggedIn"></header>
-    </div>
-    <div class="container content">
-        <alert></alert>
-        <router-outlet></router-outlet>
-    </div>
-</body>
+<div class="header">
+    <header *ngIf="isLoggedIn"></header>
+</div>
+<div class="container content">
+    <alert></alert>
+    <router-outlet></router-outlet>
+</div>

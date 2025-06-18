@@ -1,23 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponentComponent } from './Component/login-component/login-component.component';
-import { ProductComponent } from './Component/user/product-component/product-component.component';
 import { AuthGuardGuard } from './Services/auth-guard.guard';
-import { KartItemsComponent } from './Component/user/kart-items/kart-items.component';
-import { AddCrackersComponent } from './Component/admin/add-crackers/add-crackers.component';
-import { OrderDetailsComponent } from './Component/user/order-details/order-details.component';
-import { DashboardComponent } from './Component/admin/dashboard/dashboard.component';
-import { ProductDataComponent } from './Component/admin/product-data/product-data.component';
 
 const routes: Routes = [
-  {path: 'login',component: LoginComponentComponent},
-  {path: 'productsList',component:ProductComponent},
-  {path: 'admin/productsList',component:ProductDataComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
-  {path: 'admin/addProducts',component:AddCrackersComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
-  {path: 'admin/dashBoard',component:DashboardComponent, canActivate: [AuthGuardGuard], data:{role:[ 'admin' ]}},
-  {path: 'viewCart',component:KartItemsComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},
-  {path: 'orderStatus',component:OrderDetailsComponent, canActivate: [AuthGuardGuard], data:{role: ['admin','user']}},
-  {path: '**', redirectTo: '/productsList', pathMatch:"full"}
+  { path: '', redirectTo: 'user/productsList', pathMatch: 'full' },
+  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(module => module.AdminModule), canLoad: [AuthGuardGuard], data: { role: ['admin'],public: false } },
+  { path: 'user', loadChildren: () => import('./user/user.module').then(module => module.UserModule), canLoad: [AuthGuardGuard], data: { role: ['user'], public: true } },
+  { path: 'login', component: LoginComponentComponent, data: {public: true} },
+  { path: '**', redirectTo: 'user/productsList' }
 ];
 
 @NgModule({

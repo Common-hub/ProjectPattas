@@ -49,6 +49,10 @@ export class SearchService {
     }, 3000);
   }
 
+  isVisible(toggle: boolean){
+    this.isAlertVisible.next(toggle);
+  }
+
   //alert
   open(type:string): Promise<boolean>{
     this.alertType.next(type)

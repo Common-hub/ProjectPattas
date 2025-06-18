@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SearchService } from 'src/app/Services/search.service';
 
 @Component({
@@ -14,6 +14,9 @@ export class AlertWindowComponent implements OnInit {
   isAlert: boolean = false;
   alert: string = '';
 
+  countdown: number = 60;
+  countdownDisplay: string = '';
+  interval: any;
   constructor(private notification: SearchService) { }
 
   ngOnInit() {
@@ -28,14 +31,26 @@ export class AlertWindowComponent implements OnInit {
     })
 
     //alert
-    this.notification.type$.subscribe(data => this.alert = data);
+    this.notification.type$.subscribe(data => {
+      this.alert = data
+      if (this.alert === 'Session') {
+        setInterval(() => {
+          const min = Math.floor(this.countdown / 60);
+          const sec = this.countdown % 60;
+          this.countdownDisplay = `${min}:${sec < 10 ? '0' + sec : sec}`;
+          if (--this.countdown < 0) {
+            clearInterval(this.interval);
+          }
+        }, 1000)
+      }
+    });
     this.notification.isAlert.subscribe(show => this.isAlert = show);
   }
 
-  onSave(){
+  onSave() {
     this.notification.task(true);
   }
-  onCancel(){
+  onCancel() {
     this.notification.task(false);
   }
 

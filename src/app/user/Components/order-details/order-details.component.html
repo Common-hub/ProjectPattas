@@ -32,7 +32,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="top-status">
-                                <h5>ORDER #{{orders[0]?.id}}</h5>
+                                <h5>ORDER #{{orders[0].id}}</h5>
                                 <ul>
                                     <li *ngFor="let statusMsg of orderStatus; let i = index"
                                         [ngClass]="{'active': i <= getCurrentState()}">
@@ -508,7 +508,7 @@
                                             </th>
                                             <th colspan="6" style="text-align: right;">
                                                 <span class="text-muted">Total Price</span> <br>
-                                                <strong>₹ {{orders[0]?.totalPrice}}</strong>
+                                                <strong>₹ {{orders[0].totalPrice}}</strong>
                                             </th>
                                         </tr>
                                     </tbody>

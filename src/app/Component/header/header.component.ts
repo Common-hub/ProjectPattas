@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
+import { AuthorizeService } from 'src/app/Services/authorize.service';
 import { SearchService } from 'src/app/Services/search.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class HeaderComponent implements OnInit {
   totalPages: number = 0;
   isAdmin: boolean = false;
 
-  constructor(private router: Router, private search: SearchService, private api: ApiInteractionService) { }
+  constructor(private router: Router, private search: SearchService, private api: ApiInteractionService, private authorize: AuthorizeService) { }
 
   ngOnInit(): void {
     this.fetchproducts(this.page, this.size);
@@ -55,10 +56,7 @@ export class HeaderComponent implements OnInit {
         this.fetchproducts(this.page, this.size * this.totalPages)
         this.suggest = this.names.filter(name => name.toLowerCase().includes(search.value.toLowerCase()));;
         if (this.suggest.length == 0) {
-          console.log(this.suggest.length, this.suggest.length == 0);
-          this.errorMsg = '';
-          setTimeout(() => this.errorMsg = "No Matching products found", 10)
-          this.type = 'warning';
+          this.search.jobError("No Matching products found!!")
         } else {
           this.search.setSearch(search.value);
         }
@@ -80,12 +78,16 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  logout(){
-    if (sessionStorage.getItem('token')) { 
-      sessionStorage.clear();
-    this.router.navigate(['/productsList'])
-    } else {
-      this.showProfile();
+  async logout(){
+    if(this.authorize.getToken() !== ''){
+      const confirm = await this.search.open('alert');
+      if(confirm){
+        this.authorize.setToken('');
+        this.router.navigate(['/productsList'])
+      }
+    }else{
+      this.search.jobfail("Login!!");
+      this.router.navigate(['login'])
     }
   }
 }

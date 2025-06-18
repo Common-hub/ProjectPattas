@@ -142,10 +142,11 @@ export class LoginComponentComponent implements OnInit {
   
   loguser(){
     let login = {
-        email: this.login.controls['userName'].value,
-        password: this.login.controls['password'].value
+        userName: this.login.controls['userName'].value.trim(),
+        password: this.login.controls['password'].value.trim()
     }
     this.api.loguser(login).subscribe(res=>{
+      console.log("login")
       const response = JSON.parse(res);
       sessionStorage.setItem('token',response.token)
       response.role === 'admin' ? this.route.navigate(['/admin/dashBoard']) : this.route.navigate(['/productsList']);            
