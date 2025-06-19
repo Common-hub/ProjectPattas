@@ -2,7 +2,7 @@
 <div class="products">
   <div class="filter">
     <!-- <button type="button">filter</button> -->
-    <label for="sort"> Sort </label>
+    <label for="sort" class="sortLabel"> Sort </label>
     <select name="sort" id="1" #sort class="sort" (change)="sortProduct(sort.value)">
       <option value="">clear</option>
       <option value="aName">Name A-Z</option>
@@ -16,7 +16,7 @@
       <div class="row">
         <div class="el-wrapper col-12">
           <div class="box-up">
-            <img class="img" [src]="product.imageUrl" alt="" height="85%" width="80%">
+            <img class="img" [src]="'http://localhost:8080'+product.image" alt="" height="85%" width="80%">
             <div class="img-info">
               <div class="info-inner">
                 <span class="p-name">{{product.name}}</span>

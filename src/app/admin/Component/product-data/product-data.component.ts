@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { products } from 'src/app/models/user';
+import { Product } from 'src/app/models';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
+import { ProductHandlerService } from 'src/app/Services/producthandler.service';
 import { SearchService } from 'src/app/Services/search.service';
 
 @Component({
@@ -15,13 +16,14 @@ export class ProductDataComponent implements OnInit {
   totalPages: number = 0;
   size: number = 0;
   editableItem: number | null = null;
-  productsList: products[] = [];
-  flagCheck!: products;
+  productsList: Product[] = [];
+  flagCheck!: Product;
   pages: number[] = [];
-  constructor(private apiInterAction: ApiInteractionService, private notification: SearchService) { }
+  constructor(private apiInterAction: ApiInteractionService, private notification: SearchService, public productHandler: ProductHandlerService) { }
 
   ngOnInit(): void {
-    this.fetchProducts(0, 12);
+   this.productHandler.isFetched ? '' : this.productHandler.fetchProducts(0, 15);
+   this.productHandler.putProductsByid(12)
   }
 
   updateProduct(index: number) {
@@ -31,15 +33,19 @@ export class ProductDataComponent implements OnInit {
   }
 
   changeSize(event: Event) {
-    this.size = Number((event.target as HTMLInputElement).value)
-    this.fetchProducts(this.currentpage, Number((event.target as HTMLInputElement).value));
+    this.size = Number((event.target as HTMLInputElement).value);
+    this.productHandler.setPageSize(this.size);
+  }
+
+  deleteProduct(id:number){
+    this.productHandler.deleteProduct(id);
   }
 
   async enableEdit(index: number) {
     if (this.isEdit) {
       var editedFlag = false;
       editedFlag = this.productsList[index].name !== this.flagCheck.name ||
-        this.productsList[index].imageUrl !== this.flagCheck.imageUrl || this.productsList[index].price !== this.flagCheck.price ||
+        this.productsList[index].image !== this.flagCheck.image || this.productsList[index].price !== this.flagCheck.price ||
         this.productsList[index].stockQuantity !== this.flagCheck.stockQuantity || this.productsList[index].description !== this.flagCheck.description;
       if (editedFlag) {
         const confirm = await this.notification.open('alert')
@@ -59,17 +65,6 @@ export class ProductDataComponent implements OnInit {
     }
   }
 
-  fetchProducts(page: number, size: number) {
-    this.currentpage = page;
-    this.apiInterAction.getProducts(page, size).subscribe(product => {
-      this.productsList = product.content;
-      this.totalPages = product.totalPages;
-      page = product.number;
-      this.notification.jobDone("fetch SuccessFul")
-      this.updatepages();
-    });
-  }
-
   updatepages() {
     const range = 0;
     this.pages = [];
@@ -78,11 +73,17 @@ export class ProductDataComponent implements OnInit {
     }
   }
 
+  changePage(page: number){
+    this.productHandler.setCurrentPage(page)
+  }
+
   goToFirst() {
-    this.fetchProducts(0, this.size)
+    this.productHandler.setCurrentPage(0);
+    this.productHandler.setPageSize(this.size);
   }
 
   goToLast() {
-    this.fetchProducts(this.totalPages - 1, this.size)
+    this.productHandler.setCurrentPage(this.totalPages - 1);
+    this.productHandler.setPageSize(this.size);
   }
 }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiInteractionService } from '../../../Services/api-interaction.service';
-import { products } from 'src/app/models/user';
 import { Router } from '@angular/router';
 import { SearchService } from 'src/app/Services/search.service';
 import { debounceTime, Subject } from 'rxjs';
+import { Product } from 'src/app/models';
 
 @Component({
   selector: 'product',
@@ -11,9 +11,9 @@ import { debounceTime, Subject } from 'rxjs';
   styleUrls: ['./product-component.component.css']
 })
 export class ProductComponent implements OnInit {
-  productList: products[] = []
-  unSortedProduct: products[] = []
-  _filterdList: products[] = [];
+  productList: Product[] = []
+  unSortedProduct: Product[] = []
+  _filterdList: Product[] = [];
   quantity: number[] = [];
   pages: number[] = [];
   token: string | null = "";
@@ -62,6 +62,8 @@ export class ProductComponent implements OnInit {
       page = res.number;
       this.productList = res.content;
       this._filterdList = [...res.content];
+      const names: string[] = this.productList.map((p: any) => p.name);
+      this.search.setNames(names)
       this.search.currentSearch.subscribe(term => {
         const input = term.trim().toLowerCase();
         if (!input) {

@@ -5,7 +5,7 @@
     <form action="post" id="login" [formGroup]="login" *ngIf="LoginBool">
         <h3> {{head}}</h3>
         <label for=""><sup style="color: red;font-weight: bold;">*</sup>Username</label>
-        <input type="text" name="" id="" class="user" placeholder="Username" formControlName="userName">
+        <input type="text" name="" id="" class="user" placeholder="Username" formControlName="userName" autofocus>
         <p style="color: red; display: flex; flex-direction: column;"
             *ngIf="login.controls['userName'].touched && login.controls['userName'].invalid">
             <small *ngIf="login.controls['userName'].errors?.['required']">UserName is a Mandatory Field</small>
@@ -22,7 +22,7 @@
         <h3> {{head}}</h3>
         <div id="signup" *ngIf="!EmailVerify">
             <label for="">Name</label>
-            <input type="text" name="email" class="user" id="email" formControlName="name" placeholder="Enter username">
+            <input type="text" name="email" class="user" id="email" formControlName="name" placeholder="Enter username" autofocus>
             <p style="color: red; display: flex; flex-direction: column;"
                 *ngIf="sign.controls['name'].touched && sign.controls['name'].invalid">
                 <small *ngIf="sign.controls['name'].errors?.['required']">UserName is a Mandatory Field</small>
@@ -92,7 +92,7 @@
     </form>
 
     <div class="form__confirmation">
-        <button *ngIf="LoginBool" type="submit" [disabled]="login.invalid" (click)="loguser()">Login </button>
+        <button *ngIf="LoginBool" type="submit" [disabled]="login.invalid" (click)="userLogin()">Login </button>
         <button *ngIf="signUpBool" type="submit" [disabled]="!passwordMatchValidator() || sign.invalid"
             (click)="register()">SignUp</button>
         <button *ngIf="EmailVerify" [disabled]="!canResend" (click)="resendOtp()">Resend OTP</button>

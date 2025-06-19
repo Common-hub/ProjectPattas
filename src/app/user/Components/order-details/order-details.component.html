@@ -85,7 +85,7 @@
                                                 d="M432.039,413.22a6.975,6.975,0,0,1-4.783-1.89l-32.04-30A7,7,0,0,1,393,376.22V313.97a7,7,0,0,1,14,0v59.215l29.824,27.925a7,7,0,0,1-4.785,12.11Z"
                                                 style="fill:#2561a1" />
                                         </svg>
-                                        <span>{{statusMsg.value}}</span>
+                                        <span>{{statusMsg}}</span>
                                     </li>
                                     <li
                                         *ngIf="orders[0].status === 'CANCELLED' ||  orders[0].status === 'REFUNDED'|| orders[0].status === 'RETURNED'|| orders[0].status === 'FAILED'">
@@ -475,7 +475,7 @@
                                         <td>{{order.orderDate | date: 'd/MM'}}</td>
                                         <td colspan="2"><strong><span
                                                     class="badge badge-warning">{{order.status}}</span></strong></td>
-                                        <td><span class="badge badge-danger" *ngIf="order.status !== 'COMPLETED'">
+                                        <td><span class="badge badge-danger" *ngIf="order.status !== 'DELIVERED'">
                                                 Cancel</span></td>
                                     </tr>
                                 </tbody>
@@ -497,9 +497,9 @@
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let order of orders; let i = index">
-                                            <td>{{order.items[0].product.name}}</td>
-                                            <td>{{order.items[0].quantity}}</td>
-                                            <td colspan="2"><strong>₹ {{order.items[0].product.price}}</strong></td>
+                                            <td>{{order.products[0].name}}</td>
+                                            <td>{{order.products[0].orderedQuantity}}</td>
+                                            <td colspan="2"><strong>₹ {{order.products[0].price}}</strong></td>
                                             <td><strong>₹ {{getsubtotal(i)}}</strong></td>
                                         </tr>
                                         <tr>

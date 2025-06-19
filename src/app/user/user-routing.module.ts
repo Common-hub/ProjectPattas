@@ -7,9 +7,9 @@ import { AuthGuardGuard } from '../Services/auth-guard.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'productsList', pathMatch: 'full' },
-  { path: 'productsList', component: ProductComponent, canActivate: [AuthGuardGuard], data:{roles: ['user'], public: true} },
-  { path: 'viewCart', component: KartItemsComponent, canActivate: [AuthGuardGuard], data:{roles: ['user'], public: false}  },
-  { path: 'orderStatus', component: OrderDetailsComponent, canActivate: [AuthGuardGuard], data:{roles: ['user'], public: false}  }
+  { path: 'productsList', component: ProductComponent, canActivate: [AuthGuardGuard], data:{roles: 'user', public: true} },
+  { path: 'viewCart', component: KartItemsComponent, canActivate: [AuthGuardGuard], data:{roles: 'user', public: false}  },
+  { path: 'orderStatus', component: OrderDetailsComponent, canActivate: [AuthGuardGuard], data:{roles: 'user', public: false}  }
 ];
 
 @NgModule({

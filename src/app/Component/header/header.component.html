@@ -3,20 +3,25 @@
         <input type="text" name="search" id="searchtext" placeholder=" Search..." [(ngModel)]="searchKey"
             (input)="onsearch($event)">
         <ul *ngIf="suggest.length" class="suggest">
-            <li *ngFor="let name of suggest; let i = index" (click)="onsearch(name)">{{name}}</li>
+            <li *ngFor="let name of suggest; let i = index" (click)="onsearch(name)">{{name}} <sub class="catogaries">in
+                    catogaries</sub></li>
         </ul>
     </div>
     <div class="logo">
         <!-- <img src="/assets/SPP.png" alt="shop logo" height="49px"> -->
-            <a class="txt1">Suriya</a><a class="txt2">Pyro Park</a>
+        <a class="txt1">Suriya</a><a class="txt2">Pyro Park</a>
     </div>
     <div class="buttons">
-        <a class="b1" [routerLink]="[ '/productsList']" *ngIf="!isAdmin"><span class="bi bi-houses"></span>&nbsp; Home</a>
-        <a class="b1" [routerLink]="[ '/viewCart']" *ngIf="!isAdmin"><span class="bi bi-cart3"></span>&nbsp; View Cart</a>
-        <a class="b1" [routerLink]="[ '/orderStatus']" *ngIf="!isAdmin"><span class="bi bi-bag-check-fill"></span>&nbsp; Orders</a>
-        <a class="b1" [routerLink]="[ '/admin/dashBoard']" *ngIf="isAdmin"><span class="bi bi-speedometer2"></span>&nbsp; DashBoard</a>
-        <a class="b1" [routerLink]="[ '/admin/productsList']" *ngIf="isAdmin"><span class="bi bi-view-list"></span>&nbsp; ProductList</a>
-        <a href="#" class="b1" (click)="logout()"><span class="bi bi-power"></span></a>
+        <a class="b1" [routerLink]="[ 'user/productsList']" routerLinkActive="active" *ngIf="!isAdmin"><span class="bi bi-houses"></span>&nbsp; Home</a>
+        <a class="b1" [routerLink]="[ 'user/viewCart']" routerLinkActive="active" *ngIf="!isAdmin"><span class="bi bi-cart3"></span>&nbsp; View
+            Cart</a>
+        <a class="b1" [routerLink]="[ 'user/orderStatus']" routerLinkActive="active" *ngIf="!isAdmin"><span class="bi bi-bag-check-fill"></span>&nbsp;
+            Orders</a>
+        <a class="b1" [routerLink]="[ 'admin/dashBoard']" routerLinkActive="active" *ngIf="isAdmin"><span class="bi bi-speedometer2"></span>&nbsp;
+            DashBoard</a>
+        <a class="b1" [routerLink]="[ 'admin/productsList']" routerLinkActive="active" *ngIf="isAdmin"><span class="bi bi-view-list"></span>&nbsp;
+            ProductList</a>
+        <a class="b1" (click)="logout()">&nbsp;&nbsp;<span class="bi bi-power"></span>&nbsp;&nbsp;</a>
         <!-- <button type="submit"  (click)="showProfile()"><i class="bi bi-person-circle"></i></button> -->
     </div>
 </div>

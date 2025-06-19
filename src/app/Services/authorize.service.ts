@@ -14,21 +14,25 @@ export class AuthorizeService {
   isAlerted: boolean = false;
 
 
-  constructor(private alert: SearchService, private router: Router) { }
+  constructor(private alert: SearchService, private router: Router) {
+   if(this._Token !== '') console.log('[Log] setting JWT Token .....');
+  }
 
   setupActivityListeners() {
-    ['click', 'mousemove', 'keydown', 'touchstart'].forEach(evt =>
+    ['click', 'mousemove', 'keydown', 'touchstart'].forEach(evt => {
+      console.info("[Gaurd]: Found no activity.");
       window.addEventListener(evt, () => {
         this.lastActivity = Date.now();
         if (this.isAlerted) this.isAlerted = false; // reset alert if user is back
       })
-    );
+    });
   }
 
   checkActivity() {
-    console.log("checking///....");
+    console.info("[guard]: Activity Checker.");
     const inactiveTime = Date.now() - this.lastActivity;
     if (inactiveTime > this.inactivityLimit) {
+      console.info("[Gaurd]: Found no activity.")
       this.activityMonitor();
     }
   }
@@ -40,10 +44,13 @@ export class AuthorizeService {
       const timeout = new Promise<boolean>(res => setTimeout(() => res(false), 60 * 1000));
       const confirmed = await Promise.race([this.alert.open('Session'), timeout]);
       if (confirmed) {
+        console.info("[Gaurd]: user retained session.")
         responed = true;
       } else {
+        console.info("[Gaurd]: user has been logged out.")
         this.alert.jobError('👋 No response or declined. Logging out.');
         sessionStorage.clear();
+        console.info("[Guard]: Deleted all items form session.")
         this.alert.isVisible(false);
         this.router.navigate(['/login']);
       };
@@ -63,25 +70,40 @@ export class AuthorizeService {
     return this._Token;
   }
 
-  clear() {
-    this._Token = '';
-    sessionStorage.removeItem('token')
+  reStoreFromSession() {
+    const token = this.getToken()
+    if (token !== '') {
+      console.info('[Guard]: Token restored from session Succesfull!');
+      this.setToken(token);
+    } else {
+      console.info('[Guard]: Failed token restoration.Login!');
+    }
   }
 
-  getrole(): string {
+  clear() {
+    this._Token = '';
+    sessionStorage.removeItem('token');
+    console.info(`[${this.getUserRole()}]: Deleted all items form session.`)
+    console.info(`[${this.getUserRole()}]: Deleted all items form session.`)
+  }
+
+  getUserRole(): string {
     if (this.jwtToken !== '')
       return this.tokenDecoder(this.jwtToken).role;
     return '';
   }
 
   //decode token
-  private tokenDecoder(token: string) {
+  private tokenDecoder(token: string) {    
+        console.info("[Guard]: Getting user Info.");
     if (token !== '') {
       try {
         const payloadData = token.split('.')[1];
+        console.info("[Guard]: user Information successful.")
         return JSON.parse(atob(payloadData.replace(/-/g, '+').replace(/_/g, '/')));
       }
       catch (e) {
+        console.info("[Guard]: Error getting user Info.")
         return null;
       }
     } else {

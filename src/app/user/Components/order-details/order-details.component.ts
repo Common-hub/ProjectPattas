@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { address, order } from 'src/app/models/user';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
+import { address, Order, ORDER_STATUS_VALUES, OrderStatus } from 'src/app/models';
 
 @Component({
   selector: 'app-order-details',
@@ -12,15 +12,15 @@ import { ApiInteractionService } from 'src/app/Services/api-interaction.service'
 export class OrderDetailsComponent implements OnInit {
 
   userAddress: string[] = [];
-  orders: order[] = [];
-  orderStatus: any[] = [{ value: 'PLACED', option: 'PLACED' }, { value: 'CONFIRMED', option: 'CONFIRMED' }, { value: 'PROCESSING', option: 'PROCESSING' }, { value: 'SHIPPED', option: 'SHIPPED' }, { value: 'DELIVERED', option: 'DELIVERED' }]
+  orders: Order[] = [];
+  orderStatus: OrderStatus[] = ORDER_STATUS_VALUES;
   userDetails: any = '';
   name: {fName: string, lName:string} = {fName: '', lName: ''};
   isAdd: boolean = false;
   isOrder: boolean = true;
   isSpecorder: boolean = false;
-  billingAdd: address = new address();
-  shippingAdd: address = new address();
+  billingAdd!: address;
+  shippingAdd!: address;
 
   addressForm!: FormGroup;
 
@@ -55,9 +55,9 @@ export class OrderDetailsComponent implements OnInit {
       
     })
 
-    this.apiInteraction.getOrder().subscribe((order: order[]) => {
+    this.apiInteraction.getOrder().subscribe((order: Order[]) => {
       this.orders = order;
-      console.log(order, this.orders[0].id);
+      console.log(order, this.orders[0].status);
     })
   }
 
@@ -67,7 +67,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   getsubtotal(i: number) {
-    return this.orders[i].items[i].product.price * this.orders[i].items[i].quantity;
+    return this.orders[i].products[i].price * this.orders[i].products[i].orderedQuantity;
   }
 
   showOrderStatus(i: number) {
@@ -120,7 +120,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   getCurrentState(){    
-      const index = this.orderStatus.findIndex((status) => status.option === this.orders[0].status);
+      const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
       console.log(index);
       
     return index !== -1 ? index : 0; // Return 0 if status not foun

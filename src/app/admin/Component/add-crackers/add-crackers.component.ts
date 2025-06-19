@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
+import { ProductHandlerService } from 'src/app/Services/producthandler.service';
 import { SearchService } from 'src/app/Services/search.service';
 
 @Component({
@@ -16,7 +17,7 @@ export class AddCrackersComponent implements OnInit {
   isUpdate: boolean = false;
   addProducts!: FormGroup;
 
-  constructor(private fb: FormBuilder, private apiInteraction: ApiInteractionService, private notification: SearchService) {
+  constructor(private fb: FormBuilder, private apiInteraction: ApiInteractionService, private notification: SearchService, private Producthandler: ProductHandlerService) {
     this.addProducts = fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -29,14 +30,14 @@ export class AddCrackersComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  restrictText(event: any, input: string){
+  restrictText(event: any, input: string) {
     const inputValue = event.target.value.trim();
-    
-    var regex: RegExp = /^\d+$/;
-    if(input === 'price') regex = /^\d+(\.\d{0,2})?$/;
 
-    if(inputValue !== '' && !regex.test(inputValue)){
-      event.target.value = inputValue.slice(0,-1);
+    var regex: RegExp = /^\d+$/;
+    if (input === 'price') regex = /^\d+(\.\d{0,2})?$/;
+
+    if (inputValue !== '' && !regex.test(inputValue)) {
+      event.target.value = inputValue.slice(0, -1);
     }
   }
 
@@ -55,19 +56,21 @@ export class AddCrackersComponent implements OnInit {
   }
 
   addProduct() {
-    const addedProduct = new FormData(); 
-    const price = parseFloat(this.addProducts.controls['price'].value).toFixed(2);   
+    this.isUpdate = true;
+    const addedProduct = new FormData();
+    const price = parseFloat(this.addProducts.controls['price'].value).toFixed(2);
     addedProduct.append('name', this.addProducts.controls['name'].value);
     addedProduct.append('description', this.addProducts.controls['description'].value);
     addedProduct.append('price', price);
     addedProduct.append('stockQuantity', this.addProducts.controls['stockQuantity'].value);
     addedProduct.append('image', this.image);
-    this.apiInteraction.addproducts(addedProduct).subscribe(res => {
-      this.notification.jobDone('res');
-      this.imageSrc="";
-      this.addProducts.reset();
-    },error => {console.log(error.error);this.notification.jobfail(error.error)});
 
+    this.Producthandler.postProduct(addedProduct).subscribe(success => {
+      if (success) {
+        this.imageSrc = "";
+        this.addProducts.reset();
+      }
+    });
   }
 
 }

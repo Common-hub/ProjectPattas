@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
 import { AuthorizeService } from 'src/app/Services/authorize.service';
+import { ProductHandlerService } from 'src/app/Services/producthandler.service';
 import { SearchService } from 'src/app/Services/search.service';
 
 @Component({
@@ -20,18 +22,13 @@ export class HeaderComponent implements OnInit {
   totalPages: number = 0;
   isAdmin: boolean = false;
 
-  constructor(private router: Router, private search: SearchService, private api: ApiInteractionService, private authorize: AuthorizeService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private search: SearchService, private api: ApiInteractionService, private authorize: AuthorizeService,
+    private productHndler: ProductHandlerService
+  ) { }
 
   ngOnInit(): void {
-    this.fetchproducts(this.page, this.size);
-    this.isAdmin = sessionStorage.getItem('Autorized') === 'true' ? true : false;
-  }
-
-  fetchproducts(page: number, size: number) {
-    this.api.getProducts(page, size).subscribe(product => {
-      this.names = product.content.map((p: any) => p.name);
-      this.totalPages = product.totalPages;
-    })    
+    this.isAdmin = this.authorize.getUserRole() === 'admin' ? true : false;
+    this.search.$resultProducts.pipe(filter(names=> names && names.length > 0)).subscribe(resultNames=>this.names = resultNames);
   }
 
   showCart() {
@@ -48,17 +45,31 @@ export class HeaderComponent implements OnInit {
       if (term) {
         this.suggest = []
         this.searchKey = term;
+         this.router.navigate(['/'+this.authorize.getUserRole()+'/productsList'],
+          {relativeTo: this.route,
+            queryParams: {search: term},
+            queryParamsHandling: 'merge',
+            replaceUrl: true
+          })
         this.search.setSearch(term);
+          this.productHndler.filteredProducts(term)
       }
     } else {
       const search = term.target as HTMLInputElement;
       if (search.value.length >= 1) {
-        this.fetchproducts(this.page, this.size * this.totalPages)
-        this.suggest = this.names.filter(name => name.toLowerCase().includes(search.value.toLowerCase()));;
+        this.router.navigate([],
+          {relativeTo: this.route,
+            queryParams: {search: search.value},
+            queryParamsHandling: 'merge',
+            replaceUrl: true
+          }
+        )
+        this.suggest = this.names.filter(name => name.toLowerCase().includes(search.value.toLowerCase()));
         if (this.suggest.length == 0) {
           this.search.jobError("No Matching products found!!")
         } else {
           this.search.setSearch(search.value);
+          this.productHndler.filteredProducts(search.value)
         }
       }
       else {
@@ -82,8 +93,11 @@ export class HeaderComponent implements OnInit {
     if(this.authorize.getToken() !== ''){
       const confirm = await this.search.open('alert');
       if(confirm){
-        this.authorize.setToken('');
-        this.router.navigate(['/productsList'])
+        this.authorize.clear();
+        setTimeout(() => {
+        this.router.navigate(['user/productsList'])   
+        this.isAdmin = false;       
+        }, 30);
       }
     }else{
       this.search.jobfail("Login!!");

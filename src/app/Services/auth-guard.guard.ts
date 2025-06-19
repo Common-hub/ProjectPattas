@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStat
 import { AuthorizeService } from './authorize.service';
 import { SearchService } from './search.service';
 import { ApiInteractionService } from './api-interaction.service';
-import { Observable } from 'rxjs';
+import { Credentials } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +11,21 @@ import { Observable } from 'rxjs';
 export class AuthGuardGuard implements CanActivate, CanLoad {
   userRole: string = '';
 
-  constructor(private router: Router, private jwtToken: AuthorizeService, private notify: SearchService, private loginHelperService: ApiInteractionService) {
-    this.userRole = jwtToken.getrole();
+  constructor(private router: Router, private jwtToken: AuthorizeService, private notify: SearchService,
+    private loginHelperService: ApiInteractionService) {
+    this.userRole = jwtToken.getUserRole();
   }
 
   canLoad(route: Route, segments: UrlSegment[]): boolean {
+    console.info('[Guard]: Checking Responsiblites.');
     if (this.userRole !== '' && this.userRole === route.data?.['role']) {
+      console.info('[Guard]: User alllowed for the Route.');
       return true;
-    } else if (route.data?.['public']) { return true };
+    } else if (route.data?.['public']) {
+      console.info('[Guard]: Common Route Accessed.');
+      return true;
+    }
+    console.info('[Guard]: Ask admin to grant Responsiblity.');
     return false;
   }
 
@@ -27,13 +34,11 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
   }
 
   private authorizer(route: ActivatedRouteSnapshot): boolean {
-    if (!this.jwtToken.getToken()) {
+    if (!this.jwtToken.getToken() && !route.data?.['public']) {
       this.notify.jobfail('Login to Continue');
       this.router.navigate(['login']);
       return false;
     } else if (route.data?.['public']) {
-      console.log(route.data['public'], route.data?.['public']);
-
       return true;
     } else if (route.data?.['role'] && !route.data['role'].includes(this.userRole)) {
       this.notify.jobError('Unauthorized User Error.');
@@ -44,20 +49,25 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
   }
 
 
-  loginHelper(params: { userName: string, securityCode: string }) {
-    this.loginHelperService.loguser(params).subscribe(response => {
+  loginHelper(params: Credentials) {
+    console.info("[Guard]: Verifyng User.")
+    this.loginHelperService.userController.login(params).subscribe(response => {
       if (response) {
-        const authorized = JSON.parse(response);
+        const authorized = response;
         this.jwtToken.setToken(authorized.token);
-        if (this.jwtToken.getrole() === 'admin') {
+        this.userRole = this.jwtToken.getUserRole();
+        if (this.jwtToken.getUserRole() === 'admin') {
+          console.info(`[${this.userRole}]: User Verified 🔐.`);
           this.notify.jobDone("🔐 Logged in as Admin. Access granted.");
-          this.router.navigate(['admin/DashBoard']);
-        } else if (this.jwtToken.getrole() === 'user') {
+          this.router.navigate(['/admin/dashBoard']);
+        } else if (this.jwtToken.getUserRole() === 'user') {
+          console.info(`[${this.userRole}]: User Verified 🔐.`);
           this.notify.jobDone("✅ Welcome back! You’ve logged in successfully.");
           this.router.navigate(['user/ProductList']);
         }
       }
     }, (error) => {
+      console.info(`[Gaurd]: User Failed to Verify 🔐.`);
       this.notify.jobError(error.error);
     })
   }

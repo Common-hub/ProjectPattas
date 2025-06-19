@@ -6,9 +6,10 @@ import { DashboardComponent } from './Component/dashboard/dashboard.component';
 import { AuthGuardGuard } from '../Services/auth-guard.guard';
 
 const routes: Routes = [
-  { path: 'productsList', component: ProductDataComponent, canActivate: [AuthGuardGuard], data: { roles: ['admin'], public: false } },
-  { path: 'addProducts', component: AddCrackersComponent, canActivate: [AuthGuardGuard], data: { roles: ['admin'], public: false } },
-  { path: 'dashBoard', component: DashboardComponent, canActivate: [AuthGuardGuard], data: { roles: ['admin'], public: false } },
+  { path: '', redirectTo: 'dashBoard', pathMatch: 'full' },
+  { path: 'productsList', component: ProductDataComponent, canActivate: [AuthGuardGuard], data: { roles: 'admin', public: false } },
+  { path: 'addProducts', component: AddCrackersComponent, canActivate: [AuthGuardGuard], data: { roles: 'admin', public: false } },
+  { path: 'dashBoard', component: DashboardComponent, canActivate: [AuthGuardGuard], data: { roles: 'admin', public: false } },
 
 ];
 

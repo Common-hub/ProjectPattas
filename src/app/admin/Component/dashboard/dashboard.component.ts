@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { ORDER_STATUS_VALUES, OrderStatus } from 'src/app/models';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
 import { SearchService } from 'src/app/Services/search.service';
-import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +18,7 @@ export class DashboardComponent implements OnInit {
   updatedOrder: any[] = [];
   originalState: any[] = [];
   unfilteredOrders: any[] = [];
-  statuses: { value: string, option: string }[] = [{ value: 'PLACED', option: 'PLACED' }, { value: 'CONFIRMED', option: 'CONFIRMED' }, { value: 'PROCESSING', option: 'PROCESSING' }, { value: 'SHIPPED', option: 'SHIPPED' }, { value: 'DELIVERED', option: 'DELIVERED' }, { value: 'CANCELLED', option: 'CANCELLED' }, { value: 'RETURNED', option: 'RETURNED' }, { value: 'REFUNDED', option: 'REFUNDED' }, { value: 'FAILED', option: 'FAILED' }]
+  statuses: OrderStatus[] = ORDER_STATUS_VALUES; 
   pendingOrders: number = 0;
   completeOrders: number = 0;
   updatedItem: number | null = null;
@@ -30,8 +28,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiInterceptor.getOrder().subscribe(res => {
-      console.log(res);
-
       this.orders = res;
       this.unfilteredOrders = this.orders;
       this.notification.jobDone("Owners Dashboard loaded Succesfully")
@@ -44,13 +40,11 @@ export class DashboardComponent implements OnInit {
   }
 
   updatePartner(partner: Event, i: number) {
-    console.log("partner:", (partner.target as HTMLInputElement).value, i);
     this.partner = (partner.target as HTMLInputElement).value;
     if ((partner.target as HTMLInputElement).value !== '') this.orders[i].partner = (partner.target as HTMLInputElement).value
   }
 
   updateTracker(tracker: Event, i: number) {
-    console.log("tracker:", (tracker.target as HTMLInputElement).value, i);
     this.tracker = (tracker.target as HTMLInputElement).value;
     if ((tracker.target as HTMLInputElement).value !== '') this.orders[i].tracker = (tracker.target as HTMLInputElement).value
   }
@@ -63,7 +57,6 @@ export class DashboardComponent implements OnInit {
         this.partner = order.partner;
         this.updatedItem = i;
         this.originalState.push({ id: order.id, previousState: order.status, newState: status, ogIndex: i });
-        console.log("Updated State", this.originalState);
         this.updatedOrder.push(this.orders[i]);
       } else {
         this.updatedItem = null;

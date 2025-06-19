@@ -54,7 +54,7 @@
                     <select name="status" id="orderStatus" class="badge" [ngClass]="getStatus(order.status)"
                         (ngModelChange)="updatedStatus($event,order,i)" [(ngModel)]="order.status"
                         [disabled]="order.status === 'DELIVERED' ||order.status === 'CANCELLED' ||order.status === 'FAILED' ||order.status === 'REFUNDED'||order.status === 'RETURNED'">
-                        <option *ngFor="let status of statuses" [value]="status.value"> {{status.option}} </option>
+                        <option *ngFor="let status of statuses" [value]="status"> {{status | titlecase }} </option>
                     </select>
                 </td>
                 <td><button class="badge badge-danger" type="submit" [disabled]="updatedItem !== i"

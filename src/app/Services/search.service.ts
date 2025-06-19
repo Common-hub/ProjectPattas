@@ -8,6 +8,8 @@ export class SearchService {
   //search
   private term = new BehaviorSubject<string>('');
   currentSearch = this.term.asObservable();
+  private names = new BehaviorSubject<string[]>([]);
+  $resultProducts = this.names.asObservable();
 
   //notification
   private notificationData = new BehaviorSubject<Notification | null>(null);
@@ -25,6 +27,10 @@ export class SearchService {
   //search
   setSearch(key: string) {
     this.term.next(key);
+  }
+
+  setNames(keyItems: string[]){
+    this.names.next(keyItems);
   }
 
   //notification

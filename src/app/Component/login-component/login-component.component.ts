@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OtpVerification, userRegisration } from '../../models/user';
 import { ApiInteractionService } from '../../Services/api-interaction.service';
 import { Router } from '@angular/router';
 import { SearchService } from 'src/app/Services/search.service';
+import { AuthGuardGuard } from 'src/app/Services/auth-guard.guard';
+import { otpVerification, userRegistration } from 'src/app/models';
 
 @Component({
   selector: 'login',
@@ -25,7 +26,8 @@ export class LoginComponentComponent implements OnInit {
   seconds: number = 0;
   private interval: any;
 
-  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route:Router, private notification: SearchService) { }
+  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route: Router, private notification: SearchService,
+    private authorization: AuthGuardGuard) { }
 
   ngOnInit(): void {
     this.login = this.formBuilder.group({
@@ -44,31 +46,23 @@ export class LoginComponentComponent implements OnInit {
   }
 
   changeForm(hint: string): void {
-    const formConfig: {[key: string]: any}= {
-        L: { head: "Login USER", resetForm: () => this.login.reset(), login: true, signUp: false, change: false },
-        S: { head: "New User Registration", resetForm: () => this.sign.reset(), login: false, signUp: true, change: false },
-        F: { head: "Forget Password", resetForm: () => {}, login: false, signUp: false, change: true }
+    const formConfig: { [key: string]: any } = {
+      L: { head: "Login USER", resetForm: () => this.login.reset(), login: true, signUp: false, change: false },
+      S: { head: "New User Registration", resetForm: () => this.sign.reset(), login: false, signUp: true, change: false },
+      F: { head: "Forget Password", resetForm: () => { }, login: false, signUp: false, change: true }
     };
 
     const config = formConfig[hint];
     if (config) {
-        this.head = config.head;
-        config.resetForm();
-        this.LoginBool = config.login;
-        this.signUpBool = config.signUp;
-        this.changeBool = config.change;
+      this.head = config.head;
+      config.resetForm();
+      this.LoginBool = config.login;
+      this.signUpBool = config.signUp;
+      this.changeBool = config.change;
     }
-}
+  }
 
-
-  // isNumber(event: KeyboardEvent) {
-  //   const char = String.fromCharCode(event.keyCode);
-  //   if (!/^[0-9]*$/.test(char)) {
-  //     event.preventDefault();
-  //   }
-  // }
-
-   startTimer() {
+  startTimer() {
     this.interval = setInterval(() => {
       if (this.seconds === 0) {
         if (this.minutes === 0) {
@@ -86,7 +80,7 @@ export class LoginComponentComponent implements OnInit {
 
   register() {
     if (this.passwordMatchValidator()) {
-      let registration: userRegisration = {
+      let registration: userRegistration = {
         name: this.sign.controls['name'].value,
         email: this.sign.controls['email'].value,
         phoneNumber: '' + this.sign.controls['mobile'].value,
@@ -117,7 +111,7 @@ export class LoginComponentComponent implements OnInit {
   }
 
   verify() {
-    let Otp: OtpVerification = {
+    let Otp: otpVerification = {
       email: this.sign.controls['email'].value,
       otp: this.sign.controls['OTP'].value.toString()
     }
@@ -128,9 +122,9 @@ export class LoginComponentComponent implements OnInit {
       this.EmailVerify = false;
       this.notification.jobDone(resp)
     },
-  (error)=>{
-    this.notification.jobError(error.error)
-  })
+      (error) => {
+        this.notification.jobError(error.error)
+      })
   }
 
   passwordMatchValidator() {
@@ -139,20 +133,12 @@ export class LoginComponentComponent implements OnInit {
 
     return password !== confirmPassword ? false : true;
   }
-  
-  loguser(){
+
+  userLogin() {
     let login = {
-        userName: this.login.controls['userName'].value.trim(),
-        password: this.login.controls['password'].value.trim()
+      email: this.login.controls['userName'].value,
+      password: this.login.controls['password'].value
     }
-    this.api.loguser(login).subscribe(res=>{
-      console.log("login")
-      const response = JSON.parse(res);
-      sessionStorage.setItem('token',response.token)
-      response.role === 'admin' ? this.route.navigate(['/admin/dashBoard']) : this.route.navigate(['/productsList']);            
-    },
-    (error)=> {
-      if(error.error !== '') {this.notification.jobError(error.error)}
-    }
-  )}
+    this.authorization.loginHelper(login);
+  }
 }

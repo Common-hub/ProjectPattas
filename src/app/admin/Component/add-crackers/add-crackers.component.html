@@ -19,8 +19,7 @@
 				<input type="text" name="cost" placeholder="₹ Rupee." formControlName="price" (input)="restrictText($event,'price')">
 				<label>stock</label>
 				<input type="text" name="stock" placeholder="Avilable stockQuantity" formControlName="stockQuantity" (input)="restrictText($event,'stock')">
-				<button style="float: right;" [disabled]="addProducts.invalid" (click)="addProduct()"
-					*ngIf="!isUpdate"> Add Item</button>
+				<button style="float: right;" [disabled]="addProducts.invalid || isUpdate" (click)="addProduct()" > Add Item</button>
 			</div>
 		</div>
 	</form>

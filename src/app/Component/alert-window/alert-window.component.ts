@@ -54,4 +54,7 @@ export class AlertWindowComponent implements OnInit {
     this.notification.task(false);
   }
 
+  ngOnDestroy(): void {
+    if(this.interval) clearInterval(this.interval)
+  }
 }
