@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SearchService } from 'src/app/Services/search.service';
+import { UserInteractionService } from 'src/app/Services/user-interaction.service';
 
 @Component({
   selector: 'alert',
@@ -17,7 +17,7 @@ export class AlertWindowComponent implements OnInit {
   countdown: number = 60;
   countdownDisplay: string = '';
   interval: any;
-  constructor(private notification: SearchService) { }
+  constructor(private notification: UserInteractionService) { }
 
   ngOnInit() {
     this.notification.notification$.subscribe(data => {
@@ -44,14 +44,14 @@ export class AlertWindowComponent implements OnInit {
         }, 1000)
       }
     });
-    this.notification.isAlert.subscribe(show => this.isAlert = show);
+    this.notification.showAlert.subscribe(show => this.isAlert = show);
   }
 
   onSave() {
-    this.notification.task(true);
+    this.notification.userResponseGetter(true);
   }
   onCancel() {
-    this.notification.task(false);
+    this.notification.userResponseGetter(false);
   }
 
   ngOnDestroy(): void {

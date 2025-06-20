@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiInteractionService } from '../../Services/api-interaction.service';
 import { Router } from '@angular/router';
-import { SearchService } from 'src/app/Services/search.service';
+import { UserInteractionService } from 'src/app/Services/user-interaction.service';
 import { AuthGuardGuard } from 'src/app/Services/auth-guard.guard';
 import { otpVerification, userRegistration } from 'src/app/models';
 
@@ -26,7 +26,7 @@ export class LoginComponentComponent implements OnInit {
   seconds: number = 0;
   private interval: any;
 
-  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route: Router, private notification: SearchService,
+  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route: Router, private notification: UserInteractionService,
     private authorization: AuthGuardGuard) { }
 
   ngOnInit(): void {

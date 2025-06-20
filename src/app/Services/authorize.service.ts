@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SearchService } from './search.service';
+import { UserInteractionService } from './user-interaction.service';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class AuthorizeService {
   isAlerted: boolean = false;
 
 
-  constructor(private alert: SearchService, private router: Router) {
+  constructor(private alert: UserInteractionService, private router: Router) {
    if(this._Token !== '') console.log('[Log] setting JWT Token .....');
   }
 
@@ -42,7 +42,7 @@ export class AuthorizeService {
     if (!this.isAlerted) {
       this.isAlerted = true;
       const timeout = new Promise<boolean>(res => setTimeout(() => res(false), 60 * 1000));
-      const confirmed = await Promise.race([this.alert.open('Session'), timeout]);
+      const confirmed = await Promise.race([this.alert.open('session'), timeout]);
       if (confirmed) {
         console.info("[Gaurd]: user retained session.")
         responed = true;

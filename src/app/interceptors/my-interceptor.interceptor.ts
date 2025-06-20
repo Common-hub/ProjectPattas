@@ -6,13 +6,16 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthorizeService } from '../Services/authorize.service';
+import { UserInteractionService } from '../Services/user-interaction.service';
 
 @Injectable()
-export class MyInterceptorInterceptor implements HttpInterceptor {
-  constructor() {}
+export class apiInterceptor implements HttpInterceptor {
+  constructor(private autorization: AuthorizeService, private loader: UserInteractionService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = sessionStorage.getItem('token');
+    this.loader.showLoader();
+    const token = this.autorization.getToken();
     if(token){
       request = request.clone({
         setHeaders: {

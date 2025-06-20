@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProductDataComponent } from './Component/product-data/product-data.component';
-import { AddCrackersComponent } from './Component/add-crackers/add-crackers.component';
-import { DashboardComponent } from './Component/dashboard/dashboard.component';
+import { ProductDataComponent } from './adminComponent/product-data/product-data.component';
+import { AddCrackersComponent } from './adminComponent/add-crackers/add-crackers.component';
+import { DashboardComponent } from './adminComponent/dashboard/dashboard.component';
 import { AuthGuardGuard } from '../Services/auth-guard.guard';
 
 const routes: Routes = [

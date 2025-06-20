@@ -21,20 +21,9 @@ export class ApiInteractionService {
     UserDetails: (): Observable<userDetails> => this.http.get<userDetails>(this.url + 'auth/user', { responseType: 'json' })
   }
 
-  productController = {
-    getProducts: (page: number, size: number): Observable<Product[]> => this.http.get<Product[]>(this.url + `products?page=${page}&size=${size}`, { responseType: 'json' }),
-    postProduct: (product: FormData): Observable<Product> => this.http.post<Product>(this.url + 'products', product, { responseType: 'json' }),
-    getProductById: (Id: number): Observable<Product> => this.http.get<Product>(this.url + `products/${Id}`, { responseType: 'json' }),
-    putProductById: (Id: number, product: Product): Observable<Product> => this.http.put<Product>(this.url + `products/${Id}`, product, { responseType: 'json' }),
-    deleteProductById: (Id: number): Observable<string> => this.http.delete(this.url + `products/${Id}`, { responseType: 'text' as const })
-  }
+ 
 
-  cartController = {
-    getCart: (): Observable<CartProducts[]> => this.http.get<CartProducts[]>(this.url + 'cart', { responseType: 'json' }),
-    postCart: (cartItems: cartItems | cartItems[]): Observable<string> => this.http.post<string>(this.url + 'cart/add', cartItems),
-    deleteCart: (Id: number): Observable<string> => this.http.delete<string>(this.url + `cart/remove/${Id}`)
-  }
-
+ 
   orderController = {
     placeOrder: (userAddress: string): Observable<Order[]> => this.http.post<Order[]>(this.url + 'order/place', userAddress, { responseType: 'json' }),
     getOrders: (): Observable<Order[]> => this.http.get<Order[]>(this.url + 'order', { responseType: 'json' }),

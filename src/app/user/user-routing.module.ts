@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProductComponent } from './Components/product-component/product-component.component';
-import { KartItemsComponent } from './Components/kart-items/kart-items.component';
-import { OrderDetailsComponent } from './Components/order-details/order-details.component';
+import { ProductComponent } from './userComponents/product-component/product-component.component';
+import { KartItemsComponent } from './userComponents/kart-items/kart-items.component';
+import { OrderDetailsComponent } from './userComponents/order-details/order-details.component';
 import { AuthGuardGuard } from '../Services/auth-guard.guard';
 
 const routes: Routes = [

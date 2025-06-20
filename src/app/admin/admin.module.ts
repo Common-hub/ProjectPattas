@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AddCrackersComponent } from './Component/add-crackers/add-crackers.component';
-import { DashboardComponent } from './Component/dashboard/dashboard.component';
-import { ProductDataComponent } from './Component/product-data/product-data.component';
+import { AddCrackersComponent } from './adminComponent/add-crackers/add-crackers.component';
+import { DashboardComponent } from './adminComponent/dashboard/dashboard.component';
+import { ProductDataComponent } from './adminComponent/product-data/product-data.component';
 
 
 @NgModule({
@@ -18,7 +18,6 @@ import { ProductDataComponent } from './Component/product-data/product-data.comp
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    AdminRoutingModule
-  ]
+    AdminRoutingModule]
 })
 export class AdminModule { }

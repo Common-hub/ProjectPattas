@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
 import { AuthorizeService } from './authorize.service';
-import { SearchService } from './search.service';
+import { UserInteractionService } from './user-interaction.service';
 import { ApiInteractionService } from './api-interaction.service';
 import { Credentials } from '../models';
 
@@ -11,7 +11,7 @@ import { Credentials } from '../models';
 export class AuthGuardGuard implements CanActivate, CanLoad {
   userRole: string = '';
 
-  constructor(private router: Router, private jwtToken: AuthorizeService, private notify: SearchService,
+  constructor(private router: Router, private jwtToken: AuthorizeService, private notify: UserInteractionService,
     private loginHelperService: ApiInteractionService) {
     this.userRole = jwtToken.getUserRole();
   }

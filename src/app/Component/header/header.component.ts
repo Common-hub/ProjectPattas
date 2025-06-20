@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { ApiInteractionService } from 'src/app/Services/api-interaction.service';
 import { AuthorizeService } from 'src/app/Services/authorize.service';
-import { ProductHandlerService } from 'src/app/Services/producthandler.service';
-import { SearchService } from 'src/app/Services/search.service';
+import { ProductController } from 'src/app/Services/productController.service';
+import { UserInteractionService } from 'src/app/Services/user-interaction.service';
 
 @Component({
   selector: 'header',
@@ -22,8 +22,8 @@ export class HeaderComponent implements OnInit {
   totalPages: number = 0;
   isAdmin: boolean = false;
 
-  constructor(private router: Router, private route: ActivatedRoute, private search: SearchService, private api: ApiInteractionService, private authorize: AuthorizeService,
-    private productHndler: ProductHandlerService
+  constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: ApiInteractionService, private authorize: AuthorizeService,
+    private productHndler: ProductController
   ) { }
 
   ngOnInit(): void {
@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit {
             queryParamsHandling: 'merge',
             replaceUrl: true
           })
-        this.search.setSearch(term);
+        this.search.setSearchKeyword(term);
           this.productHndler.filteredProducts(term)
       }
     } else {
@@ -68,13 +68,13 @@ export class HeaderComponent implements OnInit {
         if (this.suggest.length == 0) {
           this.search.jobError("No Matching products found!!")
         } else {
-          this.search.setSearch(search.value);
+          this.search.setSearchKeyword(search.value);
           this.productHndler.filteredProducts(search.value)
         }
       }
       else {
         this.suggest = []
-        this.search.setSearch('')
+        this.search.setSearchKeyword('')
       }
     }
   }
@@ -91,7 +91,7 @@ export class HeaderComponent implements OnInit {
 
   async logout(){
     if(this.authorize.getToken() !== ''){
-      const confirm = await this.search.open('alert');
+      const confirm = await this.search.open('confirm');
       if(confirm){
         this.authorize.clear();
         setTimeout(() => {

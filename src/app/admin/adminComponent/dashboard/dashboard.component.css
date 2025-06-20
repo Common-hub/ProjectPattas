@@ -1,0 +1,15 @@
+.container{
+    margin-top: 4%;
+    width: 100%;
+}
+
+select option{
+    text-transform: capitalize;
+}
+
+input[type='text']:disabled{
+    background: transparent;
+    border: none;
+    color: #000;
+    outline: none;
+}

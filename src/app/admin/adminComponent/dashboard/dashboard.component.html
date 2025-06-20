@@ -1,0 +1,65 @@
+<div class="card-body p-0 table-responsive">
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2">
+                    <strong>
+                        <span class="badge badge-success" (click)="filter('compeled')">Compeled Order &nbsp;&nbsp;
+                            {{completeOrders}}</span> &nbsp; &nbsp; &nbsp;
+                        &nbsp; &nbsp;
+                        <span class="badge badge-warning" (click)="filter('placed')">Pending Order &nbsp;&nbsp;
+                            {{pendingOrders}}</span>
+                    </strong>
+                </th>
+                <th colspan="9">
+                </th>
+                <th>
+                    <!-- <button type="button" class="badge badge-success" style="float: right;">+AddProducts</button> -->
+                    <a [routerLink]="[ '/admin/addProducts']" class="badge badge-success">+AddProducts</a>
+                </th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div class="card-body p-0 table-responsive">
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th scope="col">SLNo</th>
+                <th scope="col">Order ID</th>
+                <th scope="col">Date</th>
+                <th scope="col">View Bill</th>
+                <th scope="col">Logistics Partner</th>
+                <th scope="col">Tracking Number</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngIf="orders.length == 0">
+                <td colspan="8" style="text-align: center;">Nothing to Display</td>
+            </tr>
+            <tr *ngFor="let order of orders; let i=index">
+                <td></td>
+                <td>{{order.orderId}}</td>
+                <td>{{order.orderDate | date: 'dd-mm-yyy'}}</td>
+                <td><span (click)="downloadBill(i)" style="cursor: pointer;">View Bill</span></td>
+                <td><input type="text" name="partner" id="part" [value]="order.partner === '' || order.partner === undefined ? '': order.partner" [placeholder]="order.partner === '' || order.partner === undefined ? 'order Not Shipped Yet': ''"
+                        (blur)="updatePartner($event,i)"
+                        [disabled]="order.partner ||partner || order.status !== 'SHIPPED'"></td>
+                <td><input type="text" name="trackno" id="track" [value]="order.tracker=== '' || order.tracker === undefined ? '': order.tracker" [placeholder]="order.tracker=== '' || order.tracker === undefined ? '--': ''"
+                        (blur)="updateTracker($event,i)"
+                        [disabled]="order.tracker ||tracker || order.status !== 'SHIPPED'"></td>
+                <td>
+                    <select name="status" id="orderStatus" class="badge" [ngClass]="getStatus(order.status)"
+                        (ngModelChange)="updatedStatus($event,order,i)" [(ngModel)]="order.status"
+                        [disabled]="order.status === 'DELIVERED' ||order.status === 'CANCELLED' ||order.status === 'FAILED' ||order.status === 'REFUNDED'||order.status === 'RETURNED'">
+                        <option *ngFor="let status of statuses" [value]="status"> {{status | titlecase }} </option>
+                    </select>
+                </td>
+                <td><button class="badge badge-danger" type="submit" [disabled]="updatedItem !== i"
+                        (click)="updateOrders(i)"> <i class="bi bi-arrow-up"></i>Update</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
