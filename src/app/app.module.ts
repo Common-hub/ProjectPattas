@@ -32,7 +32,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     RouterModule,
     AdminModule,
     UserModule,
-    NgxSpinnerModule
+    NgxSpinnerModule.forRoot()
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: apiInterceptor, multi: true}],
   bootstrap: [AppComponent]

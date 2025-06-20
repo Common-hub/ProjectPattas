@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-product-data',
   templateUrl: './product-data.component.html',
-  styleUrls: ['./product-data.component.scss']
+  styleUrls: ['./product-data.component.css']
 })
 export class ProductDataComponent implements OnInit {
 

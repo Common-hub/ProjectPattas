@@ -5,7 +5,7 @@ import { ApiInteractionService } from 'src/app/Services/api-interaction.service'
 @Component({
   selector: 'app-kart-items',
   templateUrl: './kart-items.component.html',
-  styleUrls: ['./kart-items.component.scss']
+  styleUrls: ['./kart-items.component.css']
 })
 export class KartItemsComponent implements OnInit {
   cartItems: any[] = [];

@@ -64,10 +64,10 @@ export class ProductController {
       finalize(() => this.notification.hideLoader()),finalize(()=>this.notification.hideLoader())).subscribe();
   }
 
-  postProduct(product: FormData) {
+  postProduct(product: FormData): Observable<boolean> {
     console.info(`[${this.role}]: Adding Product to Database...`);
     this.notification.showLoader();
-    this.productController.postProduct(product).pipe(
+    return this.productController.postProduct(product).pipe(
       tap(response => {
         this.notification.jobDone('✅ Product added successfully.');
         this.productFetched = [response, ...this.productFetched];
@@ -81,7 +81,7 @@ export class ProductController {
         return of(false);
       }),
       map(() => true)
-    ,finalize(()=>this.notification.hideLoader())).subscribe();
+    ,finalize(()=>this.notification.hideLoader()));
   }
 
   deleteProduct(id: number): void {
