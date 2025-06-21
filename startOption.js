@@ -2,9 +2,9 @@ const readline = require("readline");
 
 const options = [
   { label: "projectPattasu FE+BE Dev", cmd: "npm run start:ProjectPattas" },
-  { label: "projectPattasu FE+BE render", cmd: "start:ProjectPattas_prod" },
-  { label: "projectPattasu FE+BE:Auto IP - Windows", cmd: "npm run start:auto-ip-win" },
-  { label: "projectPattasu FE+BE:Auto IP - Linux", cmd: "npm run start:auto-ip-linux" },
+  { label: "projectPattasu FE+BE render", cmd: "npm run start:ProjectPattasOnrender" },
+  { label: "projectPattasu FE+BE:Auto IP - Windows", cmd: "npm run start:windowsRes" },
+  { label: "projectPattasu FE+BE:Auto IP - Linux", cmd: "npm run start:linuxRes" },
 ];
 
 console.log("\nSelect which start command to run:\n");

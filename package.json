@@ -8,10 +8,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "start:ProjectPattas": "ng serve --open --configuration development & java -jar projectPattas_jar/crackers-shop-0.0.1-SNAPSHOT.jar",
-    "start:ProjectPattas_prod": "ng serve --open --configuration production & java -jar projectPattas_jar/crackers-shop-0.0.1-SNAPSHOT.jar",
-    "start:auto-ip-win": "powershell -ExecutionPolicy Bypass -File run-angular-auto.ps1",
-    "start:auto-ip-linux": "./run-angular-auto.sh"
+    "start:ProjectPattas": "start cmd /k \"ng serve --open --configuration development\" && start cmd /k\"java -Dspring.profiles.active=dev -jar projectPattas_jar/crackers-shop-0.0.1-SNAPSHOT.jar\"",
+    "start:ProjectPattasOnrender": "ng serve --configuration production",
+    "start:windowsRes": "powershell -ExecutionPolicy Bypass -File runAngularReactiveWin.ps1 -e",
+    "start:linuxRes": "./run-angular-reactive-(lin)Auto.sh"
   },
   "private": true,
   "dependencies": {
@@ -28,7 +28,7 @@
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
     "jwt-decode": "^4.0.0",
-    "ngx-spinner": "^19.0.0",
+    "ngx-spinner": "^13.1.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
