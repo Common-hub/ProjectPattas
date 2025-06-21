@@ -23,30 +23,38 @@ export class CartController {
   _OnlyQty = this.onlyQty.asObservable();
 
   private role = this.authorise.getUserRole();
-  constructor(private http: HttpClient, private cartItemOp: ProductController, private authorise: AuthorizeService, private notification: UserInteractionService) { }
+
+  constructor(private http: HttpClient, private authorise: AuthorizeService, private notification: UserInteractionService) { }
 
 
   pushCartItem(items: cartItems) {
     console.info(`[${this.role}]: Adding Items to Cart.`)
     this.notification.showLoader();
     this.cartController.updateCartWithItem(items).pipe(tap(response => {
-      this.notification.jobDone(response);
+      this.notification.sppInfo(response);
       console.info(`[${this.role}]: Item added to Cart Successful.`)
     }), catchError(error => {
-      this.notification.jobError('❌ ' + error.error);
+      this.notification.sppError('❌ ' + error.error);
       console.error('[cart] Failed to add product!');
       return of(false);
-    }), finalize(()=>this.notification.hideLoader())
+    }), finalize(() => this.notification.hideLoader())
     ).subscribe();
   }
 
   removeCartItem(Id: number) { }
 
   fetchCartItems() {
-    
+    this.notification.showLoader();
     this.cartController.getCart().pipe(tap((inCartItems: CartProducts[]) => {
+      this.setCartItems(inCartItems);
+      const getQuantity = inCartItems.map(item => item.orderedQuantity);
+      this.setOnlyQty(getQuantity);
+    }), catchError(error => {
+      this.notification.sppError('❌ ' + error.error);
+      console.error('[cart] Failed to add product!');
+      return of(false);
 
-    }))
+    }), finalize(() => this.notification.hideLoader())).subscribe()
   }
 
   //sevt to cart
@@ -57,15 +65,27 @@ export class CartController {
 
   setCartItems(iItems: CartProducts[]) {
     this.cartProducts.next(iItems)
-    const qty: number[] = iItems.map(item=>{return item.orderedQuantity});
+    const qty: number[] = iItems.map(item => { return item.orderedQuantity });
     this.setOnlyQty(qty)
   }
 
-  setOnlyQty(qty:number[]){
+  getCartItems() {
+    if (this.cartProducts.value.length > 1) {
+      this.notification.sppInfo('LoadedCartItems');
+      return this.cartProducts.asObservable();
+    }else{
+      this.notification.sppError('Error Getting Quantity.')
+      return [] as unknown as Observable<CartProducts[]>
+    }
+  }
+
+  setOnlyQty(qty: number[]) {
+    console.log(qty);
+    
     this.onlyQty.next(qty);
   }
 
-  getOnlyQty(): number[]{
+  getOnlyQty(): number[] {
     return this.onlyQty.value;
   }
 

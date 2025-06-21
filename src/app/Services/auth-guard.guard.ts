@@ -34,14 +34,15 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
   }
 
   private authorizer(route: ActivatedRouteSnapshot): boolean {
-    if (!this.jwtToken.getToken() && !route.data?.['public']) {
-      this.notify.jobfail('Login to Continue');
+    if (!this.jwtToken.getConfirmation() && !route.data?.['public']) {
+      this.notify.sppWarning('Login to Continue');
       this.router.navigate(['login']);
       return false;
     } else if (route.data?.['public']) {
       return true;
     } else if (route.data?.['role'] && !route.data['role'].includes(this.userRole)) {
-      this.notify.jobError('Unauthorized User Error.');
+      this.jwtToken.clear();
+      this.notify.sppError('Unauthorized User Error.');
       this.router.navigate(['login']);
       return false;
     }
@@ -51,24 +52,26 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
 
   loginHelper(params: Credentials) {
     console.info("[Guard]: Verifyng User.")
+    this.notify.showLoader();
     this.loginHelperService.userController.login(params).subscribe(response => {
       if (response) {
         const authorized = response;
         this.jwtToken.setToken(authorized.token);
         this.userRole = this.jwtToken.getUserRole();
-        if (this.jwtToken.getUserRole() === 'admin') {
+        if (this.jwtToken.getUserRole() === 'user') {
           console.info(`[${this.userRole}]: User Verified 🔐.`);
-          this.notify.jobDone("🔐 Logged in as Admin. Access granted.");
-          this.router.navigate(['/admin/dashBoard']);
-        } else if (this.jwtToken.getUserRole() === 'user') {
+          this.notify.sppInfo("✅ Welcome back! You’ve logged in successfully.");
+          this.router.navigate(['user/']);
+        } else if (this.jwtToken.getUserRole() === 'admin') {
           console.info(`[${this.userRole}]: User Verified 🔐.`);
-          this.notify.jobDone("✅ Welcome back! You’ve logged in successfully.");
-          this.router.navigate(['user/ProductList']);
+          this.notify.sppInfo("🔐 Logged in as Admin. Access granted.");
+          this.router.navigate(['admin/dashBoard']);
         }
       }
     }, (error) => {
       console.info(`[Gaurd]: User Failed to Verify 🔐.`);
-      this.notify.jobError(error.error);
-    })
+      this.notify.sppError(error.error);
+      this.notify.hideLoader();
+    });
   }
 }

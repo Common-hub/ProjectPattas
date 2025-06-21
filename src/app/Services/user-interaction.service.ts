@@ -9,8 +9,8 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 export class UserInteractionService {
 
   //Loader
-  private loaderCount =  0;
-  
+  private toggleSpinner = 0;
+
   //search
   private SearchKeyword = new BehaviorSubject<string>('');
   currentSearch = this.SearchKeyword.asObservable();
@@ -18,27 +18,27 @@ export class UserInteractionService {
   $resultProducts = this.FilteredSugegestions.asObservable();
 
   //notification
-  private notificationData = new BehaviorSubject<Notification | null>(null);
-  notification$ = this.notificationData.asObservable();
+  private popUpData = new BehaviorSubject<Notification | null>(null);
+  _PopUpData = this.popUpData.asObservable();
 
   //alert
-  private resolveFn!: (value: boolean)=>void;
+  private resolveFn!: (value: boolean) => void;
   private alert = new BehaviorSubject<boolean>(false);
   private alertType = new BehaviorSubject<alertType>('alert');
-  type$ = this.alertType.asObservable();
+  _AlertType = this.alertType.asObservable();
   private isAlertVisible = new BehaviorSubject<boolean>(false);
 
   constructor(private spinner: NgxSpinnerService) { }
 
   //loader
-  showLoader(){
-    this.loaderCount++;
-    if(this.loaderCount ===1) this.spinner.show();
+  showLoader() {
+    this.toggleSpinner++;
+    if (this.toggleSpinner === 1) this.spinner.show();
   }
 
-  hideLoader(){
-    this.loaderCount--;
-    if(this.loaderCount === 0)this.spinner.hide();
+  hideLoader() {
+    this.toggleSpinner--;
+    if (this.toggleSpinner === 0) this.spinner.hide();
   }
 
   //search
@@ -46,59 +46,64 @@ export class UserInteractionService {
     this.SearchKeyword.next(key);
   }
 
-  setSuggesttions(keyItems: string[]){
-    const validSearchTerms = keyItems.filter(keyItem =>( keyItem !== null || keyItem !== ''))
-    this.FilteredSugegestions.next(validSearchTerms);
+  setSuggesttions(keyItems: string[]) {
+    console.log(keyItems);
+
+    this.FilteredSugegestions.next(keyItems);
+  }
+
+  getSuggestions() {
+    return this.FilteredSugegestions.asObservable();
   }
 
   //notification
-  jobDone(message: string) {
-    this.notificationData.next({ message, type: 'success' });
+  sppInfo(message: string) {
+    this.popUpData.next({ message, type: 'success' });
     this.clear();
   }
 
-  jobError(message: string) {
-    this.notificationData.next({ message, type: 'error' });
+  sppError(message: string) {
+    this.popUpData.next({ message, type: 'error' });
     this.clear();
   }
 
-  jobfail(message: string) {
-    this.notificationData.next({ message, type: 'warning' });
+  sppWarning(message: string) {
+    this.popUpData.next({ message, type: 'warning' });
     this.clear();
   }
 
   clear() {
     setTimeout(() => {
-      this.notificationData.next(null);
+      this.popUpData.next(null);
     }, 3000);
   }
 
-  isVisible(toggle: boolean){
+  isVisible(toggle: boolean) {
     this.isAlertVisible.next(toggle);
   }
 
   //alert
-  open(type:alertType): Promise<boolean>{
+  openWindow(type: alertType): Promise<boolean> {
     this.alertType.next(type)
     this.isAlertVisible.next(true);
 
-    return new Promise<boolean>(resolve=> this.resolveFn = resolve)
+    return new Promise<boolean>(resolve => this.resolveFn = resolve)
   }
 
-  userResponseGetter(task: boolean){
+  userResponseGetter(task: boolean) {
     this.alert.next(task);
     this.resolveFn(task);
     this.isAlertVisible.next(false);
   }
 
-  get showAlert(): Observable<boolean>{
+  get promptAlert(): Observable<boolean> {
     return this.isAlertVisible.asObservable();
   }
 }
 
-interface Notification {
+export interface Notification {
   message: string;
   type: 'success' | 'error' | 'warning';
 }
 
-export type alertType = 'session'| 'alert'| 'confirm';
+export type alertType = 'session' | 'alert' | 'confirmLogout' | 'confirmLogin' | 'confirm';

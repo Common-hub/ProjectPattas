@@ -21,17 +21,16 @@ export class ProductController {
   private CurrentPage = new BehaviorSubject<number>(0);
   private itemSize = new BehaviorSubject<number>(15);
   private pageTotal = new BehaviorSubject<number>(1);
-  private apiHitFlag = new BehaviorSubject<boolean>(false);
 
   _keyword = this.filterkeyword.asObservable();
   _ProductDTO = this.productsLists.asObservable();
   _currentPage = this.CurrentPage.asObservable();
   _size = this.itemSize.asObservable();
   _TotalPages = this.pageTotal.asObservable();
-  _isProductFeached = this.apiHitFlag.asObservable();
 
   public isFetched = false;
   private role = this.authorize.getUserRole();
+  private inQueue: boolean = false;
 
   constructor(private http: HttpClient,
     private authorize: AuthorizeService, private pagenator: PaginationHelperService,
@@ -40,28 +39,36 @@ export class ProductController {
   fetchProducts(page: number, size: number): void {
     console.log('[Products] productFetch started....');
     this.notification.showLoader();
-    this.productController.getProducts(page, size).pipe(
-      tap((response: any) => {
-        this.productFetched = response?.content ?? [];
-        this.setProducts(this.productFetched);
-        this.pagenator.chunkInitializer(response.totalElements, size);
-        const names = this.productFetched.map(p => p.name);
-        this.notification.setSuggesttions(names);
-        this.setFlag(true);
-        const successMsg = this.role === 'admin'
-          ? '📦 Inventory fetched successfully for Admin.'
-          : '🛍️ Products fetched successfully for User.';
-        this.notification.jobDone(successMsg);
-        console.log('[Products] productFetch Success....');
-      }),
-      catchError(error => {
-        this.notification.jobError('❌ ' + error.error);
-        this.clearProducts();
-        this.isFetched = false;
-        console.error('[Products] productFetch Failed!....');
-        return of([]);
-      }),
-      finalize(() => this.notification.hideLoader()),finalize(()=>this.notification.hideLoader())).subscribe();
+    if (!this.inQueue) {
+    this.inQueue = true;
+      this.productController.getProducts(page, size).pipe(
+        tap((response: any) => {
+          if (response) {
+            console.log("Unfiltered", response.content);
+            const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
+            this.setProducts(_FilteredProducts);
+            this.pagenator.chunkInitializer(response.totalElements, size);
+            const productNames = _FilteredProducts.map((product:Product) => product.name);
+            this.notification.setSuggesttions(productNames);
+            var successMsg = '';
+            if(this.authorize.getConfirmation()){
+              if(this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
+              else if(this.role === 'user' ) successMsg = '🛍️ Products fetched successfully for User.';
+            } 
+            this.notification.sppInfo(successMsg);
+            console.log('[Products] productFetch Success....');
+
+          }
+        }),
+        catchError(error => {
+          this.notification.sppError('❌ ' + error.error);
+          this.clearProducts();
+          this.isFetched = false;
+          console.error('[Products] productFetch Failed!....');
+          return of([]);
+        }),
+        finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
+    }
   }
 
   postProduct(product: FormData): Observable<boolean> {
@@ -69,19 +76,18 @@ export class ProductController {
     this.notification.showLoader();
     return this.productController.postProduct(product).pipe(
       tap(response => {
-        this.notification.jobDone('✅ Product added successfully.');
         this.productFetched = [response, ...this.productFetched];
         this.setProducts(this.productFetched);
         console.info(`[${this.role}]: Product added successfully.`);
       }),
       catchError(error => {
-        this.notification.jobError('❌ ' + error.error);
+        this.notification.sppError('❌ ' + error.error);
         this.clearProducts();
         console.error('[Products] Failed to add product!');
         return of(false);
       }),
       map(() => true)
-    ,finalize(()=>this.notification.hideLoader()));
+      , finalize(() => this.notification.hideLoader()));
   }
 
   deleteProduct(id: number): void {
@@ -89,7 +95,7 @@ export class ProductController {
     this.notification.showLoader();
     this.productController.deleteProductById(id).pipe(
       tap(response => {
-        this.notification.jobDone(response);
+        this.notification.sppInfo(response);
         console.info(`[${this.role}]: Product deletion successful.`);
       }),
       switchMap(() => this.productController.getProducts(this.CurrentPage.value, this.itemSize.value)),
@@ -97,15 +103,15 @@ export class ProductController {
         this.productFetched = response?.content ?? [];
         this.setProducts(this.productFetched);
         console.info('[Products]: Updated list Updated after deletion.');
-        this.notification.jobDone('✅ Product DeLeted Succesfully.')
+        this.notification.sppInfo('✅ Product DeLeted Succesfully.')
       }),
       catchError(error => {
-        this.notification.jobError('❌ ' + error.error);
+        this.notification.sppError('❌ ' + error.error);
         this.clearProducts();
         console.error('[Products] Failed to delete product!');
         return of([]);
       })
-    ,finalize(()=>this.notification.hideLoader())).subscribe();
+      , finalize(() => this.notification.hideLoader())).subscribe();
   }
 
   putProductsByid(id: number, productItem: Product) {
@@ -117,14 +123,14 @@ export class ProductController {
       updatedIndex[index] = response;
       this.setProducts([...updatedIndex]);
       console.info('[Products]: Updated list after deletion.');
-      this.notification.jobDone('✅ Product Updation Succesfully.')
+      this.notification.sppInfo('✅ Product Updation Succesfully.')
     }),
       catchError(error => {
-        this.notification.jobError('❌ ' + error.error);
+        this.notification.sppError('❌ ' + error.error);
         this.clearProducts();
         console.error('[Products] Failed to delete product!');
         return of([]);
-      }),finalize(()=>this.notification.hideLoader())).subscribe()
+      }), finalize(() => this.notification.hideLoader())).subscribe()
   }
 
   getProductsByid(id: number) {
@@ -134,14 +140,14 @@ export class ProductController {
       const product = response;
       this.setProducts([{ ...product }]);
       console.info(`[${this.role}]: the product is fetched Succesfully`);
-      this.notification.jobDone('✅ Product Fetch Succesfully.')
+      this.notification.sppInfo('✅ Product Fetch Succesfully.')
     }),
       catchError(error => {
-        this.notification.jobError('❌ ' + error.error);
+        this.notification.sppError('❌ ' + error.error);
         this.clearProducts();
         console.error('[Products] Failed to delete product!');
         return of([]);
-      }),finalize(()=>this.notification.hideLoader())).subscribe();
+      }), finalize(() => this.notification.hideLoader())).subscribe();
   }
 
   filteredProducts(keyWord: string): void {
@@ -174,14 +180,6 @@ export class ProductController {
 
   getCurrentPage() {
     return this.CurrentPage.value;
-  }
-
-  setFlag(response: boolean) {
-    this.apiHitFlag.next(response);
-  }
-
-  getFlag(): boolean {
-    return this.apiHitFlag.value;
   }
 
   setItemSize(itemSize: number): void {

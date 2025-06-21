@@ -30,12 +30,12 @@ export class DashboardComponent implements OnInit {
     this.apiInterceptor.getOrder().subscribe(res => {
       this.orders = res;
       this.unfilteredOrders = this.orders;
-      this.notification.jobDone("Owners Dashboard loaded Succesfully")
+      this.notification.sppInfo("Owners Dashboard loaded Succesfully")
       this.completeOrders = this.orders.filter(order => order.status === 'DELIVERED').length
       this.pendingOrders = this.orders.filter(order => order.status.toLowerCase() === 'PLACED' || 'PROCESSING' || 'SHIPPED').length
     },
       (error) => {
-        this.notification.jobError(error.error)
+        this.notification.sppError(error.error)
       })
   }
 

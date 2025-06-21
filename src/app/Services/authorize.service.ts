@@ -37,18 +37,22 @@ export class AuthorizeService {
     }
   }
 
+  getConfirmation(): boolean{
+    return this.getToken() !=='' ? true : false;
+  }
+
   private async activityMonitor() {
     var responed: boolean = false;
     if (!this.isAlerted) {
       this.isAlerted = true;
       const timeout = new Promise<boolean>(res => setTimeout(() => res(false), 60 * 1000));
-      const confirmed = await Promise.race([this.alert.open('session'), timeout]);
+      const confirmed = await Promise.race([this.alert.openWindow('session'), timeout]);
       if (confirmed) {
         console.info("[Gaurd]: user retained session.")
         responed = true;
       } else {
         console.info("[Gaurd]: user has been logged out.")
-        this.alert.jobError('👋 No response or declined. Logging out.');
+        this.alert.sppError('👋 No response or declined. Logging out.');
         sessionStorage.clear();
         console.info("[Guard]: Deleted all items form session.")
         this.alert.isVisible(false);
@@ -107,7 +111,7 @@ export class AuthorizeService {
         return null;
       }
     } else {
-      this.alert.jobError("Error getting the Permission.")
+      this.alert.sppError("Error getting the Permission.")
     }
   }
 

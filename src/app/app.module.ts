@@ -14,6 +14,7 @@ import { AlertWindowComponent } from './Component/alert-window/alert-window.comp
 import { HeaderComponent } from './Component/header/header.component';
 import { RouterModule } from '@angular/router';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 @NgModule({
   declarations: [
@@ -32,9 +33,10 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     RouterModule,
     AdminModule,
     UserModule,
-    NgxSpinnerModule.forRoot()
+    NgxSpinnerModule,
+    BrowserAnimationsModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: apiInterceptor, multi: true}],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: apiInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+  export class AppModule { }

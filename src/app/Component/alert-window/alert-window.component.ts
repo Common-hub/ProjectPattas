@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UserInteractionService } from 'src/app/Services/user-interaction.service';
+import { Router } from '@angular/router';
+import { AuthorizeService } from 'src/app/Services/authorize.service';
+import { alertType, UserInteractionService, Notification } from 'src/app/Services/user-interaction.service';
 
 @Component({
   selector: 'alert',
@@ -8,53 +10,96 @@ import { UserInteractionService } from 'src/app/Services/user-interaction.servic
 })
 export class AlertWindowComponent implements OnInit {
 
-  message: string = '';
-  alertType: string = 'success';
+  userRole: string = '';
+
+  toastMessage!: Notification
 
   isAlert: boolean = false;
-  alert: string = '';
+  alert!: alertType;
 
   countdown: number = 60;
   countdownDisplay: string = '';
   interval: any;
-  constructor(private notification: UserInteractionService) { }
+
+  constructor(private informerClass: UserInteractionService, private authuntication: AuthorizeService, private router: Router) { }
 
   ngOnInit() {
-    this.notification.notification$.subscribe(data => {
+
+    this.userRole = this.authuntication.getUserRole();
+
+
+
+    this.informerClass._PopUpData.subscribe(data => {
       if (data) {
-        this.message = data.message;
-        this.alertType = data.type;
+        this.toastMessage = data;
       }
       else {
-        this.message = '';
+        this.toastMessage = { message: '', type: 'success' };
       }
     })
 
     //alert
-    this.notification.type$.subscribe(data => {
-      this.alert = data
-      if (this.alert === 'Session') {
-        setInterval(() => {
-          const min = Math.floor(this.countdown / 60);
-          const sec = this.countdown % 60;
-          this.countdownDisplay = `${min}:${sec < 10 ? '0' + sec : sec}`;
-          if (--this.countdown < 0) {
-            clearInterval(this.interval);
-          }
-        }, 1000)
+    this.informerClass._AlertType.subscribe(data => {
+      if (data === 'confirmLogout') {
+        if (this.authuntication.getConfirmation()) {
+          this.alert = data;
+          this.windowLifeTime();
+        }
+      } else if (data === 'session') {
+        if (this.authuntication.getConfirmation()) {
+          this.alert = data;
+          this.windowLifeTime();
+        }
+      } else if (data === 'confirmLogin') {
+        this.alert = data;
+        this.windowLifeTime();
       }
     });
-    this.notification.showAlert.subscribe(show => this.isAlert = show);
+    this.informerClass.promptAlert.subscribe(show => this.isAlert = show);
+
+  }
+
+  private windowLifeTime() {
+    setInterval(() => {
+      const min = Math.floor(this.countdown / 60);
+      const sec = this.countdown % 60;
+      this.countdownDisplay = `${min}:${sec < 10 ? '0' + sec : sec}`;
+      if (--this.countdown < 0) {
+        clearInterval(this.interval);
+      }
+    }, 1000)
   }
 
   onSave() {
-    this.notification.userResponseGetter(true);
+    this.informerClass.userResponseGetter(true);
   }
   onCancel() {
-    this.notification.userResponseGetter(false);
+    this.informerClass.userResponseGetter(false);
+  }
+
+  onLogout() {
+    if (this.userRole === 'admin') {
+      this.router.navigate(['login'])
+    } else {
+      this.router.navigate(['user/productsList']);
+        if(this.router.url === '/user/productsList'){
+          window.location.reload()
+        }
+    }
+    this.authuntication.clear();
+    this.informerClass.sppInfo('Saved used DATA !.');
+    this.informerClass.sppInfo('Redirected to Default !.');
+    this.informerClass.userResponseGetter(true);
+  }
+
+  onLogin() {
+    this.informerClass.sppInfo('Redirected to Login !.');
+    this.router.navigate(['login']);
+
+    this.informerClass.userResponseGetter(true);
   }
 
   ngOnDestroy(): void {
-    if(this.interval) clearInterval(this.interval)
+    if (this.interval) clearInterval(this.interval)
   }
 }

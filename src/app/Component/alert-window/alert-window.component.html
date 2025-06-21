@@ -1,22 +1,31 @@
 <div class="alertWindow">
-    <div class="alert" [ngClass]="{'success': alertType === 'success', 'warning': alertType === 'warning', 'error': alertType === 'error'}" *ngIf="message">
-        <span><strong>{{ message }}</strong></span>
+    <div class="alert" [ngClass]="{'success': toastMessage.type === 'success', 'warning': toastMessage.type === 'warning', 'error': toastMessage.type === 'error'}" *ngIf="toastMessage.message">
+        <span><strong>{{ toastMessage.message }}</strong></span>
     </div>
 </div>
 <div class="confirm" *ngIf="isAlert">
-    <div class="logoutLabel" *ngIf="alert === 'confirm'">
+    <div class="logoutLabel" *ngIf="alert === 'confirmLogout'">
         <span><strong>Are you sure.</strong></span>
         <span><strong>You want to logout?</strong></span>
         <div class="buttons">
-            <button type="submit" class="btn btn-outline-success" (click)="onSave()">Save</button>
-            <button type="submit" class="btn btn-outline-success" (click)="onCancel()">Revert</button>
+            <button type="submit" class="btn btn-outline-primary" (click)="onSave()">Continue Shopping</button>
+            <button type="submit" class="btn btn-outline-danger" (click)="onLogout()">Logout</button>
         </div>
     </div>
+
     <div class="logoutLabel" *ngIf="alert === 'session'">
         <span><strong>⚠️ You've been inactive. Stay logged in?. <br> will be logged out in {{countdownDisplay}}sec min(s).</strong></span>
         <div class="buttons">
-            <button type="submit" class="btn btn-outline-danger" (click)="onSave()">Save</button>
-            <button type="submit" class="btn btn-outline-success" (click)="onCancel()">Revert</button>
+            <button type="submit" class="btn btn-outline-danger" (click)="onLogout()">End Session</button>
+            <button type="submit" class="btn btn-outline-success" (click)="onCancel()">Continue Shoppingn</button>
+        </div>
+    </div>
+    
+    <div class="logoutLabel" *ngIf="alert === 'confirmLogin'">
+        <span><strong>⚠️ You've tried to do Action. <br> Login to Continue.</strong></span>
+        <div class="buttons">
+            <button type="submit" class="btn btn-outline-danger" (click)="onLogin()">Continue Shopping</button>
+            <button type="submit" class="btn btn-outline-success" (click)="onCancel()">NotNow</button>
         </div>
     </div>
 </div>

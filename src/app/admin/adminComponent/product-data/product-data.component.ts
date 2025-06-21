@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProductDataComponent implements OnInit {
 
-  apiBaseUrl:string = environment.apiBaseUrl;
+  apiBaseUrl: string = environment.apiBaseUrl;
 
   isEdit: boolean = false;
   currentpage: number = 0;
@@ -24,13 +24,11 @@ export class ProductDataComponent implements OnInit {
   editableItem: number | null = null;
   productsList: Product[] = [];
   flagCheck!: Product;
-  constructor(private notification: UserInteractionService, public productController: ProductController, private paginationHelper: PaginationHelperService) { }
+  constructor(private notification: UserInteractionService, public productController: ProductController) { }
 
   ngOnInit(): void {
-    this.productController.getFlag() ? '' : this.productController.fetchProducts(0, 15);
-    this.productController.getProducts().subscribe(products => this.productsList =  products.filter(product=>product.name !== ''));
+    this.productController.getProducts().subscribe(products => this.productsList = products.filter(product=> product.name !== '' && product.name !== undefined && product.name !== null) );
     this.totalPages = this.productController.getTotalPages();
-    this.pages = this.paginationHelper.chunkInitializer(this.currentpage, 5);
   }
 
   updateProduct(index: number) {
@@ -50,7 +48,7 @@ export class ProductDataComponent implements OnInit {
         this.productsList[index].imageUrl !== this.flagCheck.imageUrl || this.productsList[index].price !== this.flagCheck.price ||
         this.productsList[index].stockQuantity !== this.flagCheck.stockQuantity || this.productsList[index].description !== this.flagCheck.description;
       if (editedFlag) {
-        const confirm = await this.notification.open('confirm')
+        const confirm = await this.notification.openWindow('confirm')
         if (confirm) {
           this.productsList[index] = this.productsList[index];
           this.isEdit = false;
@@ -76,16 +74,4 @@ export class ProductDataComponent implements OnInit {
     this.size = Number((event.target as HTMLInputElement).value);
     this.productController.setItemSize(this.size);
   }
-
-  goToFirst() {
-    this.paginationHelper.chunkIndexer =0;
-    this.productController.setCurrentPage(0);
-  }
-
-  goToLast() {
-    this.paginationHelper.chunkIndexer = Math.floor((this.totalPages-1)/this.paginationHelper.pagePerChunk);
-    this.productController.setCurrentPage(this.totalPages);
-    this.productController.setItemSize(this.size);
-  }
-
 }

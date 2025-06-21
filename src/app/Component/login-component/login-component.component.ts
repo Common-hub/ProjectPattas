@@ -88,11 +88,11 @@ export class LoginComponentComponent implements OnInit {
       }
       this.api.userRegistration(registration).subscribe(resp => {
         this.EmailVerify = true;
-        this.notification.jobDone(resp);
+        this.notification.sppInfo(resp);
         this.startTimer();
       },
         (error) => {
-          this.notification.jobError(error.error);
+          this.notification.sppError(error.error);
         }
       )
     }
@@ -120,10 +120,10 @@ export class LoginComponentComponent implements OnInit {
       this.signUpBool = false;
       this.changeForm('L')
       this.EmailVerify = false;
-      this.notification.jobDone(resp)
+      this.notification.sppInfo(resp)
     },
       (error) => {
-        this.notification.jobError(error.error)
+        this.notification.sppError(error.error)
       })
   }
 

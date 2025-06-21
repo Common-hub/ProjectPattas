@@ -16,19 +16,25 @@ export class HeaderComponent implements OnInit {
   type: string = "";
   searchKey: string = "";
   names: string[] = [];
-  suggest: string[] = [];
+  suggestions: string[] = [];
+  navigations: { route: string; key: string; }[] = [];
   page: number = 0;
   size: number = 10;
   totalPages: number = 0;
-  isAdmin: boolean = false;
 
   constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: ApiInteractionService, private authorize: AuthorizeService,
     private productHndler: ProductController
   ) { }
 
   ngOnInit(): void {
-    this.isAdmin = this.authorize.getUserRole() === 'admin' ? true : false;
-    this.search.$resultProducts.pipe(filter(names=> names && names.length > 0)).subscribe(resultNames=>this.names = resultNames);
+      if (this.authorize.getConfirmation()){
+        this.setRouter(this.authorize.getUserRole());
+      console.log(this.authorize.getConfirmation());}
+    setTimeout(() => {
+      console.log(this.navigations);
+      this.search.getSuggestions().subscribe(respnseName => this.names = respnseName);
+      console.log(this.names);
+    }, 10000);
   }
 
   showCart() {
@@ -41,41 +47,27 @@ export class HeaderComponent implements OnInit {
   }
 
   onsearch(term: Event | string) {
-    if (typeof term === 'string') {
-      if (term) {
-        this.suggest = []
-        this.searchKey = term;
-         this.router.navigate(['/'+this.authorize.getUserRole()+'/productsList'],
-          {relativeTo: this.route,
-            queryParams: {search: term},
-            queryParamsHandling: 'merge',
-            replaceUrl: true
-          })
-        this.search.setSearchKeyword(term);
-          this.productHndler.filteredProducts(term)
+    const searchKeyword = typeof term === 'string' ? term : (term.target as HTMLInputElement).value.length >= 1 ? (term.target as HTMLInputElement).value : '';
+    if (searchKeyword !== '') {
+      const identifiedMatched = this.names.filter(keyword => keyword.toLowerCase().includes(searchKeyword.toLowerCase()));
+      if (identifiedMatched.length >= 1) {
+        this.suggestions = identifiedMatched;
       }
-    } else {
-      const search = term.target as HTMLInputElement;
-      if (search.value.length >= 1) {
-        this.router.navigate([],
-          {relativeTo: this.route,
-            queryParams: {search: search.value},
-            queryParamsHandling: 'merge',
-            replaceUrl: true
-          }
-        )
-        this.suggest = this.names.filter(name => name.toLowerCase().includes(search.value.toLowerCase()));
-        if (this.suggest.length == 0) {
-          this.search.jobError("No Matching products found!!")
-        } else {
-          this.search.setSearchKeyword(search.value);
-          this.productHndler.filteredProducts(search.value)
-        }
-      }
-      else {
-        this.suggest = []
-        this.search.setSearchKeyword('')
-      }
+    }
+  }
+
+  setRouter(userRole: string) {
+    if (userRole === 'admin') {
+      this.navigations = [
+        { route: 'admin/dashBoard', key: `<span class="bi bi-speedometer2"></span>&nbsp; DashBoard` },
+        { route: 'admin/addProducts', key: `<span class="bi bi-cart-plus"></span>&nbsp; Add to Inventory` },
+        { route: 'admin/productsList', key: `<span class="bi bi-view-list"></span>&nbsp; ProductList` }]
+    } else if (userRole === 'user') {      
+      this.navigations = [
+        { route: 'user/productsList', key: `<span class="bi bi-houses"></span>&nbsp; Home` },
+        { route: 'user/viewCart', key: `<span class="bi bi-cart3"></span>&nbsp; View Cart` },
+        { route: 'user/orderStatus', key: `<span class="bi bi-bag-check-fill"></span>&nbsp; Orders` }
+      ]
     }
   }
 
@@ -89,19 +81,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  async logout(){
-    if(this.authorize.getToken() !== ''){
-      const confirm = await this.search.open('confirm');
-      if(confirm){
-        this.authorize.clear();
-        setTimeout(() => {
-        this.router.navigate(['user/productsList'])   
-        this.isAdmin = false;       
-        }, 30);
-      }
-    }else{
-      this.search.jobfail("Login!!");
-      this.router.navigate(['login'])
-    }
+  logout() {
+    this.authorize.getConfirmation() ? this.search.openWindow('confirmLogout') : this.search.openWindow('confirmLogin');
   }
 }

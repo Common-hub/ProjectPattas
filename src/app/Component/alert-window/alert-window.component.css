@@ -1,5 +1,5 @@
 .alertWindow {
-    position: fixed;
+    position: relative;
     z-index: 9999;
     inset: 0;
     pointer-events: none;
@@ -8,12 +8,13 @@
 .alert {
     position: absolute;
     right: 0;
-    top: 50px;
+    top: 0;
     padding: 16px 24px;
     border-radius: 6px;
     transform: translateY(-20px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     color: white;
+    z-index: 1000;
 }
 
 .confirm {

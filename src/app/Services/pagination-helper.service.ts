@@ -4,36 +4,65 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class PaginationHelperService {
+  private  chunkSize: number = 10;
+  private  visibleChunkIndex: number = 0;
 
-  pagePerChunk: number = 15;
-  chunkIndexer: number = 0;
+  /**
+   * Main method to get middle chunk of visible pages.
+   * This does NOT include page 1 and totalPages. Use this in UI with 1 and totalPages added manually.
+   */
+   chunkInitializer(pageNumber: number, totalPages: number): number[] {
+    if (totalPages <= 1) return [1];
 
-  constructor() { }
-
-  chunkInitializer(pageSize: number, totalElements: number): number[] {
-    const totalPages = Math.ceil(totalElements / pageSize);
-    const start = this.chunkIndexer * this.pagePerChunk;
-    const end = Math.min(start + this.pagePerChunk, totalPages);
-    return Array.from({ length: end - start }, (_, i) => i + 1);
-  }
-
-  nextChunkSet(pageSize: number, totalElements: number): number[] {
-    const totalPages = Math.ceil(totalElements / pageSize);
-    const maxChunkIndex = Math.floor((totalPages - 1) / this.pagePerChunk);
-    if (this.chunkIndexer < maxChunkIndex) {
-      this.chunkIndexer++;
+    // If all pages fit, return all directly
+    if (totalPages <= this.chunkSize + 2) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
-    return this.chunkInitializer(pageSize, totalElements);
-  }
 
-  previousChunkSet(pageSize: number, totalElements: number): number[]{
-    if(this.chunkIndexer > 0){
-      this.chunkIndexer--;
+    const pages: number[] = [];
+
+    const totalChunks = Math.ceil((totalPages - 2) / this.chunkSize);
+    const safe = Math.max(pageNumber,1);
+    const chunkIndex = Math.floor((safe - 2) / this.chunkSize);
+    this.visibleChunkIndex = chunkIndex;
+
+    const start = chunkIndex * this.chunkSize + 2;
+    const end = Math.min(start + this.chunkSize - 1, totalPages - 1);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
     }
-    return this.chunkInitializer(pageSize,totalElements);
+
+    return pages;
   }
 
-  reset(){
-    this.chunkIndexer == 0;
+  /**
+   * Navigates to next chunk without changing the selected page.
+   */
+   goToNextChunk(totalPages: number): number[] {
+    const totalChunks = Math.ceil((totalPages - 2) / this.chunkSize);
+    if (this.visibleChunkIndex < totalChunks - 1) {
+      this.visibleChunkIndex += 1;
+    }
+    const anchorPage = this.visibleChunkIndex * this.chunkSize + 2;
+    return this.chunkInitializer(anchorPage, totalPages);
+  }
+
+  /**
+   * Navigates to previous chunk without changing the selected page.
+   */
+   goToPreviousChunk(totalPages: number): number[] {
+    if (this.visibleChunkIndex > 0) {
+      this.visibleChunkIndex -= 1;
+    }
+    const anchorPage = this.visibleChunkIndex * this.chunkSize + 2;
+    return this.chunkInitializer(anchorPage, totalPages);
+  }
+
+  /**
+   * Optional: To manually reset chunk index (e.g. when size changes or resetting pagination)
+   */
+   resetChunk(): void {
+    this.visibleChunkIndex = 0;
   }
 }

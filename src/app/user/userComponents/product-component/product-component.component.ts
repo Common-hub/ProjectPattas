@@ -27,19 +27,22 @@ export class ProductComponent implements OnInit {
   paginator: number[] = [];
 
   constructor(public productController: ProductController, private router: Router, private interactive: UserInteractionService, private authunticateUser: AuthorizeService,
-    private addCartItem: CartController, private paginationHelper: PaginationHelperService
-  ) { }
+    private addCartItem: CartController) { }
 
   ngOnInit(): void {
-    this.draftItems = this.authunticateUser.getToken() ? sessionStorage.getItem('cartItemDraft')! : '';
-    if (!!this.draftItems) {
-      const cartItems = this.draftItems.split(' ');
-      this.updateCartItems(cartItems[0], cartItems[1]);
+    this.draftItems = this.authunticateUser.getToken();
+    this.productController.getProducts().subscribe(products => {
+      this.productList = products.filter(product => product.name !== '' && product.name !== undefined && product.name !== null);
+      this.cartQuantity = !this.draftItems ? new Array(this.productList.length).fill(0) : [];
+    });
+    if (this.draftItems !== '') {
+      const cartItems = sessionStorage.getItem('cartItemDraft')!.split(' '); //this.draftItems.split(' ');
+      this.updateCartItems(cartItems[0] as 'addItem' | 'removeItem', Number(cartItems[1]));
+      this.cartQuantity = this.addCartItem.getOnlyQty();
+      if(this.cartQuantity.length < 1) this.cartQuantity = new Array(this.productList.length).fill(0);
     }
-    this.productController.getFlag() ? '' : this.productController.fetchProducts(0, 15);
-    this.productController.getProducts().subscribe(products => this.productList = products.filter(product => product.name !== ''));
-    this.cartQuantity = this.addCartItem.getOnlyQty();
-    this.paginator = this.paginationHelper.chunkInitializer(this.currentPage, 5);
+    console.log(this.cartQuantity, this.draftItems);
+    if (this.productList.length < 1) this.productController.fetchProducts(0, 12);
   }
 
   sortProducts(type: string): void {
@@ -56,15 +59,12 @@ export class ProductComponent implements OnInit {
   }
 
   async updateCartItems(action: 'addItem' | 'removeItem', itemId: number) {
-    const isloggedin = !!this.authunticateUser.getToken();
-    const isUser = this.authunticateUser.getUserRole() !== 'admin';
+    const isloggedin = this.authunticateUser.getConfirmation();
+    const isUser = this.authunticateUser.getUserRole() === 'user';
     if (isloggedin) {
-      const requiredLoginConfirm = await this.interactive.open('confirm');
-      if (requiredLoginConfirm) {
-        this.interactive.jobDone('Redirected to login !.');
-        sessionStorage.setItem('cartItemDraft', action + ' ' + itemId.toString());
-        this.router.navigate(['login']);
-      } else if (isUser) {
+      console.log((itemId));
+      
+      if (isUser) {
         if (action === 'addItem') {
           this.cartQuantity[itemId]++;
           this.addCartItem.setAddCartItem({ productId: this.productList[itemId].id, quantity: this.cartQuantity[itemId] });
@@ -74,6 +74,15 @@ export class ProductComponent implements OnInit {
         } else if (this.cartQuantity[itemId] === 0) {
           this.addCartItem.removeCartItem(this.productList[itemId].id);
         }
+      }
+    } else {
+      const requiredLoginConfirm = await this.interactive.openWindow('confirmLogin');
+      if (requiredLoginConfirm) {
+        this.interactive.sppInfo('Redirected to login !.');
+        sessionStorage.setItem('cartItemDraft', action + ' ' + itemId.toString());
+        this.router.navigate(['login']);
+      } else {
+        this.interactive.sppWarning("Login to continue the Action.")
       }
     }
   }
@@ -86,17 +95,6 @@ export class ProductComponent implements OnInit {
 
   changeSize(event: Event) {
     this.pageSize = Number((event.target as HTMLInputElement).value);
-    this.productController.setItemSize(this.pageSize);
-  }
-
-  goToFirst() {
-    this.paginationHelper.chunkIndexer = 0;
-    this.productController.setCurrentPage(0);
-  }
-
-  goToLast() {
-    this.paginationHelper.chunkIndexer = Math.floor((this.totalPages - 1) / this.paginationHelper.pagePerChunk);
-    this.productController.setCurrentPage(this.totalPages);
     this.productController.setItemSize(this.pageSize);
   }
 

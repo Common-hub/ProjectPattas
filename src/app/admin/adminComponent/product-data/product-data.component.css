@@ -1,75 +1,8 @@
-section {
-    position: relative;
-    padding-top: 37px;
-    width: 95%;
-    margin: 0 auto;
-    background: #669;
-}
-
-.table-container {
-    overflow-y: auto;
-}
-
-table {
-    border-spacing: 0;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-td, th {
-    border: 0;
-    border-left: 1px solid #eee;
-    background: #e5e5e5;
-    padding: 10px 15px;
-}
-
-tbody tr:nth-child(even) td {
-    background: #f7f7f7;
-}
-
-th {
-    height: 0;
-    line-height: 0;
-    padding: 0;
-    color: transparent;
-    border: none;
+.noData{
+    display: flex;
     text-align: center;
+    justify-content: center;
 }
-
-th div {
-    position: absolute;
-    background: transparent;
-    color: #fff;
-    padding: 9px 25px;
-    top: 0;
-    margin-left: -25px;
-    border-left: 1px solid #eee;
-}
-
-.actions {
-    white-space: nowrap;
-    font-size: 0;
-}
-
-input:disabled {
-    border: none;
-    background: transparent;
-}
-
-input {
-    border: none;
-}
-
-input:focus {
-    outline: none;
-}
-
-tbody tr td:last-child {
-    white-space: nowrap;
-    font-size: 0;
-    position: relative;
-}
-
 .pagination {
     display: flex;
     flex-wrap: wrap;
