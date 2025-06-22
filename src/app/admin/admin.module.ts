@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddCrackersComponent } from './adminComponent/add-crackers/add-crackers.component';
 import { DashboardComponent } from './adminComponent/dashboard/dashboard.component';
 import { ProductDataComponent } from './adminComponent/product-data/product-data.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 @NgModule({
@@ -18,6 +19,8 @@ import { ProductDataComponent } from './adminComponent/product-data/product-data
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    AdminRoutingModule]
+    AdminRoutingModule,
+    NgxSpinnerModule
+  ]
 })
 export class AdminModule { }

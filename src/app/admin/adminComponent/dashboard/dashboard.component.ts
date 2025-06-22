@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Order, ORDER_STATUS_VALUES, OrderAdmin, OrderStatus } from 'src/app/models';
+import { Order, ORDER_STATUS_VALUES, OrderAdmin, OrderStatus, updateOrder } from 'src/app/models';
 import { AuthorizeService } from 'src/app/Services/authorize.service';
 import { OrderController } from 'src/app/Services/orderController.service';
+import { UserInteractionService } from 'src/app/Services/user-interaction.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,9 +15,15 @@ export class DashboardComponent implements OnInit {
   orderStatus: OrderStatus[] = ORDER_STATUS_VALUES;
   editedOrderItem: OrderAdmin = {} as OrderAdmin;
   pendingOrders: number = 0;
-  completeOrders : number = 0;
+  completeOrders: number = 0;
+  isEditable: number | null = null
+  backUp!: OrderAdmin
+  isEdit: boolean = false;
+  iserror: boolean = false;
+  inprocess: boolean = false;
+  isUpdated: boolean = false;
 
-  constructor(public orderController: OrderController, private authenticate: AuthorizeService) { }
+  constructor(public orderController: OrderController, private authenticate: AuthorizeService, private notify: UserInteractionService) { }
 
   ngOnInit(): void {
     this.orderController.fetchAdminOrders();
@@ -44,6 +51,10 @@ export class DashboardComponent implements OnInit {
     this.orderController.adminOrders = this.orderList;
   }
 
+  onStatusChange(status: string) {
+    alert(this.orderList[0].orderStatus)
+  }
+
   sortProducts(type: keyof OrderAdmin, ascending: boolean = false): void {
     this.orderList.sort((a, b) => {
       // 2. Handle string comparison safely
@@ -63,5 +74,38 @@ export class DashboardComponent implements OnInit {
       return 0;
     });
     this.orderController.adminOrders = this.orderList;
+  }
+
+  editStatus(orderId: number) {
+    console.log(this.isEdit);
+    const index = this.orderList.findIndex(i => i.id === orderId);
+    if (this.isEditable === orderId) { } else {
+      this.isEditable = orderId;
+      this.backUp = JSON.parse(JSON.stringify({ ...this.orderList[index] }));
+      console.log(JSON.stringify(this.orderList[index]) === JSON.stringify(this.backUp));
+    }
+  }
+
+  updateStatus(orderId: number) {
+    const index = this.orderList.findIndex(i => i.id === orderId);
+    if (this.isEditable === orderId) {
+      const invalidStatus = this.orderList[index].orderStatus === 'SHIPPED';
+      const emptyFields = !this.orderList[index].trackingId || !this.orderList[index].logisticsPartner;
+      this.iserror = invalidStatus && emptyFields;
+      console.log(this.iserror)
+      if (!this.iserror) {
+        const noChanges = JSON.stringify(this.orderList[index]) === JSON.stringify(this.backUp) ? true : false;
+        if (noChanges) {
+          this.notify.sppWarning("Detected No Changes.⁉");
+        } else {
+          this.inprocess = true;
+          const uplodedItem: updateOrder = { orderId: this.orderList[index].id, orderStatus: this.orderList[index].orderStatus, trackingId: this.orderList[index].trackingId }
+          this.orderController.updateOrderItem(uplodedItem);
+          setTimeout(() => {
+            this.inprocess = this.orderController.flageOff;
+          }, 2000);
+        }
+      }
+    }
   }
 }

@@ -59,22 +59,47 @@
                     </tr>
                 </thead>
                 <tbody class="table-hover">
+                    <ngx-spinner *ngIf="inprocess" bdColor="transparent" size="small" type="ball-spin-clockwise"
+                        color="white"
+                        style="display: inline-block; width: 20px; height: 20px; position: relative;"></ngx-spinner>
                     <ng-container *ngFor="let orderItem of (orderController.$AdminOrderList | async);let index = index">
                         <tr>
-                            <ng-container>
-                                <td><strong>{{index +1}}</strong></td>
-                                <td><span (click)="orderController.billInvoice(orderItem.id)" class="billLink"><strong>{{orderItem.id}}</strong></span></td>
-                                <td><strong>{{orderItem.orderDate | date: 'dd-mm-yyy'}}</strong></td>
+                            <td><strong>{{index +1}}</strong></td>
+                            <td><span (click)="orderController.billInvoice(orderItem.id)"
+                                    class="billLink"><strong>{{orderItem.id}}</strong></span></td>
+                            <td><strong>{{orderItem.orderDate | date: 'dd-mm-yyy'}}</strong></td>
+
+                            <ng-container *ngIf="isEditable !== orderItem.id">
                                 <td><strong>{{orderItem.logisticsPartner}}</strong></td>
                                 <td><strong>{{orderItem.trackingId}}</strong></td>
-                                <td><span class="badge" [ngClass]="getStatus(orderItem.orderStatus)"><strong>{{orderItem.orderStatus}}</strong></span></td>
-                                <td><button type="button" class="btn btn-sm btn-outline-secondary">Edit</button></td>
-                                <td><button type="button" class="btn btn-sm btn-outline-primary">update</button></td>
+                                <td><span class="badge"
+                                        [ngClass]="getStatus(orderItem.orderStatus)"><strong>{{orderItem.orderStatus}}</strong></span>
+                                </td>
+                                <td><button type="button" class="btn btn-sm btn-outline-secondary" (click)="editStatus(orderItem.id)"
+                                        [disabled]="['DELIVERED','CANCELLED','FAILED','REFUNDED','RETURNED'].includes(orderItem.orderStatus)"><i
+                                            class="bi bi-pen-fill"></i></button></td>
                             </ng-container>
+
+                            <ng-container *ngIf="isEditable === orderItem.id">
+                                <td><input type="text" name="parnername" id="'tracker'+orderItem.id"
+                                        [(ngModel)]="orderItem.logisticsPartner"></td>
+                                <td><input type="text" name="trackingId" id="'tracker'+orderItem.id"
+                                        [(ngModel)]="orderItem.trackingId"></td>
+                                <td>
+                                    <select name="status" id="orderItem.orderStatus" class="badge" (change)="onStatusChange(orderItem.orderStatus)" [(ngModel)]="orderItem.orderStatus">
+                                        <option *ngFor="let status of orderStatus" [value]="status"> {{status | titlecase }} </option>
+                                    </select>
+                                </td>
+                                <td><button type="button" class="btn btn-sm btn-outline-secondary" (click)="editStatus(orderItem.id)"><i
+                                            class="bi bi-pen-fill"></i></button></td>
+                            </ng-container>
+
+                            <td><button type="button" class="btn btn-sm btn-outline-primary" (click)="updateStatus(orderItem.id)"><i
+                                        class="bi bi-upload"></i></button></td>
                         </tr>
                     </ng-container>
                 </tbody>
-            </table>
+            </table>\   
         </ng-container>
 
     </div>

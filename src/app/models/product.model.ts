@@ -57,3 +57,10 @@ export const ORDER_STATUS_VALUES: OrderStatus[] = [
   'REFUNDED',
   'FAILED',
 ];
+
+export interface updateOrder {
+  orderId: number;
+  trackingId: string;
+  orderStatus: string;
+  logistictsPartner?: string;
+}

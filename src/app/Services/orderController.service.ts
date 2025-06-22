@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, finalize, Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Order, OrderAdmin } from '../models';
+import { Order, OrderAdmin, updateOrder } from '../models';
 import { HttpClient } from '@angular/common/http';
 import { UserInteractionService } from './user-interaction.service';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 export class OrderController {
 
   private apiBaseUrl = environment.apiBaseUrl + "order";
+  flageOff:boolean = true;
 
   unfilteredOrderAd: OrderAdmin[] = [];
   unfilteredOrder: Order[] = [];
@@ -79,7 +80,7 @@ export class OrderController {
       const url = window.URL.createObjectURL(bill);
       const button = document.createElement('a');
       button.href = url;
-      const index = this.adminOrders.findIndex(order=> order.id === orderId)
+      const index = this.adminOrders.findIndex(order => order.id === orderId)
       button.download = "Invoice-" + this.adminOrders[index].id;
       button.style.display = 'none';
       document.body.appendChild(button);
@@ -104,6 +105,21 @@ export class OrderController {
   //   return this.$OrderItemsList;
   // }
 
+  updateOrderItem(orderItem: updateOrder) {
+    console.info("[Guard]:updating orders....")
+    this.orderController.updateStatus(orderItem).pipe(tap(response => {
+      this.loader.sppInfo(response);
+      console.info("[guard]:")
+      this.fetchAdminOrders();
+      this.flageOff = false
+    }), catchError(error => {
+      this.loader.sppError('❌ ' + error.error);
+      console.error('[guard] updated order status failed');
+      return of([]);
+    }),
+      finalize(() => { this.loader.hideLoader(); })).subscribe();
+  }
+
   public set adminOrders(orders: OrderAdmin[]) {
     this.adminOrderList.next(orders);
   }
@@ -121,7 +137,7 @@ export class OrderController {
     placeOrder: (userAddress: string): Observable<Order[]> => this.http.post<Order[]>(this.apiBaseUrl + '/place', userAddress, { responseType: 'json' }),
     getOrders: (): Observable<Order[]> => this.http.get<Order[]>(this.apiBaseUrl, { responseType: 'json' }),
     downloadInvoice: (orderId: number): Observable<string[]> => this.http.get<string[]>(this.apiBaseUrl + `order/${orderId}/invoice`),
-    getAllOrders: (): Observable<OrderAdmin[]> => this.http.get<OrderAdmin[]>(this.apiBaseUrl + '/allOrders')
+    getAllOrders: (): Observable<OrderAdmin[]> => this.http.get<OrderAdmin[]>(this.apiBaseUrl + '/allOrders'),
+    updateStatus: (status: updateOrder) => this.http.put<string>(this.apiBaseUrl + '/update', status)
   }
-
 }
