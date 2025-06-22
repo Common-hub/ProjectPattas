@@ -27,9 +27,10 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-      if (this.authorize.getConfirmation()){
-        this.setRouter(this.authorize.getUserRole());
-      console.log(this.authorize.getConfirmation());}
+    if (this.authorize.isUserLoggedIn) {
+      this.allowedRoutes(this.authorize.userAuthority);
+      console.log(this.authorize.isUserLoggedIn);
+    }
     setTimeout(() => {
       console.log(this.navigations);
       this.search.getSuggestions().subscribe(respnseName => this.names = respnseName);
@@ -56,13 +57,13 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  setRouter(userRole: string) {
+  allowedRoutes(userRole: string) {
     if (userRole === 'admin') {
       this.navigations = [
         { route: 'admin/dashBoard', key: `<span class="bi bi-speedometer2"></span>&nbsp; DashBoard` },
-        { route: 'admin/addProducts', key: `<span class="bi bi-cart-plus"></span>&nbsp; Add to Inventory` },
+        { route: 'admin/addProducts', key: `<span class="bi bi-cart-plus"></span>&nbsp; Inventory` },
         { route: 'admin/productsList', key: `<span class="bi bi-view-list"></span>&nbsp; ProductList` }]
-    } else if (userRole === 'user') {      
+    } else if (userRole === 'user') {
       this.navigations = [
         { route: 'user/productsList', key: `<span class="bi bi-houses"></span>&nbsp; Home` },
         { route: 'user/viewCart', key: `<span class="bi bi-cart3"></span>&nbsp; View Cart` },
@@ -82,6 +83,6 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.authorize.getConfirmation() ? this.search.openWindow('confirmLogout') : this.search.openWindow('confirmLogin');
+    this.authorize.isUserLoggedIn ? this.search.openWindow('confirmLogout') : this.search.openWindow('confirmLogin');
   }
 }

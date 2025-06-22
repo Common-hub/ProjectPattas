@@ -47,8 +47,6 @@ export class UserInteractionService {
   }
 
   setSuggesttions(keyItems: string[]) {
-    console.log(keyItems);
-
     this.FilteredSugegestions.next(keyItems);
   }
 

@@ -1,3 +1,6 @@
+<div class="col-md-1 menuItem">
+    <i class="bi bi-menu-button-fill"></i>
+</div>
 <div class="search col-md-5">
     <input type="text" name="search" id="searchtext" placeholder=" Search..." [(ngModel)]="searchKey"
         (input)="onsearch($event)">
@@ -7,12 +10,12 @@
                 catogaries</sub></li>
     </ul>
 </div>
-<div class="logo col-md-2">
+<div class="logo col-md-1">
     <a [routerLink]="[ '{{draftItems}}/']">
         <img src="/assets/SPP.png" alt="shop logo" height="45px" width="45px">
     </a>
 </div>
-<div class="buttons col-md-5">
+<div class="buttons col-md-4">
     <ng-container *ngFor="let item of navigations">
         <a [routerLink]="[item.route]" class="b1" routerLinkActive="active">
             <span [innerHTML]="item.key"></span>

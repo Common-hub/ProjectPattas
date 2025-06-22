@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
       spinner.show();}
       else if (event instanceof NavigationEnd) {
         const currentRoute = event.urlAfterRedirects;
-        this.isLoggedIn = activityMonitor.getConfirmation() || currentRoute.startsWith('/user/productsList');
+        this.isLoggedIn = activityMonitor.isUserLoggedIn || currentRoute.startsWith('/user/productsList');
         setTimeout(() => {
           spinner.hide();
         }, 5890);

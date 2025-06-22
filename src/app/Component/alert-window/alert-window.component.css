@@ -1,20 +1,18 @@
 .alertWindow {
-    position: relative;
-    z-index: 9999;
-    inset: 0;
+    position: absolute;
     pointer-events: none;
+    top: 50px;
+    z-index: 1000;
+    right: .5rem;
 }
 
 .alert {
-    position: absolute;
     right: 0;
-    top: 0;
     padding: 16px 24px;
     border-radius: 6px;
     transform: translateY(-20px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     color: white;
-    z-index: 1000;
 }
 
 .confirm {
@@ -38,6 +36,7 @@
     width: auto;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2), 0 0 10px rgba(173, 216, 230, 0.4);
+    z-index: 1000;
 }
 
 .logoutLabel .buttons {

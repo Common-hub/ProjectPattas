@@ -25,7 +25,7 @@ export class AlertWindowComponent implements OnInit {
 
   ngOnInit() {
 
-    this.userRole = this.authuntication.getUserRole();
+    this.userRole = this.authuntication.userAuthority;
 
 
 
@@ -41,18 +41,23 @@ export class AlertWindowComponent implements OnInit {
     //alert
     this.informerClass._AlertType.subscribe(data => {
       if (data === 'confirmLogout') {
-        if (this.authuntication.getConfirmation()) {
+        if (this.authuntication.isUserLoggedIn) {
           this.alert = data;
           this.windowLifeTime();
         }
       } else if (data === 'session') {
-        if (this.authuntication.getConfirmation()) {
+        if (this.authuntication.isUserLoggedIn) {
           this.alert = data;
           this.windowLifeTime();
         }
       } else if (data === 'confirmLogin') {
         this.alert = data;
         this.windowLifeTime();
+      }else if (data === 'confirm'){
+        if(this.authuntication.isUserLoggedIn){
+          this.alert = data;
+          this.windowLifeTime();
+        }
       }
     });
     this.informerClass.promptAlert.subscribe(show => this.isAlert = show);

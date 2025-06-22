@@ -16,13 +16,11 @@ export class CartController {
 
   private addToCart = new BehaviorSubject<cartItems>({} as cartItems);
   private cartProducts = new BehaviorSubject<CartProducts[]>([]);
-  private onlyQty = new BehaviorSubject<number[]>([]);
 
   _AddCartItems = this.addToCart.asObservable();
   _CartProducts = this.cartProducts.asObservable();
-  _OnlyQty = this.onlyQty.asObservable();
 
-  private role = this.authorise.getUserRole();
+  private role = this.authorise.userAuthority;
 
   constructor(private http: HttpClient, private authorise: AuthorizeService, private notification: UserInteractionService) { }
 
@@ -46,9 +44,7 @@ export class CartController {
   fetchCartItems() {
     this.notification.showLoader();
     this.cartController.getCart().pipe(tap((inCartItems: CartProducts[]) => {
-      this.setCartItems(inCartItems);
-      const getQuantity = inCartItems.map(item => item.orderedQuantity);
-      this.setOnlyQty(getQuantity);
+      this.productToCart = inCartItems;
     }), catchError(error => {
       this.notification.sppError('❌ ' + error.error);
       console.error('[cart] Failed to add product!');
@@ -57,37 +53,24 @@ export class CartController {
     }), finalize(() => this.notification.hideLoader())).subscribe()
   }
 
+  set productToCart(items: CartProducts[]) {
+    this.cartProducts.next(items);
+  }
+
+  get productsInCart(){
+    return this._CartProducts;
+  }
+
   //sevt to cart
-  setAddCartItem(item: cartItems) {
+  set cartItem(item: cartItems) {
     this.addToCart.next(item);
     this.pushCartItem(item);
   }
 
-  setCartItems(iItems: CartProducts[]) {
-    this.cartProducts.next(iItems)
-    const qty: number[] = iItems.map(item => { return item.orderedQuantity });
-    this.setOnlyQty(qty)
+  get cartItems() {
+    return of([]);
   }
 
-  getCartItems() {
-    if (this.cartProducts.value.length > 1) {
-      this.notification.sppInfo('LoadedCartItems');
-      return this.cartProducts.asObservable();
-    }else{
-      this.notification.sppError('Error Getting Quantity.')
-      return [] as unknown as Observable<CartProducts[]>
-    }
-  }
-
-  setOnlyQty(qty: number[]) {
-    console.log(qty);
-    
-    this.onlyQty.next(qty);
-  }
-
-  getOnlyQty(): number[] {
-    return this.onlyQty.value;
-  }
 
   //cartController
   cartController = {

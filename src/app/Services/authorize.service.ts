@@ -37,8 +37,8 @@ export class AuthorizeService {
     }
   }
 
-  getConfirmation(): boolean{
-    return this.getToken() !=='' ? true : false;
+  get isUserLoggedIn(){
+    return this.userIdentifier !=='' ? true : false;
   }
 
   private async activityMonitor() {
@@ -61,12 +61,12 @@ export class AuthorizeService {
     }
   }
 
-  setToken(token: string) {
+  set authToken(token: string) {
     this.jwtToken = token;
     sessionStorage.setItem('token', token);
   }
 
-  getToken(): string {
+  get userIdentifier(): string {
     if (!this._Token) {
       const sessionToken = sessionStorage.getItem("token");
       if (sessionToken) this._Token = sessionToken;
@@ -75,10 +75,10 @@ export class AuthorizeService {
   }
 
   reStoreFromSession() {
-    const token = this.getToken()
+    const token = this.userIdentifier
     if (token !== '') {
       console.info('[Guard]: Token restored from session Succesfull!');
-      this.setToken(token);
+      this.authToken = token;
     } else {
       console.info('[Guard]: Failed token restoration.Login!');
     }
@@ -87,11 +87,11 @@ export class AuthorizeService {
   clear() {
     this._Token = '';
     sessionStorage.removeItem('token');
-    console.info(`[${this.getUserRole()}]: Deleted all items form session.`)
-    console.info(`[${this.getUserRole()}]: Deleted all items form session.`)
+    console.info(`[${this.userAuthority}]: Deleted all items form session.`)
+    console.info(`[${this.userAuthority}]: Deleted all items form session.`)
   }
 
-  getUserRole(): string {
+  get userAuthority(): string {
     if (this.jwtToken !== '')
       return this.tokenDecoder(this.jwtToken).role;
     return '';

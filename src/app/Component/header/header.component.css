@@ -103,3 +103,8 @@ input:focus {
     text-shadow: 0 2px 4px rgba(251, 4, 4, 0.3);
     font-size: x-large;
 }
+
+.menuButton {
+    font-size: xx-large;
+    color: #3c8fe9;
+}

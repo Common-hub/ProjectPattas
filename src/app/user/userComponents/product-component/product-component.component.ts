@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { cartItems, CartProducts, Product } from 'src/app/models';
 import { AuthorizeService } from 'src/app/Services/authorize.service';
-import { CartController } from 'src/app/Services/cart-controller.service';
-import { PaginationHelperService } from 'src/app/Services/pagination-helper.service';
+import { CartController } from 'src/app/Services/cart-controller.service';;
 import { ProductController } from 'src/app/Services/productController.service';
 import { UserInteractionService } from 'src/app/Services/user-interaction.service';
 import { environment } from 'src/environments/environment';
@@ -20,7 +19,7 @@ export class ProductComponent implements OnInit {
   productList: Product[] = [];
   unSortedProduct: Product[] = [];
   draftItems: any;
-  cartQuantity: number[] = [];
+  cartQuantity: cartItems[] = [];
   currentPage: number = 0;
   totalPages: number = 0;
   pageSize: number = 0;
@@ -30,18 +29,29 @@ export class ProductComponent implements OnInit {
     private addCartItem: CartController) { }
 
   ngOnInit(): void {
-    this.draftItems = this.authunticateUser.getToken();
-    this.productController.getProducts().subscribe(products => {
+    this.productController._productList.subscribe(products => {
       this.productList = products.filter(product => product.name !== '' && product.name !== undefined && product.name !== null);
-      this.cartQuantity = !this.draftItems ? new Array(this.productList.length).fill(0) : [];
+      this.cartQuantity = Array(this.productList.length).fill({ productId: 0, quantity: 0 })
     });
-    if (this.draftItems !== '') {
-      const cartItems = sessionStorage.getItem('cartItemDraft')!.split(' '); //this.draftItems.split(' ');
-      this.updateCartItems(cartItems[0] as 'addItem' | 'removeItem', Number(cartItems[1]));
-      this.cartQuantity = this.addCartItem.getOnlyQty();
-      if(this.cartQuantity.length < 1) this.cartQuantity = new Array(this.productList.length).fill(0);
+    if (this.authunticateUser.isUserLoggedIn) {
+      const draftItems = sessionStorage.getItem('cartItemDraft');
+      if (draftItems) {
+        const cartItems = draftItems.split(' ') //this.draftItems.split(' ');
+        this.updateCartItems(cartItems[0] as 'addItem' | 'removeItem', Number(cartItems[1]));
+      }
+      this.addCartItem.cartItems.subscribe(items => {
+        if (items.length >= 1) {
+          this.cartQuantity = items;
+          const missingCount = this.productList.length - this.cartQuantity.length;
+          if (missingCount > 0) {
+            const filler = Array(missingCount).fill({ productId: 0, quantity: 0 });
+            this.cartQuantity.push(...filler);
+          }
+        } else {
+          this.cartQuantity = Array(this.productList.length).fill({ productId: 0, quantity: 0 });
+        }
+      });
     }
-    console.log(this.cartQuantity, this.draftItems);
     if (this.productList.length < 1) this.productController.fetchProducts(0, 12);
   }
 
@@ -59,19 +69,19 @@ export class ProductComponent implements OnInit {
   }
 
   async updateCartItems(action: 'addItem' | 'removeItem', itemId: number) {
-    const isloggedin = this.authunticateUser.getConfirmation();
-    const isUser = this.authunticateUser.getUserRole() === 'user';
+    const isloggedin = this.authunticateUser.isUserLoggedIn;
+    const isUser = this.authunticateUser.userAuthority === 'user';
     if (isloggedin) {
-      console.log((itemId));
-      
+      this.addCartItem.productToCart // remove later
+      this.cartQuantity[itemId].productId = this.productList[itemId].id;
       if (isUser) {
         if (action === 'addItem') {
-          this.cartQuantity[itemId]++;
-          this.addCartItem.setAddCartItem({ productId: this.productList[itemId].id, quantity: this.cartQuantity[itemId] });
-        } else if (action === 'removeItem' && this.cartQuantity[itemId] > 0) {
-          this.cartQuantity[itemId]--;
-          this.addCartItem.setAddCartItem({ productId: this.productList[itemId].id, quantity: this.cartQuantity[itemId] });
-        } else if (this.cartQuantity[itemId] === 0) {
+          this.cartQuantity[itemId].quantity++;
+          this.addCartItem.cartItem = this.cartQuantity[itemId];
+        } else if (action === 'removeItem' && this.cartQuantity[itemId].quantity > 0) {
+          this.cartQuantity[itemId].quantity--;
+          this.addCartItem.cartItem = this.cartQuantity[itemId];
+        } else if (this.cartQuantity[itemId].quantity === 0) {
           this.addCartItem.removeCartItem(this.productList[itemId].id);
         }
       }
@@ -90,12 +100,12 @@ export class ProductComponent implements OnInit {
 
   changePage(page: number) {
     this.currentPage = page;
-    this.productController.setCurrentPage(this.currentPage);
+    this.productController.currentPageNumber = this.currentPage;
   }
 
   changeSize(event: Event) {
     this.pageSize = Number((event.target as HTMLInputElement).value);
-    this.productController.setItemSize(this.pageSize);
+    this.productController.itemsPerPage = this.pageSize;
   }
 
 }

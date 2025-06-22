@@ -12,7 +12,7 @@ import { UserInteractionService } from './user-interaction.service';
   providedIn: 'root'
 })
 export class ProductController {
-  private apiBaseUrl = environment.apiBaseUrl;
+  private apiBaseUrl = environment.apiBaseUrl + "products";
 
   private productFetched: Product[] = [];
 
@@ -29,32 +29,34 @@ export class ProductController {
   _TotalPages = this.pageTotal.asObservable();
 
   public isFetched = false;
-  private role = this.authorize.getUserRole();
+  private role = this.authorize.userAuthority;
   private inQueue: boolean = false;
 
   constructor(private http: HttpClient,
     private authorize: AuthorizeService, private pagenator: PaginationHelperService,
     private notification: UserInteractionService) { }
 
-  fetchProducts(page: number, size: number): void {
-    console.log('[Products] productFetch started....');
+  fetchProducts(page: number, size: number) {
+    console.info('[Products] productFetch started....');
     this.notification.showLoader();
     if (!this.inQueue) {
-    this.inQueue = true;
+      this.inQueue = true;
       this.productController.getProducts(page, size).pipe(
         tap((response: any) => {
           if (response) {
-            console.log("Unfiltered", response.content);
             const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
-            this.setProducts(_FilteredProducts);
+            _FilteredProducts.map((products: Product)=>{
+              products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
+            });
+            this.productsList = _FilteredProducts;
             this.pagenator.chunkInitializer(response.totalElements, size);
-            const productNames = _FilteredProducts.map((product:Product) => product.name);
+            const productNames = _FilteredProducts.map((product: Product) => product.name);
             this.notification.setSuggesttions(productNames);
             var successMsg = '';
-            if(this.authorize.getConfirmation()){
-              if(this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
-              else if(this.role === 'user' ) successMsg = '🛍️ Products fetched successfully for User.';
-            } 
+            if (this.authorize.isUserLoggedIn) {
+              if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
+              else if (this.role === 'user') successMsg = '🛍️ Products fetched successfully for User.';
+            }
             this.notification.sppInfo(successMsg);
             console.log('[Products] productFetch Success....');
 
@@ -76,11 +78,13 @@ export class ProductController {
     this.notification.showLoader();
     return this.productController.postProduct(product).pipe(
       tap(response => {
+        console.error(response)
         this.productFetched = [response, ...this.productFetched];
-        this.setProducts(this.productFetched);
+        this.productsList = this.productFetched;
         console.info(`[${this.role}]: Product added successfully.`);
       }),
       catchError(error => {
+        console.error(error.error, error)
         this.notification.sppError('❌ ' + error.error);
         this.clearProducts();
         console.error('[Products] Failed to add product!');
@@ -90,7 +94,7 @@ export class ProductController {
       , finalize(() => this.notification.hideLoader()));
   }
 
-  deleteProduct(id: number): void {
+  deleteProduct(id: number) {
     console.info(`[${this.role}]: Deleting product with ID ${id}...`);
     this.notification.showLoader();
     this.productController.deleteProductById(id).pipe(
@@ -101,7 +105,7 @@ export class ProductController {
       switchMap(() => this.productController.getProducts(this.CurrentPage.value, this.itemSize.value)),
       tap((response: any) => {
         this.productFetched = response?.content ?? [];
-        this.setProducts(this.productFetched);
+        this.productsList = this.productFetched;
         console.info('[Products]: Updated list Updated after deletion.');
         this.notification.sppInfo('✅ Product DeLeted Succesfully.')
       }),
@@ -121,7 +125,7 @@ export class ProductController {
       const updatedIndex = [...this.productFetched]
       const index = updatedIndex.findIndex(index => index.id === response.id);
       updatedIndex[index] = response;
-      this.setProducts([...updatedIndex]);
+      this.productsList = [...updatedIndex];
       console.info('[Products]: Updated list after deletion.');
       this.notification.sppInfo('✅ Product Updation Succesfully.')
     }),
@@ -138,7 +142,7 @@ export class ProductController {
     this.notification.showLoader();
     this.productController.getProductById(id).pipe(tap(response => {
       const product = response;
-      this.setProducts([{ ...product }]);
+      this.productsList = [{ ...product }];
       console.info(`[${this.role}]: the product is fetched Succesfully`);
       this.notification.sppInfo('✅ Product Fetch Succesfully.')
     }),
@@ -150,57 +154,57 @@ export class ProductController {
       }), finalize(() => this.notification.hideLoader())).subscribe();
   }
 
-  filteredProducts(keyWord: string): void {
+  filteredProducts(keyWord: string) {
     if (!keyWord) {
-      this.setProducts(this.productFetched);
+      this.productsList = this.productFetched;
       return;
     }
     const filtered = this.productFetched.filter(p =>
       p.name.toLowerCase().includes(keyWord.toLowerCase())
     );
-    this.setProducts(filtered);
+    this.productsList = filtered;
   }
 
-  clearProducts(): void {
+  clearProducts() {
     this.productsLists.next([]);
   }
 
-  setProducts(products: Product[]): void {
+  set productsList(products: Product[]) {
     this.productsLists.next(products);
   }
 
-  getProducts(): Observable<Product[]> {
+  get _productList(): Observable<Product[]> {
     return this._ProductDTO;
   }
 
-  setCurrentPage(pageNumber: number): void {
+  set currentPageNumber(pageNumber: number) {
     this.CurrentPage.next(pageNumber);
     this.fetchProducts(pageNumber, this.itemSize.value);
   }
 
-  getCurrentPage() {
+  get currentPageNumber() {
     return this.CurrentPage.value;
   }
 
-  setItemSize(itemSize: number): void {
+  set itemsPerPage(itemSize: number) {
     this.itemSize.next(itemSize);
     this.fetchProducts(this.CurrentPage.value, itemSize);
   }
 
-  setTotalPages(pageNumber: number) {
+  set TotalPages(pageNumber: number) {
     this.pageTotal.next(pageNumber);
   }
 
-  getTotalPages(): number {
+  get TotalPages(): number {
     return this.pageTotal.value;
   }
 
   //Api call for Product
-  productController = {
-    getProducts: (page: number, size: number): Observable<Product[]> => this.http.get<Product[]>(this.apiBaseUrl + `products?page=${page}&size=${size}`, { responseType: 'json' }),
-    postProduct: (product: FormData): Observable<Product> => this.http.post<Product>(this.apiBaseUrl + 'products', product, { responseType: 'json' }),
-    getProductById: (Id: number): Observable<Product> => this.http.get<Product>(this.apiBaseUrl + `products/${Id}`, { responseType: 'json' }),
-    putProductById: (Id: number, product: Product): Observable<Product> => this.http.put<Product>(this.apiBaseUrl + `products/${Id}`, product, { responseType: 'json' }),
-    deleteProductById: (Id: number): Observable<string> => this.http.delete(this.apiBaseUrl + `products/${Id}`, { responseType: 'text' as const })
+  private productController = {
+    getProducts: (page: number, size: number): Observable<Product[]> => this.http.get<Product[]>(this.apiBaseUrl + `?page=${page}&size=${size}`, { responseType: 'json' }),
+    postProduct: (product: FormData): Observable<Product> => this.http.post<Product>(this.apiBaseUrl, product, { responseType: 'json' }),
+    getProductById: (Id: number): Observable<Product> => this.http.get<Product>(this.apiBaseUrl + `/${Id}`, { responseType: 'json' }),
+    putProductById: (Id: number, product: Product): Observable<Product> => this.http.put<Product>(this.apiBaseUrl + `/${Id}`, product, { responseType: 'json' }),
+    deleteProductById: (Id: number): Observable<string> => this.http.delete(this.apiBaseUrl + `/${Id}`, { responseType: 'text' as const })
   }
 }

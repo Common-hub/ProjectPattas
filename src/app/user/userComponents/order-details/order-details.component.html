@@ -32,7 +32,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="top-status">
-                                <h5>ORDER #{{orders[0].id}}</h5>
+                                <h5>ORDER #{{orders[0].orderId}}</h5>
                                 <ul>
                                     <li *ngFor="let statusMsg of orderStatus; let i = index"
                                         [ngClass]="{'active': i <= getCurrentState()}">
@@ -470,7 +470,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let order of orders; let i = index">
-                                        <td><a style="cursor: pointer;" (click)="showOrderStatus(i)">{{order.id}}</a>
+                                        <td><a style="cursor: pointer;" (click)="showOrderStatus(i)">{{order.orderId}}</a>
                                         </td>
                                         <td>{{order.orderDate | date: 'd/MM'}}</td>
                                         <td colspan="2"><strong><span

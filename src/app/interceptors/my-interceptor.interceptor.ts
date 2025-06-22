@@ -15,7 +15,7 @@ export class apiInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     this.loader.showLoader();
-    const token = this.autorization.getToken();
+    const token = this.autorization.userIdentifier;
     if(token){
       request = request.clone({
         setHeaders: {

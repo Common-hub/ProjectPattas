@@ -13,7 +13,7 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
 
   constructor(private router: Router, private jwtToken: AuthorizeService, private notify: UserInteractionService,
     private loginHelperService: ApiInteractionService) {
-    this.userRole = jwtToken.getUserRole();
+    this.userRole = jwtToken.userAuthority;
   }
 
   canLoad(route: Route, segments: UrlSegment[]): boolean {
@@ -34,7 +34,7 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
   }
 
   private authorizer(route: ActivatedRouteSnapshot): boolean {
-    if (!this.jwtToken.getConfirmation() && !route.data?.['public']) {
+    if (!this.jwtToken.isUserLoggedIn && !route.data?.['public']) {
       this.notify.sppWarning('Login to Continue');
       this.router.navigate(['login']);
       return false;
@@ -51,22 +51,23 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
 
 
   loginHelper(params: Credentials) {
-    console.info("[Guard]: Verifyng User.")
+    console.info("[Guard]: Verifyng User.");
     this.notify.showLoader();
     this.loginHelperService.userController.login(params).subscribe(response => {
       if (response) {
         const authorized = response;
-        this.jwtToken.setToken(authorized.token);
-        this.userRole = this.jwtToken.getUserRole();
-        if (this.jwtToken.getUserRole() === 'user') {
+        this.jwtToken.authToken = authorized.token;
+        this.userRole = this.jwtToken.userAuthority;
+        if (this.jwtToken.userAuthority === 'user') {
           console.info(`[${this.userRole}]: User Verified 🔐.`);
           this.notify.sppInfo("✅ Welcome back! You’ve logged in successfully.");
           this.router.navigate(['user/']);
-        } else if (this.jwtToken.getUserRole() === 'admin') {
+        } else if (this.jwtToken.userAuthority === 'admin') {
           console.info(`[${this.userRole}]: User Verified 🔐.`);
           this.notify.sppInfo("🔐 Logged in as Admin. Access granted.");
           this.router.navigate(['admin/dashBoard']);
         }
+        this.notify.hideLoader();
       }
     }, (error) => {
       console.info(`[Gaurd]: User Failed to Verify 🔐.`);
