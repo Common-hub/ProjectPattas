@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://project-pattasu.onrender.com/'
+  apiBaseUrl: 'https://project-pattasu.onrender.com/api/'
 };

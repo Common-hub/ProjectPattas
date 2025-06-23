@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
-import { AuthorizeService } from './Services/authorize.service';
+import { AuthorizeService } from './core/gaurdds/authorize.service';
 import { ProductController } from './Services/productController.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
