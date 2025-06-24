@@ -1,18 +1,18 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, finalize, Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Order, OrderAdmin, updateOrder } from '../shared/models';
-import { HttpClient } from '@angular/common/http';
 import { UserInteractionService } from '../core/service/user-interaction.service';
-import { Router } from '@angular/router';
+import { Order, OrderAdmin, updateOrder } from '../shared/models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderController {
 
-  private apiBaseUrl = environment.apiBaseUrl + "order";
-  flageOff:boolean = true;
+  private apiBaseUrl = environment.apiBaseUrl + "order/";
+  flageOff: boolean = true;
 
   unfilteredOrderAd: OrderAdmin[] = [];
   unfilteredOrder: Order[] = [];
@@ -134,10 +134,10 @@ export class OrderController {
   // }
 
   private orderController = {
-    placeOrder: (userAddress: string): Observable<Order[]> => this.http.post<Order[]>(this.apiBaseUrl + '/place', userAddress, { responseType: 'json' }),
+    placeOrder: (userAddress: string): Observable<Order[]> => this.http.post<Order[]>(this.apiBaseUrl + 'place', userAddress, { responseType: 'json' }),
     getOrders: (): Observable<Order[]> => this.http.get<Order[]>(this.apiBaseUrl, { responseType: 'json' }),
     downloadInvoice: (orderId: number): Observable<string[]> => this.http.get<string[]>(this.apiBaseUrl + `order/${orderId}/invoice`),
-    getAllOrders: (): Observable<OrderAdmin[]> => this.http.get<OrderAdmin[]>(this.apiBaseUrl + '/allOrders'),
+    getAllOrders: (): Observable<OrderAdmin[]> => this.http.get<OrderAdmin[]>(this.apiBaseUrl + 'allOrders'),
     updateStatus: (status: updateOrder) => this.http.put<string>(this.apiBaseUrl + '/update', status)
   }
 }
