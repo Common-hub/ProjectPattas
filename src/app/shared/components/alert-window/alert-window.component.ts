@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthorizeService } from 'src/app/core/gaurdds/authorize.service';
+import { AuthorizeService } from 'src/app/core/guard/authorize.service';
 import { alertType, UserInteractionService, Notification } from 'src/app/core/service/user-interaction.service';
 
 @Component({

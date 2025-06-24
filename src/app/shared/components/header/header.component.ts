@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { UserControllerService } from 'src/app/controller/user-controller.service';
-import { AuthorizeService } from 'src/app/core/gaurdds/authorize.service';
-import { ProductController } from 'src/app/Services/productController.service';
+import { AuthorizeService } from 'src/app/core/guard/authorize.service';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
 
 @Component({
@@ -22,9 +21,7 @@ export class HeaderComponent implements OnInit {
   size: number = 10;
   totalPages: number = 0;
 
-  constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: UserControllerService, private authorize: AuthorizeService,
-    private productHndler: ProductController
-  ) { }
+  constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: UserControllerService, private authorize: AuthorizeService) { }
 
   ngOnInit(): void {
     if (this.authorize.isUserLoggedIn) {

@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Product, searchObject } from '../shared/models';
 import { AuthorizeService } from '../core/guard/authorize.service';
-import { PaginationHelperService } from './pagination-helper.service';
-import { UserInteractionService } from './user-interaction.service';
+import { UserInteractionService } from '../core/service/user-interaction.service';
+import { PaginationHelperService } from '../Services/pagination-helper.service';
+import { Product, searchObject } from '../shared/models';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +21,15 @@ export class ProductController {
   private CurrentPage = new BehaviorSubject<number>(0);
   private itemSize = new BehaviorSubject<number>(15);
   private pageTotal = new BehaviorSubject<number>(1);
+  private editedItem = new BehaviorSubject<{ id: number, productItem: Product }>({} as any);
 
   _keyword = this.filterkeyword.asObservable();
   _ProductDTO = this.productsLists.asObservable();
   _currentPage = this.CurrentPage.asObservable();
   _size = this.itemSize.asObservable();
   _TotalPages = this.pageTotal.asObservable();
+  _EditedItem = this.editedItem.asObservable();
+
 
   public isFetched = false;
   private role = this.authorize.userAuthority;
@@ -45,7 +48,7 @@ export class ProductController {
         tap((response: any) => {
           if (response) {
             const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
-            _FilteredProducts.map((products: Product)=>{
+            _FilteredProducts.map((products: Product) => {
               products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
             });
             this.productsList = _FilteredProducts;
@@ -102,8 +105,7 @@ export class ProductController {
         this.notification.sppInfo(response);
         console.info(`[${this.role}]: Product deletion successful.`);
       }),
-      switchMap(() => this.productController.getProducts(this.CurrentPage.value, this.itemSize.value)),
-      tap((response: any) => {
+      switchMap(() => this.productController.getProducts(this.CurrentPage.value, this.itemSize.value)), tap((response: any) => {
         this.productFetched = response?.content ?? [];
         this.productsList = this.productFetched;
         console.info('[Products]: Updated list Updated after deletion.');
@@ -118,7 +120,7 @@ export class ProductController {
       , finalize(() => this.notification.hideLoader())).subscribe();
   }
 
-  putProductsByid(id: number, productItem: Product) {
+  putProductsByid(id: number, productItem: FormData) {
     console.info(`[${this.role}]: Trying to update product${id}`);
     this.notification.showLoader();
     this.productController.putProductById(id, productItem).pipe(tap(response => {
@@ -126,7 +128,7 @@ export class ProductController {
       const index = updatedIndex.findIndex(index => index.id === response.id);
       updatedIndex[index] = response;
       this.productsList = [...updatedIndex];
-      console.info('[Products]: Updated list after deletion.');
+      console.info('[Products]: Updated list after updation.');
       this.notification.sppInfo('✅ Product Updation Succesfully.')
     }),
       catchError(error => {
@@ -204,7 +206,7 @@ export class ProductController {
     getProducts: (page: number, size: number): Observable<Product[]> => this.http.get<Product[]>(this.apiBaseUrl + `?page=${page}&size=${size}`, { responseType: 'json' }),
     postProduct: (product: FormData): Observable<Product> => this.http.post<Product>(this.apiBaseUrl, product, { responseType: 'json' }),
     getProductById: (Id: number): Observable<Product> => this.http.get<Product>(this.apiBaseUrl + `/${Id}`, { responseType: 'json' }),
-    putProductById: (Id: number, product: Product): Observable<Product> => this.http.put<Product>(this.apiBaseUrl + `/${Id}`, product, { responseType: 'json' }),
+    putProductById: (Id: number, product: FormData): Observable<Product> => this.http.put<Product>(this.apiBaseUrl + `/${Id}`, product, { responseType: 'json' }),
     deleteProductById: (Id: number): Observable<string> => this.http.delete(this.apiBaseUrl + `/${Id}`, { responseType: 'text' as const })
   }
 }

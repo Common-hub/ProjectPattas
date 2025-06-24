@@ -6,8 +6,8 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthorizeService } from '../Services/authorize.service';
-import { UserInteractionService } from '../Services/user-interaction.service';
+import { AuthorizeService } from '../guard/authorize.service';
+import { UserInteractionService } from '../service/user-interaction.service';
 
 @Injectable()
 export class apiInterceptor implements HttpInterceptor {

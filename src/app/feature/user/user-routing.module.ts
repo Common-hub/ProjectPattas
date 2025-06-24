@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProductComponent } from './userComponents/product-component/product-component.component';
 import { KartItemsComponent } from './userComponents/kart-items/kart-items.component';
 import { OrderDetailsComponent } from './userComponents/order-details/order-details.component';
-import { AuthGuardGuard } from '../core/gaurdds/auth-guard.guard';
+import { AuthGuardGuard } from 'src/app/core/guard/auth-guard.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'productsList', pathMatch: 'full' },

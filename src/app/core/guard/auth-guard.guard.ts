@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
-import { AuthorizeService } from './authorize.service';
-import { UserInteractionService } from '../service/user-interaction.service';
+import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
 import { UserControllerService } from '../../controller/user-controller.service';
 import { Credentials } from '../../shared/models';
+import { UserInteractionService } from '../service/user-interaction.service';
+import { AuthorizeService } from './authorize.service';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +65,7 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
         } else if (this.jwtToken.userAuthority === 'admin') {
           console.info(`[${this.userRole}]: User Verified 🔐.`);
           this.notify.sppInfo("🔐 Logged in as Admin. Access granted.");
-          this.router.navigate(['admin/dashBoard']);
+          this.router.navigate(['admin/']);
         }
         this.notify.hideLoader();
       }

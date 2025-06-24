@@ -8,13 +8,13 @@ import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AdminModule } from './feature/admin/admin.module';
 import { UserModule } from './feature/user/user.module';
-import { apiInterceptor } from './core/interceptors/apiInterceptor.interceptor';
 import { LoginComponentComponent } from './login-component/login-component.component';
 import { AlertWindowComponent } from './shared/components/alert-window/alert-window.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { RouterModule } from '@angular/router';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { apiInterceptor } from './core/interceptors/my-interceptor.interceptor';
 
 @NgModule({
   declarations: [

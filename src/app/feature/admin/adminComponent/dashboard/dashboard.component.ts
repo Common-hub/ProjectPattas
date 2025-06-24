@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Order, ORDER_STATUS_VALUES, OrderAdmin, OrderStatus, updateOrder } from 'src/app/shared/models';
-import { AuthorizeService } from 'src/app/core/gaurdds/authorize.service';
 import { OrderController } from 'src/app/controller/orderController.service';
+import { AuthorizeService } from 'src/app/core/guard/authorize.service';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
+import { ORDER_STATUS_VALUES, OrderAdmin, OrderStatus, updateOrder } from 'src/app/shared/models';
 
 @Component({
   selector: 'app-dashboard',

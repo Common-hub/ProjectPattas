@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { cartItems, CartProducts, Product } from 'src/app/shared/models';
-import { AuthorizeService } from 'src/app/core/gaurdds/authorize.service';
-import { CartController } from 'src/app/controller/cart-controller.service';;
-import { ProductController } from 'src/app/Services/productController.service';
+import { CartController } from 'src/app/controller/cart-controller.service';
+import { ProductController } from 'src/app/controller/productController.service';
+import { AuthorizeService } from 'src/app/core/guard/authorize.service';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
+import { cartItems, Product } from 'src/app/shared/models';
 import { environment } from 'src/environments/environment';
+;
 
 @Component({
   selector: 'product',
@@ -52,7 +53,6 @@ export class ProductComponent implements OnInit {
         }
       });
     }
-    if (this.productList.length < 1) this.productController.fetchProducts(0, 12);
   }
 
   sortProducts(type: string): void {

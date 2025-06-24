@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProductDataComponent } from './adminComponent/product-data/product-data.component';
 import { AddCrackersComponent } from './adminComponent/add-crackers/add-crackers.component';
 import { DashboardComponent } from './adminComponent/dashboard/dashboard.component';
-import { AuthGuardGuard } from '../core/gaurdds/auth-guard.guard';
+import { AuthGuardGuard } from 'src/app/core/guard/auth-guard.guard';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashBoard', pathMatch: 'full' },

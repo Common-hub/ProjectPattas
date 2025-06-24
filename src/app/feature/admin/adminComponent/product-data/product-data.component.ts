@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Product } from 'src/app/shared/models';
-import { AuthorizeService } from 'src/app/core/gaurdds/authorize.service';
-import { PaginationHelperService } from 'src/app/Services/pagination-helper.service';
-import { ProductController } from 'src/app/Services/productController.service';
+import { ProductController } from 'src/app/controller/productController.service';
+import { AuthorizeService } from 'src/app/core/guard/authorize.service';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
+import { Product } from 'src/app/shared/models';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -16,6 +15,7 @@ export class ProductDataComponent implements OnInit {
 
   apiBaseUrl: string = environment.apiBaseUrl;
 
+  imageFile!: File;
   isEdit: boolean = false;
   currentpage: number = 0;
   totalPages: number = 0;
@@ -43,11 +43,47 @@ export class ProductDataComponent implements OnInit {
     })
   }
 
-  updateProduct(index: number) {
-    this.isEdit = false;
-    const i = this.productsList.findIndex(product => product.id === index)
-    this.productController.putProductsByid(this.productsList[i].id, this.productsList[i]);
-    this.editableItem = null
+  updateProduct(productId: number, isUpdate?: boolean) {
+    const updatedItem = new FormData();
+    var index: number = 0;
+    if (isUpdate) {
+      index = productId;
+      const price = parseFloat(this.productsList[index].price.toFixed(2)).toString();
+      updatedItem.append('name', this.productsList[index].name);
+      updatedItem.append('description', this.productsList[index].description);
+      updatedItem.append('price', price);
+      updatedItem.append('stockQuantity', this.productsList[index].stockQuantity.toString());
+      updatedItem.append('image', this.imageFile);
+    } else {
+      const i = this.productsList.findIndex(p => p.id === productId);
+      index = i;
+      const editedFlag = this.flagCheck !== {} as any ? JSON.stringify(this.flagCheck) === JSON.stringify(this.productsList[i]) ? false : true : false;
+      if (editedFlag) {
+        const price = parseFloat(this.productsList[index].price.toFixed(2)).toString();
+        updatedItem.append('name', this.productsList[index].name);
+        updatedItem.append('description', this.productsList[index].description);
+        updatedItem.append('price', price);
+        updatedItem.append('stockQuantity', this.productsList[index].stockQuantity.toString());
+        updatedItem.append('image', this.imageFile);
+      }
+    }
+
+    console.log(Array.from(updatedItem as any).length !== 0, Array.from(updatedItem as any))
+    if (Array.from(updatedItem as any).length !== 0) {
+      this.productController.putProductsByid(index, updatedItem);
+      this.editableItem = null;
+      this.isEdit = false;
+      this.productController.productsList = this.productsList
+    }
+  }
+
+  multipart(productImage: Event) {
+    const input = (productImage.target as HTMLInputElement);
+    if (input.files && input.files.length > 0) {
+      this.imageFile = input.files[0];
+      console.log(this.imageFile); // This should log the file object
+    }
+    if (!input) return;
   }
 
   deleteProduct(id: number) {
@@ -92,7 +128,7 @@ export class ProductDataComponent implements OnInit {
         if (confirm) {
           this.isEdit = false;
           this.editableItem = null;
-          this.productController.productsList = this.productsList;
+          this.updateProduct(i, true);
         } else {
           this.isEdit = false;
           this.editableItem = null;
@@ -107,7 +143,6 @@ export class ProductDataComponent implements OnInit {
       this.editableItem = index;
       this.flagCheck = { ...this.productsList[i] };
       console.log(this.flagCheck);
-
     }
   }
 

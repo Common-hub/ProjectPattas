@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserControllerService } from '../controller/user-controller.service';
 import { Router } from '@angular/router';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
-import { AuthGuardGuard } from 'src/app/core/gaurdds/auth-guard.guard';
 import { otpVerification, userRegistration } from 'src/app/shared/models';
+import { AuthGuardGuard } from '../core/guard/auth-guard.guard';
 
 @Component({
   selector: 'login',
@@ -26,7 +26,7 @@ export class LoginComponentComponent implements OnInit {
   seconds: number = 0;
   private interval: any;
 
-  constructor(private formBuilder: FormBuilder, private api: UserControllerService, private route: Router, private notification: UserInteractionService,
+  constructor(private formBuilder: FormBuilder, private api:UserControllerService, private route: Router, private notification: UserInteractionService,
     private authorization: AuthGuardGuard) { }
 
   ngOnInit(): void {

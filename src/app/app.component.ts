@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
-import { AuthorizeService } from './core/gaurdds/authorize.service';
-import { ProductController } from './Services/productController.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ProductController } from './controller/productController.service';
+import { AuthorizeService } from './core/guard/authorize.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit {
   title = 'Suriya Pryo Park';
   isLoggedIn: boolean = false;
@@ -18,9 +19,10 @@ export class AppComponent implements OnInit {
     private spinner: NgxSpinnerService) {
     activityMonitor.reStoreFromSession();
     this.router.events.subscribe(event => {
-      if (event instanceof NavigationStart){
+      if (event instanceof NavigationStart) {
         producthandeler.fetchProducts(0, 12);
-      spinner.show();}
+        spinner.show();
+      }
       else if (event instanceof NavigationEnd) {
         const currentRoute = event.urlAfterRedirects;
         this.isLoggedIn = activityMonitor.isUserLoggedIn || currentRoute.startsWith('/user/productsList');

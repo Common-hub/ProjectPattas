@@ -8,7 +8,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "start:local": "start cmd /k \"ng serve --open --configuration development\" && start cmd /k\"java -Dspring.profiles.active=dev -jar https://github.com/Maharajan-02/Project_Pattasu/blob/dev/target/crackers-shop-0.0.1-SNAPSHOT.jar\"",
+    "start:local": "start cmd /k \"ng serve --open --configuration development\" && start cmd /k \"java -Dspring.profiles.active=dev -jar ProjectPattas_jar/crackers-shop-0.0.1-SNAPSHOT.jar\"",
     "start:prod": "ng serve --configuration production"
   },
   "private": true,
