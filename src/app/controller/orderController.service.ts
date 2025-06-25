@@ -138,6 +138,6 @@ export class OrderController {
     getOrders: (): Observable<Order[]> => this.http.get<Order[]>(this.apiBaseUrl, { responseType: 'json' }),
     downloadInvoice: (orderId: number): Observable<string[]> => this.http.get<string[]>(this.apiBaseUrl + `order/${orderId}/invoice`),
     getAllOrders: (): Observable<OrderAdmin[]> => this.http.get<OrderAdmin[]>(this.apiBaseUrl + 'allOrders'),
-    updateStatus: (status: updateOrder) => this.http.put<string>(this.apiBaseUrl + '/update', status)
+    updateStatus: (status: updateOrder) => this.http.put<string>(this.apiBaseUrl + 'update', status)
   }
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -34,17 +35,19 @@ export class ProductController {
   public isFetched = false;
   private role = this.authorize.userAuthority;
   private inQueue: boolean = false;
+  private $search = '';
 
-  constructor(private http: HttpClient,
+  constructor(private http: HttpClient, private router: ActivatedRoute,
     private authorize: AuthorizeService, private pagenator: PaginationHelperService,
     private notification: UserInteractionService) { }
 
-  fetchProducts(page: number, size: number) {
+  fetchProducts(page: number, size: number, search?: string) {
     console.info('[Products] productFetch started....');
+    if (search === undefined) search = '';
     this.notification.showLoader();
     if (!this.inQueue) {
       this.inQueue = true;
-      this.productController.getProducts(page, size).pipe(
+      this.productController.getProducts(page, size, search).pipe(
         tap((response: any) => {
           if (response) {
             const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
@@ -201,9 +204,16 @@ export class ProductController {
     return this.pageTotal.value;
   }
 
+  set searchWord(term: string) {
+    this.$search = term;
+    this.fetchProducts(this.CurrentPage.value, this.itemSize.value, this.$search);
+  }
+  get searchWord() {
+    return this.$search;
+  }
   //Api call for Product
   private productController = {
-    getProducts: (page: number, size: number): Observable<Product[]> => this.http.get<Product[]>(this.apiBaseUrl + `?page=${page}&size=${size}`, { responseType: 'json' }),
+    getProducts: (page: number, size: number, search?: string): Observable<Product[]> => this.http.get<Product[]>(this.apiBaseUrl + `?page=${page}&size=${size}&search=${search}`, { responseType: 'json' }),
     postProduct: (product: FormData): Observable<Product> => this.http.post<Product>(this.apiBaseUrl, product, { responseType: 'json' }),
     getProductById: (Id: number): Observable<Product> => this.http.get<Product>(this.apiBaseUrl + `/${Id}`, { responseType: 'json' }),
     putProductById: (Id: number, product: FormData): Observable<Product> => this.http.put<Product>(this.apiBaseUrl + `/${Id}`, product, { responseType: 'json' }),

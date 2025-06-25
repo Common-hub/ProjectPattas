@@ -1,7 +1,7 @@
 .alertWindow {
     position: absolute;
     pointer-events: none;
-    top: 50px;
+    top: 60px;
     z-index: 1000;
     right: .5rem;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { UserInteractionService } from '../service/user-interaction.service';
 import { Router } from '@angular/router';
+import { UserInteractionService } from '../service/user-interaction.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class AuthorizeService {
 
 
   constructor(private alert: UserInteractionService, private router: Router) {
-   if(this._Token !== '') console.log('[Log] setting JWT Token .....');
+    if (this._Token !== '') console.log('[Log] setting JWT Token .....');
   }
 
   setupActivityListeners() {
@@ -37,8 +37,8 @@ export class AuthorizeService {
     }
   }
 
-  get isUserLoggedIn(){
-    return this.userIdentifier !=='' ? true : false;
+  get isUserLoggedIn() {
+    return this.userIdentifier !== '' ? true : false;
   }
 
   private async activityMonitor() {
@@ -98,8 +98,8 @@ export class AuthorizeService {
   }
 
   //decode token
-  private tokenDecoder(token: string) {    
-        console.info("[Guard]: Getting user Info.");
+  private tokenDecoder(token: string) {
+    console.info("[Guard]: Getting user Info.");
     if (token !== '') {
       try {
         const payloadData = token.split('.')[1];
@@ -115,4 +115,20 @@ export class AuthorizeService {
     }
   }
 
+  allowedRoutes(): { route: string; key: string; }[] {
+
+    if (this.userAuthority === 'admin') {
+      return [
+        { route: 'admin/dashBoard', key: `<span class="bi bi-speedometer2"></span>&nbsp; <label class="d-none d-md-inline"> DashBoard</label>` },
+        { route: 'admin/addProducts', key: `<span class="bi bi-cart-plus"></span>&nbsp; <label class="d-none d-md-inline"> Inventory</label>` },
+        { route: 'admin/productsList', key: `<span class="bi bi-view-list"></span>&nbsp; <label class="d-none d-md-inline"> ProductList</label>` }]
+    } else if (this.userAuthority === 'user') {
+      return [
+        { route: 'user/productsList', key: `<span class="bi bi-houses"></span>&nbsp; <label class="d-none d-md-inline"> Home</label>` },
+        { route: 'user/viewCart', key: `<span class="bi bi-cart3"></span>&nbsp; <label class="d-none d-md-inline">  View Cart</label>` },
+        { route: 'user/orderStatus', key: `<span class="bi bi-bag-check-fill"></span>&nbsp; <label class="d-none d-md-inline"> Orders</label>` }
+      ]
+    }
+    return []
+  }
 }

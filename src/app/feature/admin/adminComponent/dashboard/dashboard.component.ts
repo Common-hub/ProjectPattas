@@ -99,7 +99,8 @@ export class DashboardComponent implements OnInit {
           this.notify.sppWarning("Detected No Changes.⁉");
         } else {
           this.inprocess = true;
-          const uplodedItem: updateOrder = { orderId: this.orderList[index].id, orderStatus: this.orderList[index].orderStatus, trackingId: this.orderList[index].trackingId }
+          const tracker = this.orderList[index].trackingId !== null ? this.orderList[index].trackingId : '';
+          const uplodedItem: updateOrder = { orderId: this.orderList[index].id, orderStatus: this.orderList[index].orderStatus, trackingId: tracker }
           this.orderController.updateOrderItem(uplodedItem);
           setTimeout(() => {
             this.inprocess = this.orderController.flageOff;

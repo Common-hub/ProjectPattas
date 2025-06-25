@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { ProductController } from 'src/app/controller/productController.service';
 import { UserControllerService } from 'src/app/controller/user-controller.service';
 import { AuthorizeService } from 'src/app/core/guard/authorize.service';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
 
 @Component({
-  selector: 'header',
+  selector: 'searchbar',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
@@ -20,19 +20,34 @@ export class HeaderComponent implements OnInit {
   page: number = 0;
   size: number = 10;
   totalPages: number = 0;
+  hide: boolean = false;
 
-  constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: UserControllerService, private authorize: AuthorizeService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: UserControllerService, private authorize: AuthorizeService, private searchResult: ProductController) { }
 
   ngOnInit(): void {
-    if (this.authorize.isUserLoggedIn) {
-      this.allowedRoutes(this.authorize.userAuthority);
-      console.log(this.authorize.isUserLoggedIn);
-    }
+    this.navigations = this.authorize.allowedRoutes();
     setTimeout(() => {
-      console.log(this.navigations);
       this.search.getSuggestions().subscribe(respnseName => this.names = respnseName);
-      console.log(this.names);
     }, 10000);
+
+    const searchParam = this.route.snapshot.queryParamMap.get('search');
+    if (searchParam == '') {
+      // Clear the 'search' query param on page load
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      }).then(() => {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { search: this.searchKey },
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
+      });
+    }
+
   }
 
   showCart() {
@@ -45,27 +60,45 @@ export class HeaderComponent implements OnInit {
   }
 
   onsearch(term: Event | string) {
-    const searchKeyword = typeof term === 'string' ? term : (term.target as HTMLInputElement).value.length >= 1 ? (term.target as HTMLInputElement).value : '';
-    if (searchKeyword !== '') {
-      const identifiedMatched = this.names.filter(keyword => keyword.toLowerCase().includes(searchKeyword.toLowerCase()));
-      if (identifiedMatched.length >= 1) {
-        this.suggestions = identifiedMatched;
-      }
+    const input = typeof term === 'string' ? term : (term.target as HTMLInputElement).value;
+    this.hide = false;
+    if (typeof term === 'string') {
+      this.searchKey = term;
+      this.hide = true;
+      this.searchResult.searchWord = this.searchKey;
+      this.router.navigate([`user/productsList&search=${this.searchKey}`])
     }
-  }
+    const searchKeyword = input.trim();
 
-  allowedRoutes(userRole: string) {
-    if (userRole === 'admin') {
-      this.navigations = [
-        { route: 'admin/dashBoard', key: `<span class="bi bi-speedometer2"></span>&nbsp; DashBoard` },
-        { route: 'admin/addProducts', key: `<span class="bi bi-cart-plus"></span>&nbsp; Inventory` },
-        { route: 'admin/productsList', key: `<span class="bi bi-view-list"></span>&nbsp; ProductList` }]
-    } else if (userRole === 'user') {
-      this.navigations = [
-        { route: 'user/productsList', key: `<span class="bi bi-houses"></span>&nbsp; Home` },
-        { route: 'user/viewCart', key: `<span class="bi bi-cart3"></span>&nbsp; View Cart` },
-        { route: 'user/orderStatus', key: `<span class="bi bi-bag-check-fill"></span>&nbsp; Orders` }
-      ]
+    if (searchKeyword !== '') {
+      // Always clear then set — workaround to force router update
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      }).then(() => {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { search: searchKeyword },
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
+      });
+
+      const identifiedMatched = this.names.filter(keyword =>
+        keyword.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+      this.suggestions = identifiedMatched.length >= 1 ? identifiedMatched : [];
+    } else {
+      // Clear the search param
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      });
+      this.suggestions = [];
     }
   }
 
