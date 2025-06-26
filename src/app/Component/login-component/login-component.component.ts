@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OtpVerification, userRegisration } from '../../models/user';
 import { ApiInteractionService } from '../../Services/api-interaction.service';
 import { Router } from '@angular/router';
+import { UserInteractionService } from 'src/app/Services/user-interaction.service';
+import { AuthGuardGuard } from 'src/app/Services/auth-guard.guard';
+import { otpVerification, userRegistration } from 'src/app/models';
 
 @Component({
   selector: 'login',
@@ -16,11 +18,16 @@ export class LoginComponentComponent implements OnInit {
   LoginBool: boolean = true;
   signUpBool: boolean = false;
   changeBool: boolean = false;
-  EmailVerify: boolean = false
+  EmailVerify: boolean = false;
+  canResend: boolean = false;
   head: string = "Login";
   response: string = "";
+  minutes: number = 3;
+  seconds: number = 0;
+  private interval: any;
 
-  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route:Router) { }
+  constructor(private formBuilder: FormBuilder, private api: ApiInteractionService, private route: Router, private notification: UserInteractionService,
+    private authorization: AuthGuardGuard) { }
 
   ngOnInit(): void {
     this.login = this.formBuilder.group({
@@ -38,34 +45,42 @@ export class LoginComponentComponent implements OnInit {
 
   }
 
-  changeForm(hint: string) {
-    switch (hint) {
-      case "L":
-        this.head = "Login USER"
-        this.LoginBool = true;
-        this.signUpBool = false;
-        this.changeBool = false;
-        break;
-      case "S":
-        this.head = "New User Registration"
-        this.signUpBool = true;
-        this.LoginBool = false;
-        this.changeBool = false;
-        break;
-      case "F":
-        this.head = "Forget Password"
-        this.signUpBool = false;
-        this.LoginBool = false;
-        this.changeBool = true;
-        break;
-      default:
-        break;
+  changeForm(hint: string): void {
+    const formConfig: { [key: string]: any } = {
+      L: { head: "Login USER", resetForm: () => this.login.reset(), login: true, signUp: false, change: false },
+      S: { head: "New User Registration", resetForm: () => this.sign.reset(), login: false, signUp: true, change: false },
+      F: { head: "Forget Password", resetForm: () => { }, login: false, signUp: false, change: true }
+    };
+
+    const config = formConfig[hint];
+    if (config) {
+      this.head = config.head;
+      config.resetForm();
+      this.LoginBool = config.login;
+      this.signUpBool = config.signUp;
+      this.changeBool = config.change;
     }
+  }
+
+  startTimer() {
+    this.interval = setInterval(() => {
+      if (this.seconds === 0) {
+        if (this.minutes === 0) {
+          clearInterval(this.interval);
+          this.canResend = true;
+        } else {
+          this.minutes--;
+          this.seconds = 59;
+        }
+      } else {
+        this.seconds--;
+      }
+    }, 1000);
   }
 
   register() {
     if (this.passwordMatchValidator()) {
-      let registration: userRegisration = {
+      let registration: userRegistration = {
         name: this.sign.controls['name'].value,
         email: this.sign.controls['email'].value,
         phoneNumber: '' + this.sign.controls['mobile'].value,
@@ -73,24 +88,43 @@ export class LoginComponentComponent implements OnInit {
       }
       this.api.userRegistration(registration).subscribe(resp => {
         this.EmailVerify = true;
-        this.response = resp;
-        console.log(resp);
+        this.notification.sppInfo(resp);
+        this.startTimer();
       },
         (error) => {
-          console.log(error);
+          this.notification.sppError(error.error);
         }
       )
     }
   }
+
+  resendOtp() {
+    this.resetTimer();
+  }
+
+  resetTimer() {
+    clearInterval(this.interval);
+    this.minutes = 3;
+    this.seconds = 0;
+    this.canResend = false;
+    this.startTimer();
+  }
+
   verify() {
-    let Otp: OtpVerification = {
+    let Otp: otpVerification = {
       email: this.sign.controls['email'].value,
-      otp: ''+this.sign.controls['OTP'].value
+      otp: this.sign.controls['OTP'].value.toString()
     }
     this.api.verifyOtp(Otp).subscribe(resp => {
       this.LoginBool = true;
       this.signUpBool = false;
-    })
+      this.changeForm('L')
+      this.EmailVerify = false;
+      this.notification.sppInfo(resp)
+    },
+      (error) => {
+        this.notification.sppError(error.error)
+      })
   }
 
   passwordMatchValidator() {
@@ -100,16 +134,14 @@ export class LoginComponentComponent implements OnInit {
     return password !== confirmPassword ? false : true;
   }
 
-  loguser(){
+  userLogin() {
+    setTimeout(() => {
+    this.notification.showLoader();
+    }, 2000);
     let login = {
-        email: this.login.controls['userName'].value,
-        password: this.login.controls['password'].value
+      email: this.login.controls['userName'].value,
+      password: this.login.controls['password'].value
     }
-    this.api.loguser(login).subscribe(res=>{
-      localStorage.setItem('isLoggedin','true');0
-      localStorage.setItem('token',res.token)
-      localStorage.setItem('uRole',res.role)
-      this.route.navigate(['/productsList']);      
-    })
+    this.authorization.loginHelper(login);
   }
 }

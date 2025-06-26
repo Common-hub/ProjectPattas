@@ -3,6 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  apiBaseUrl: 'https://project-pattasu.onrender.com/api/',
   production: false
 };
 

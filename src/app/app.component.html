@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<ngx-spinner bdColor="rgba(0,0,0, 0.3)" size="large" color="#64d6e2" type="square-jelly-box" [fullScreen]="true">
+</ngx-spinner>
+<nav>
+    <header *ngIf="isLoggedIn"></header>
+</nav>
+<alert></alert>
+<div class="container-fluid content">
+    <router-outlet></router-outlet>
+</div>

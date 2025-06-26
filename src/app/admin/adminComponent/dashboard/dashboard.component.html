@@ -1,0 +1,106 @@
+<div class="inventory">
+    <div class="table-responsive  ordersTable">
+        <ng-container #ordersList *ngIf="orderList.length >=1">
+            <table class="table table-light tableHead">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="2">
+                            <strong>
+                                <span class="badge badge-success" (click)="filter('compeled')">Compeled Order
+                                    &nbsp;&nbsp;
+                                    {{completeOrders}}</span> &nbsp; &nbsp; &nbsp;
+                                &nbsp; &nbsp;
+                                <span class="badge badge-warning" (click)="filter('placed')">Pending Order &nbsp;&nbsp;
+                                    {{pendingOrders}}</span>
+                            </strong>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+
+            <table class=" table table-hover table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">SLNo</th>
+                        <th scope="col">
+                            <span class="sortable">Order ID
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('orderDate',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('orderDate',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sortable">Ordered PlacedOn
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('orderDate',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('orderDate',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sortable">Logistics Partner
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('orderDate',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('orderDate',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sortable">Tracking Number
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('orderDate',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('orderDate',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">Status</th>
+                        <th scope="col" colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-hover">
+                    <ngx-spinner *ngIf="inprocess" bdColor="transparent" size="small" type="ball-spin-clockwise"
+                        color="white"
+                        style="display: inline-block; width: 20px; height: 20px; position: relative;"></ngx-spinner>
+                    <ng-container *ngFor="let orderItem of (orderController.$AdminOrderList | async);let index = index">
+                        <tr>
+                            <td><strong>{{index +1}}</strong></td>
+                            <td><span (click)="orderController.billInvoice(orderItem.id)"
+                                    class="billLink"><strong>{{orderItem.id}}</strong></span></td>
+                            <td><strong>{{orderItem.orderDate | date: 'dd-mm-yyy'}}</strong></td>
+
+                            <ng-container *ngIf="isEditable !== orderItem.id">
+                                <td><strong>{{orderItem.logisticsPartner}}</strong></td>
+                                <td><strong>{{orderItem.trackingId}}</strong></td>
+                                <td><span class="badge"
+                                        [ngClass]="getStatus(orderItem.orderStatus)"><strong>{{orderItem.orderStatus}}</strong></span>
+                                </td>
+                                <td><button type="button" class="btn btn-sm btn-outline-secondary" (click)="editStatus(orderItem.id)"
+                                        [disabled]="['DELIVERED','CANCELLED','FAILED','REFUNDED','RETURNED'].includes(orderItem.orderStatus)"><i
+                                            class="bi bi-pen-fill"></i></button></td>
+                            </ng-container>
+
+                            <ng-container *ngIf="isEditable === orderItem.id">
+                                <td><input type="text" name="parnername" id="'tracker'+orderItem.id"
+                                        [(ngModel)]="orderItem.logisticsPartner"></td>
+                                <td><input type="text" name="trackingId" id="'tracker'+orderItem.id"
+                                        [(ngModel)]="orderItem.trackingId"></td>
+                                <td>
+                                    <select name="status" id="orderItem.orderStatus" class="badge" (change)="onStatusChange(orderItem.orderStatus)" [(ngModel)]="orderItem.orderStatus">
+                                        <option *ngFor="let status of orderStatus" [value]="status"> {{status | titlecase }} </option>
+                                    </select>
+                                </td>
+                                <td><button type="button" class="btn btn-sm btn-outline-secondary" (click)="editStatus(orderItem.id)"><i
+                                            class="bi bi-pen-fill"></i></button></td>
+                            </ng-container>
+
+                            <td><button type="button" class="btn btn-sm btn-outline-primary" (click)="updateStatus(orderItem.id)"><i
+                                        class="bi bi-upload"></i></button></td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>\   
+        </ng-container>
+
+    </div>
+</div>
