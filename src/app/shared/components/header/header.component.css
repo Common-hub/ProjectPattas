@@ -1,0 +1,18 @@
+header.fixed-top {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    /* Adjust as needed */
+    background: #fff;
+    /* Same as bottom bar */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    /* Shadow like bottom bar but top */
+    padding: 0.5rem 1rem;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    /* Optional: smooth border bottom */
+    border-bottom: 1px solid #ddd;
+}

@@ -1,0 +1,45 @@
+.noData {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.sortable {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sort {
+    display: flex;
+    line-height: 0;
+    flex-direction: column;
+}
+
+.table-bordered th {
+    text-align: center;
+    align-content: baseline;
+}
+
+thead tr {
+    align-items: center;
+}
+
+.bi-caret-up:hover::before {
+    cursor: pointer;
+    content: "\f235";
+}
+
+.bi-caret-down:hover::before {
+    cursor: pointer;
+    content: "\f229";
+}
+
+.table-striped tbody tr:nth-of-type(odd).editor td {
+  background-color: #e2e8f0; 
+}
+
+.table-striped tbody tr:nth-of-type(even).editor td {
+  background-color: #cbd5e1; 
+}

@@ -1,0 +1,79 @@
+.form {
+    margin: 7% 35%;
+    z-index: 100;
+    border: 1px solid grey;
+    border-radius: 20px;
+    padding: 2%;
+}
+
+#login,
+#signup {
+    text-align: start;
+    display: flex;
+    flex-direction: column;
+}
+
+.user {
+    margin-top: 15px;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid silver;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+label {
+    margin-top: 10px;
+}
+
+.user:focus {
+    outline: none;
+    font-weight: bold;
+    border-bottom-color: teal;
+}
+
+.form__confirmation {
+    padding: 10px 55px;
+}
+
+.form__confirmation button {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background-color: #ffc107;
+    border: 1px solid var(--outline);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    left: 40%;
+}
+
+.form__confirmation button:hover {
+    background-color: #ffc107d3;
+}
+
+.form__confirmation button:disabled {
+    cursor: none;
+    background-color: #ffc10742;
+}
+
+.links {
+    display: flex;
+    justify-content: space-around;
+}
+
+.links :hover {
+    color: red;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

@@ -1,9 +1,28 @@
-<ngx-spinner bdColor="rgba(0,0,0, 0.3)" size="large" color="#64d6e2" type="square-jelly-box" [fullScreen]="true">
+<!-- <ngx-spinner bdColor="rgba(0,0,0, 0.3)" size="large" color="#64d6e2" type="square-jelly-box" [fullScreen]="true">
 </ngx-spinner>
 <nav>
     <header *ngIf="isLoggedIn"></header>
 </nav>
-<alert></alert>
 <div class="container-fluid content">
     <router-outlet></router-outlet>
+1</div> -->
+
+<ngx-spinner bdColor="rgba(0,0,0, 0.3)" size="large" color="#64d6e2" type="square-jelly-box" [fullScreen]="true">
+</ngx-spinner>
+<searchbar *ngIf="isLoggedIn"></searchbar>
+
+<main class="container">
+    <alert></alert>
+    <router-outlet></router-outlet>
+</main>
+
+<div *ngIf="isLoggedIn" class="col-12 d-inline d-md-none justify-content-center mobile-bottom-buttons">
+    <ng-container *ngFor="let item of navigations">
+        <a [routerLink]="[item.route]" class="btn btn-link col-3" routerLinkActive="active">
+            <span [innerHTML]="item.key"></span>
+        </a>
+    </ng-container>
+    <span class="btn text-danger power" (click)="logout()">
+        <i class="bi bi-power"></i>
+    </span>
 </div>
