@@ -10,7 +10,7 @@ import { Credentials, Order, otpVerification, userDetails, userRegistration } fr
 })
 export class UserControllerService {
 
-  apiBaseUrl = environment.apiBaseUrl + 'auth/'
+  apiBaseUrl = environment.apiBaseUrl;
   url: string = "http://localhost:8080/api/";
 
 
@@ -22,25 +22,27 @@ export class UserControllerService {
   constructor(private http: HttpClient, private notification: UserInteractionService) { }
 
   userRegistration(details: userRegistration): Observable<any> {
-    return this.http.post(this.apiBaseUrl + 'register', details, { responseType: 'text' })
+    return this.http.post(this.apiBaseUrl + 'auth/register', details, { responseType: 'text' })
   }
 
   verifyOtp(details: any): Observable<any> {
-    return this.http.post(this.apiBaseUrl + 'verify-otp', details, { responseType: 'text' })
+    return this.http.post(this.apiBaseUrl + 'auth/verify-otp', details, { responseType: 'text' })
   }
 
   loguser(details: any): Observable<any> {
-    return this.http.post(this.apiBaseUrl + 'login', details, { responseType: 'text' });
+    return this.http.post(this.apiBaseUrl + 'auth/login', details, { responseType: 'text' });
   }
 
   getUser(): Observable<any> {
-    return this.http.get(this.apiBaseUrl + 'user', { responseType: 'json' })
+    return this.http.get(this.apiBaseUrl + 'auth/user', { responseType: 'json' })
   }
 
   getUserData() {
     this.userController.UserDetails().pipe(tap(response => {
+      console.log(response);
       if (response) {
         this.userDetail = response;
+        console.log(response);
       }
     }), catchError(error => {
       this.notification.sppError('❌ ' + error.error);
@@ -81,6 +83,7 @@ export class UserControllerService {
   }
 
   get $UserDetail(): Observable<userDetails> {
+    this.getUserData();
     return this.userData;
   }
 
@@ -96,6 +99,6 @@ export class UserControllerService {
     login: (credentials: Credentials): Observable<any> => this.http.post<any>(this.apiBaseUrl + 'login', credentials, { responseType: 'json' }),
     register: (userDetails: userRegistration): Observable<any> => this.http.post(this.apiBaseUrl + 'verify-otp', userDetails, { responseType: 'text' }),
     otpVerification: (payload: otpVerification): Observable<any> => this.http.post(this.apiBaseUrl + 'verify-otp', payload, { responseType: 'text' }),
-    UserDetails: (): Observable<userDetails> => this.http.get<userDetails>(this.apiBaseUrl + 'user', { responseType: 'json' })
+    UserDetails: (): Observable<userDetails> => this.http.get<userDetails>(this.apiBaseUrl + 'auth/user', { responseType: 'json' })
   }
 }

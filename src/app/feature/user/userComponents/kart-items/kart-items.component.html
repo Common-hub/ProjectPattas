@@ -13,24 +13,32 @@
     <div for="" class="col-2 col-md-2">Rate</div>
     <div for="" class="col-2 col-md-2">Amount</div>
   </div> -->
-  <div class="col-12-col-md-12 d-flex align-items-center justify-content-between p-3" *ngFor="let item of itemIncart">
-    <img src="{{apiBaseUrl+item.product.imageUrl}}" class="col-3 col-md-3 float-left" height="40px" width="30px"
-      alt="{{item.product.name}}">
-    <label for="name" class="col-4 col-md-3">{{item.product.name}}</label>
-    <div class="quantity">
-      <button class="minus" aria-label="Decrease" (click)="updateProduct('Decrease',item.id)"
-        *ngIf="item.quantity > 1">&minus;</button>
-      <button class="minus" aria-label="Decrease" (click)="updateProduct('Decrease',item.id)"
-        *ngIf="item.quantity === 1">&#xf014;</button>
-      <input type="number" class="input-box" [(ngModel)]="item.quantity" min="1" max="3">
-      <button class="plus" aria-label="Increase" (click)="updateProduct('Increase',item.id)">&plus;</button>
+  <div class="noData" *ngIf="itemIncart.length === 0">
+    <Strong>No Products in Inventory. to add producs <a [routerLink]="[ 'user/productsList']">
+        click here</a>.</Strong>
+  </div>
+  <ng-template #prod *ngIf="itemIncart.length >=1">
+    <div class="col-12-col-md-12 d-flex align-items-center justify-content-between p-3" *ngFor="let item of itemIncart">
+      <img src="{{apiBaseUrl+item.product.imageUrl}}" class="col-3 col-md-3 float-left" height="40px" width="30px"
+        alt="{{item.product.name}}">
+      <label for="name" class="col-4 col-md-3">{{item.product.name}}</label>
+      <div class="quantity">
+        <button class="minus" aria-label="Decrease" (click)="updateProduct('Decrease',item.id)"
+          *ngIf="item.quantity > 1">&minus;</button>
+        <button class="minus" aria-label="Decrease" (click)="updateProduct('Decrease',item.id)"
+          *ngIf="item.quantity === 1"><i class="bi bi-trash"></i></button>
+        <input type="number" class="input-box" [(ngModel)]="item.quantity" min="1" max="3">
+        <button class="plus" aria-label="Increase" (click)="updateProduct('Increase',item.id)">&plus;</button>
+      </div>
+      <!-- <label for="qty" class="col-1 col-md-1">{{item.quantity}}</label> -->
+      <label for="qty" class="col-2 col-md-2">{{item.product.price}}</label>
+      <label for="qty" class="col-2 col-md-2">{{item.product.price * item.quantity}}</label>
     </div>
-    <!-- <label for="qty" class="col-1 col-md-1">{{item.quantity}}</label> -->
-    <label for="qty" class="col-2 col-md-2">{{item.product.price}}</label>
-    <label for="qty" class="col-2 col-md-2">{{item.product.price * item.quantity}}</label>
-  </div>
-  <div class="float-right p-3 d-flex flex-column col-md-5 col-6 justify-content-end">
-    <label for="" class="float-right h5 ml-auto">Grand Total:&nbsp;{{grandTotal}}</label>
-    <button type="submit" class="btn btn-outline-primary float-right col-md-4 col-3 ml-auto">Place Order</button>
-  </div>
+    <div class="float-right p-3 d-flex flex-column col-md-5 col-6 justify-content-end">
+      <label for="" class="float-right h5 ml-auto">Grand Total:&nbsp;{{grandTotal}}</label>
+      <button type="submit" class="btn btn-outline-primary float-right col-md-4 col-3 ml-auto"
+        (click)="submitOrder()">Place Order</button>
+    </div>
+  </ng-template>
+
 </div>

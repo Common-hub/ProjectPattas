@@ -50,12 +50,15 @@ export class OrderDetailsComponent implements OnInit {
 
     this.details.$UserDetail.subscribe(response => {
       this.userdetails = response;
-
+      const userName = response.name.split(" ");
+      this.name = { fName: userName[0], lName: userName[1] }
     })
 
     this.apiInteraction.getOrder().subscribe((order: Order[]) => {
-      this.orders = order;
-      console.log(order, this.orders[0].status);
+      if (order.length >= 1) {
+        this.orders = order;
+        console.log(order, this.orders[0].status);
+      }
     })
   }
 

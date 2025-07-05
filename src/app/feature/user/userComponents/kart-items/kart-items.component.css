@@ -8,6 +8,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.noData {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
 .quantity button {
   background-color: #3498db;
   color: #fff;
@@ -41,5 +47,5 @@
 }
 
 .input-box[type="number"] {
-  -moz-appearance: textfield;
+  appearance: textfield;
 }

@@ -32,7 +32,7 @@
             </div>
 
             <!-- Navigation Buttons (hidden on mobile) -->
-            <div class="col-12 col-md-5 d-none d-md-flex justify-content-end flex-wrap">
+            <div class="col-12 col-md-5 d-none d-md-flex justify-content-end flex-wrap buttons">
                 <ng-container *ngFor="let item of navigations">
                     <a [routerLink]="[item.route]" class="btn btn-link b1" routerLinkActive="active">
                         <span [innerHTML]="item.key"></span>

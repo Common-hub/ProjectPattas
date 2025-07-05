@@ -26,6 +26,8 @@ export class KartItemsComponent implements OnInit {
         this.grandTotal += item.product.price * item.quantity;
       })
     })
+    console.log(this.itemIncart.length);
+
   }
 
   updateProduct(action: 'Increase' | 'Decrease', itemId: number) {
@@ -57,9 +59,11 @@ export class KartItemsComponent implements OnInit {
       details = response;
     });
     if (details.address) {
+      this.userDetails.postOrder(details.address);
       this.router.navigate(['user/orderStatus']);
     } else {
       this.userDetails.addressFound = true;
+      this.router.navigate(['user/orderStatus']);
     }
   }
 
