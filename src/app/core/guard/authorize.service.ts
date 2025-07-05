@@ -75,12 +75,13 @@ export class AuthorizeService {
   }
 
   reStoreFromSession() {
-    const token = this.userIdentifier
-    if (token !== '') {
-      console.info('[Guard]: Token restored from session Succesfull!');
-      this.authToken = token;
+    const sessionToken = sessionStorage.getItem("token");
+    if (sessionToken) {
+      this.jwtToken = sessionToken;
+      this._Token = sessionToken;
+      console.info('[Guard]: Token restored from session successfully!');
     } else {
-      console.info('[Guard]: Failed token restoration.Login!');
+      console.info('[Guard]: Failed token restoration. Login required!');
     }
   }
 

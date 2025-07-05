@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -8,6 +7,7 @@ import { AuthorizeService } from '../core/guard/authorize.service';
 import { UserInteractionService } from '../core/service/user-interaction.service';
 import { PaginationHelperService } from '../Services/pagination-helper.service';
 import { Product, searchObject } from '../shared/models';
+import { CartController } from './cart-controller.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,14 +37,13 @@ export class ProductController {
   private inQueue: boolean = false;
   private $search = '';
 
-  constructor(private http: HttpClient, private router: ActivatedRoute,
+  constructor(private http: HttpClient, private cart: CartController,
     private authorize: AuthorizeService, private pagenator: PaginationHelperService,
     private notification: UserInteractionService) { }
 
   fetchProducts(page: number, size: number, search?: string) {
     console.info('[Products] productFetch started....');
     if (search === undefined) search = '';
-    this.notification.showLoader();
     if (!this.inQueue) {
       this.inQueue = true;
       this.productController.getProducts(page, size, search).pipe(
@@ -61,11 +60,12 @@ export class ProductController {
             var successMsg = '';
             if (this.authorize.isUserLoggedIn) {
               if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
-              else if (this.role === 'user') successMsg = '🛍️ Products fetched successfully for User.';
+              else if (this.role === 'user') {
+                successMsg = '🛍️ Products fetched successfully for User.';
+              }
             }
             this.notification.sppInfo(successMsg);
             console.log('[Products] productFetch Success....');
-
           }
         }),
         catchError(error => {

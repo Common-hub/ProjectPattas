@@ -64,14 +64,10 @@ export class HeaderComponent implements OnInit {
     this.hide = false;
     if (typeof term === 'string') {
       this.searchKey = term;
-      this.hide = true;
-      this.searchResult.searchWord = this.searchKey;
-      this.router.navigate([`user/productsList&search=${this.searchKey}`])
     }
     const searchKeyword = input.trim();
 
     if (searchKeyword !== '') {
-      // Always clear then set — workaround to force router update
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { search: null },
@@ -91,7 +87,6 @@ export class HeaderComponent implements OnInit {
       );
       this.suggestions = identifiedMatched.length >= 1 ? identifiedMatched : [];
     } else {
-      // Clear the search param
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { search: null },
@@ -100,6 +95,12 @@ export class HeaderComponent implements OnInit {
       });
       this.suggestions = [];
     }
+  }
+
+  selectedProduct(name: string) {
+    this.hide = true;
+    this.searchResult.searchWord = this.searchKey;
+    this.router.navigate([`user/productsList&search=${this.searchKey}`])
   }
 
   showProfile() {

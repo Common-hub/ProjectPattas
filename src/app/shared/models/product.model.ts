@@ -13,13 +13,20 @@ export type CartProducts = Omit<Product, 'stockQuantity'> & { orderedQuantity: n
 
 export type UpdateProduct = Partial<Omit<Product, 'image'>> & { image: File; }
 
-export type OrderAdmin = Omit<Order, 'orderId'| 'status'> & {
+export type inCartProduct = Omit<Product, 'id'> & { productId: number }
+
+export type OrderAdmin = Omit<Order, 'orderId' | 'status'> & {
   id: number;
   trackingId: string;
   logisticsPartner: string;
   orderStatus: OrderStatus;
 };
 
+export interface inCart {
+  id: number;
+  product: inCartProduct;
+  quantity: number;
+}
 
 export interface cartItems {
   productId: number;

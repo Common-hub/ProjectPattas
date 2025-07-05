@@ -14,10 +14,10 @@
 
                 <!-- Suggestions List -->
                 <ul class="list-group position-absolute w-100 suggest-dropdown mt-1" [hidden]="hide">
-                    <li class="list-group-item" *ngIf="searchKey !== ''" (click)="onsearch(searchKey)">
+                    <li class="list-group-item" *ngIf="searchKey !== ''" (click)="selectedProduct(searchKey)">
                         {{searchKey}}
                     </li>
-                    <li class=" list-group-item" *ngFor="let keyword of suggestions" (click)="onsearch(keyword)">
+                    <li class=" list-group-item" *ngFor="let keyword of suggestions" (click)="selectedProduct(keyword)">
                         {{ keyword }}
                         <sub class="text-muted float-right">in categories</sub>
                     </li>

@@ -1,4 +1,4 @@
-<section class="my-5">
+\ <section class="my-5">
     <div class="main-body">
         <div class="row">
             <div class="col-lg-4">
@@ -470,7 +470,8 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let order of orders; let i = index">
-                                        <td><a style="cursor: pointer;" (click)="showOrderStatus(i)">{{order.orderId}}</a>
+                                        <td><a style="cursor: pointer;"
+                                                (click)="showOrderStatus(i)">{{order.orderId}}</a>
                                         </td>
                                         <td>{{order.orderDate | date: 'd/MM'}}</td>
                                         <td colspan="2"><strong><span
@@ -674,7 +675,7 @@
                             </div>
                         </section> -->
                     <div class="form__confirmation">
-                        <button [disabled]="addressForm.invalid" (click)="confirmOrder()">Confirm Information</button>
+                        <button [disabled]="addressForm.invalid" (click)="confirmOrder()">Place Order</button>
                     </div>
                 </div>
             </div>

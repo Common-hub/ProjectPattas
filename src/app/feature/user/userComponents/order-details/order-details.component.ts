@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserControllerService } from 'src/app/controller/user-controller.service';
-import { address, Order, ORDER_STATUS_VALUES, OrderStatus } from 'src/app/shared/models';
+import { address, Order, ORDER_STATUS_VALUES, OrderStatus, userDetails } from 'src/app/shared/models';
 
 @Component({
   selector: 'app-order-details',
@@ -14,8 +14,8 @@ export class OrderDetailsComponent implements OnInit {
   userAddress: string[] = [];
   orders: Order[] = [];
   orderStatus: OrderStatus[] = ORDER_STATUS_VALUES;
-  userDetails: any = '';
-  name: {fName: string, lName:string} = {fName: '', lName: ''};
+  userdetails: userDetails = {} as userDetails;
+  name: { fName: string, lName: string } = { fName: '', lName: '' };
   isAdd: boolean = false;
   isOrder: boolean = true;
   isSpecorder: boolean = false;
@@ -24,7 +24,7 @@ export class OrderDetailsComponent implements OnInit {
 
   addressForm!: FormGroup;
 
-  constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder) { }
+  constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder, private details: UserControllerService) { }
 
   ngOnInit(): void {
     this.addressForm = this.fb.group({
@@ -43,16 +43,14 @@ export class OrderDetailsComponent implements OnInit {
       // bCountry: ['', Validators.required]
     })
 
-    if (sessionStorage.getItem('address') === 'true') {
+    if (this.details.$addressFound) {
       this.isAdd = true;
       this.isOrder = false;
     }
-    this.apiInteraction.getUser().subscribe(user=>{
-      this.userDetails = user;
-      var names = this.userDetails.name.split(' ');
-      this.name = {fName: names[0], lName: names[1] ? names[1] : '--'};
-      console.log(this.userDetails);
-      
+
+    this.details.$UserDetail.subscribe(response => {
+      this.userdetails = response;
+
     })
 
     this.apiInteraction.getOrder().subscribe((order: Order[]) => {
@@ -107,22 +105,22 @@ export class OrderDetailsComponent implements OnInit {
     }
   }
 
-  confirmOrder(){
-    const address = this.addressForm.controls['addressL1'].value +','+ this.addressForm.controls['addressL2'].value +','+
-    this.addressForm.controls['country'].value +','+ this.addressForm.controls['state'].value +','+
-    this.addressForm.controls['zip'].value +','+ this.addressForm.controls['city'].value +','
+  confirmOrder() {
+    const address = this.addressForm.controls['addressL1'].value + '+' + this.addressForm.controls['addressL2'].value + '+' +
+      this.addressForm.controls['country'].value + '+' + this.addressForm.controls['state'].value + '+' +
+      this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value + '+'
 
-    this.apiInteraction.postOrder(address).subscribe(resp=>{
+    this.apiInteraction.postOrder(address).subscribe(resp => {
       console.log(resp);
       this.isAdd = false;
-      this.isOrder = true;      
+      this.isOrder = true;
     })
   }
 
-  getCurrentState(){    
-      const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
-      console.log(index);
-      
+  getCurrentState() {
+    const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
+    console.log(index);
+
     return index !== -1 ? index : 0; // Return 0 if status not foun
   }
 }

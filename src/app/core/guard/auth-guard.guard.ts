@@ -67,6 +67,10 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
           this.notify.sppInfo("🔐 Logged in as Admin. Access granted.");
           this.router.navigate(['admin/']);
         }
+        this.loginHelperService.getUser().subscribe(response => {
+          this.loginHelperService.userDetail = response;
+          console.log(this.loginHelperService.userDetail)
+        });
         this.notify.hideLoader();
       }
     }, (error) => {

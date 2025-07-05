@@ -14,14 +14,15 @@
 
         <div class="box-down">
           <div class="quantity" *ngIf="cartQuantity[i].quantity > 0">
-            <button class="minus" aria-label="Decrease" (click)="updateCartItems('removeItem', i)">&minus;</button>
+            <button class="minus" aria-label="Decrease"
+              (click)="updateCartItems('removeItem', product.id)">&minus;</button>
             <input type="number" class="input-box" [(ngModel)]="cartQuantity[i].quantity" min="1" max="3">
-            <button class="plus" aria-label="Increase" (click)="updateCartItems('addItem', i)">&plus;</button>
+            <button class="plus" aria-label="Increase" (click)="updateCartItems('addItem', product.id)">&plus;</button>
           </div>
           <div class="h-bg" *ngIf="cartQuantity[i].quantity == 0">
             <div class="h-bg-inner"></div>
           </div>
-          <div class="cart" href="#" (click)="updateCartItems('addItem', i)"
+          <div class="cart" href="#" (click)="updateCartItems('addItem', product.id)"
             *ngIf="cartQuantity[i].quantity == 0 && product.stockQuantity > 0 ">
             <span class="price">₹ {{product.price}} /-</span>
             <span class="add-to-cart">
