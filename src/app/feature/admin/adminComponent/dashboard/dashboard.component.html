@@ -81,7 +81,7 @@
                                             class="bi bi-pen-fill"></i></button></td>
                             </ng-container>
 
-                            <ng-container *ngIf="isEditable === orderItem.id">
+                            <ng-container *ngIf="isEditable === orderItem.id && orderItem.orderStatus === 'SHIPPED'">
                                 <td><input type="text" name="parnername" id="'tracker'+orderItem.id"
                                         [(ngModel)]="orderItem.logisticsPartner"></td>
                                 <td><input type="text" name="trackingId" id="'tracker'+orderItem.id"

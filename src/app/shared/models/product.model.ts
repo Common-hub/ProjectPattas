@@ -66,7 +66,7 @@ export const ORDER_STATUS_VALUES: OrderStatus[] = [
 ];
 
 export interface updateOrder {
-  orderId: number;
+  id: number;
   trackingId: string;
   orderStatus: string;
   logistictsPartner?: string;

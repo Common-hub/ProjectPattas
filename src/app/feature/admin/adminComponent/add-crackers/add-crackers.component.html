@@ -6,7 +6,7 @@
 					<img src={{imageSrc}} height="228px" width="320px" *ngIf="imageSrc !==''">
 				</div>
 				<div id="product_control">
-					<input type="file" name="pic" accept="png" (change)="previewImg($event);"
+					<input type="file" name="pic" accept="image/*" (change)="previewImg($event);"
 						formControlName="imageUrl">
 				</div>
 			</div>

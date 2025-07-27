@@ -96,9 +96,9 @@ export class UserControllerService {
   }
 
   userController = {
-    login: (credentials: Credentials): Observable<any> => this.http.post<any>(this.apiBaseUrl + 'login', credentials, { responseType: 'json' }),
-    register: (userDetails: userRegistration): Observable<any> => this.http.post(this.apiBaseUrl + 'verify-otp', userDetails, { responseType: 'text' }),
-    otpVerification: (payload: otpVerification): Observable<any> => this.http.post(this.apiBaseUrl + 'verify-otp', payload, { responseType: 'text' }),
+    login: (credentials: Credentials): Observable<any> => this.http.post<any>(this.apiBaseUrl + 'auth/login', credentials, { responseType: 'json' }),
+    register: (userDetails: userRegistration): Observable<any> => this.http.post(this.apiBaseUrl + 'auth/register', userDetails, { responseType: 'text' }),
+    otpVerification: (payload: otpVerification): Observable<any> => this.http.post(this.apiBaseUrl + 'auth/verify-otp', payload, { responseType: 'text' }),
     UserDetails: (): Observable<userDetails> => this.http.get<userDetails>(this.apiBaseUrl + 'auth/user', { responseType: 'json' })
   }
 }

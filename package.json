@@ -10,7 +10,8 @@
     "test": "ng test",
     "start:local": "start cmd /k \"ng serve --open --configuration development\" && start cmd /k \"java -Dspring.profiles.active=dev -jar ProjectPattas_jar/crackers-shop-0.0.1-SNAPSHOT.jar\"",
     "start:resp": "start cmd /k \"ng serve --host 192.168.1.2 --disable-host-check --configuration development\" && start cmd /k \"java -Dspring.profiles.active=dev -jar ProjectPattas_jar/crackers-shop-0.0.1-SNAPSHOT.jar --server.address=192.168.1.2\"",
-    "start:prod": "ng serve --configuration production"
+    "start:prod": "ng serve --configuration production",
+    "start:dev": "ng serve --configuration development"
   },
   "private": true,
   "dependencies": {

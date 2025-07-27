@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProductComponent implements OnInit {
 
-  apiBaseUrl: string = environment.apiBaseUrl;
+  apiBaseUrl: string = environment.imageBaseUrl;
 
   productList: Product[] = [];
   unSortedProduct: Product[] = [];

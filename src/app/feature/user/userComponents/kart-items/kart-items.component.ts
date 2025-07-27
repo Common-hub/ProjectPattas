@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class KartItemsComponent implements OnInit {
 
-  apiBaseUrl: string = environment.apiBaseUrl.replace('api/', '');
+  apiBaseUrl: string = environment.imageBaseUrl;
 
   itemIncart: inCart[] = [];
   grandTotal: number = 0;

@@ -13,7 +13,8 @@ import { environment } from 'src/environments/environment';
 })
 export class ProductDataComponent implements OnInit {
 
-  apiBaseUrl: string = environment.apiBaseUrl;
+  apiBaseUrl: string = environment.imageBaseUrl;
+  // imageBaseUrl: string = environment.imageBaseUrl;
 
   imageFile!: File;
   isEdit: boolean = false;
