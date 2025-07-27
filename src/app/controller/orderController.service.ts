@@ -86,7 +86,7 @@ export class OrderController {
       document.body.appendChild(button);
       button.click();
       document.body.removeChild(button);
-      window.URL.revokeObjectURL(billDetails[0]);
+      window.URL.revokeObjectURL(url);
       console.info("[Gaurd]:AllDone...");
       this.loader.sppInfo(billDetails[0]);
     }), catchError(error => {
@@ -136,7 +136,7 @@ export class OrderController {
   private orderController = {
     placeOrder: (userAddress: string): Observable<Order[]> => this.http.post<Order[]>(this.apiBaseUrl + 'place', userAddress, { responseType: 'json' }),
     getOrders: (): Observable<Order[]> => this.http.get<Order[]>(this.apiBaseUrl, { responseType: 'json' }),
-    downloadInvoice: (orderId: number): Observable<string[]> => this.http.get<string[]>(this.apiBaseUrl + `order/${orderId}/invoice`),
+    downloadInvoice: (orderId: number): Observable<string[]> => this.http.get<string[]>(this.apiBaseUrl + `${orderId}/invoice`),
     getAllOrders: (): Observable<OrderAdmin[]> => this.http.get<OrderAdmin[]>(this.apiBaseUrl + 'allOrders'),
     updateStatus: (status: updateOrder) => this.http.put<string>(this.apiBaseUrl + 'update', status)
   }

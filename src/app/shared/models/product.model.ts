@@ -35,9 +35,8 @@ export interface cartItems {
 
 export interface Order {
   orderId: number;
-  products: CartProducts[];
+  orderItemDto: [{ product: Product[], price: number, quantity: number }];
   status: OrderStatus;
-  totalPrice: number;
   orderDate: Date;
   address: string;
 }

@@ -23,6 +23,7 @@ export class KartItemsComponent implements OnInit {
     this.cartController.$inCart.subscribe(response => {
       response.forEach(item => {
         this.itemIncart.push(item);
+        console.log(this.itemIncart)
         this.grandTotal += item.product.price * item.quantity;
       })
     })

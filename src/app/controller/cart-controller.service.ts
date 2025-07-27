@@ -42,6 +42,7 @@ export class CartController {
     console.info("[Gaurd]: Getting the items in buffer.");
     this.cartController.getCart().pipe(tap(response => {
       this.inCart = response;
+      console.info(response)
       console.info("[Guard]: Retiving cart Succesful.")
     }),
       catchError(error => {
