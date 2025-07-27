@@ -46,7 +46,8 @@ export class ProductController {
     if (search === undefined) search = '';
     if (!this.inQueue) {
       this.inQueue = true;
-      this.productController.getProducts(page, size, search).pipe(
+      if(this.role === 'admin') {
+        this.productController.getProducts(page, size, search).pipe(
         tap((response: any) => {
           if (response) {
             const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
@@ -76,6 +77,39 @@ export class ProductController {
           return of([]);
         }),
         finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
+      }else{
+        this.productController.getActiveProducts(page, size, search).pipe(
+        tap((response: any) => {
+          if (response) {
+            const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
+            _FilteredProducts.map((products: Product) => {
+              products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
+            });
+            this.productsList = _FilteredProducts;
+            this.pagenator.chunkInitializer(response.totalElements, size);
+            const productNames = _FilteredProducts.map((product: Product) => product.name);
+            this.notification.setSuggesttions(productNames);
+            var successMsg = '';
+            if (this.authorize.isUserLoggedIn) {
+              if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
+              else if (this.role === 'user') {
+                successMsg = '🛍️ Products fetched successfully for User.';
+              }
+            }
+            this.notification.sppInfo(successMsg);
+            console.log('[Products] productFetch Success....');
+          }
+        }),
+        catchError(error => {
+          this.notification.sppError('❌ ' + error.error);
+          this.clearProducts();
+          this.isFetched = false;
+          console.error('[Products] productFetch Failed!....');
+          return of([]);
+        }),
+        finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
+      }
+      
     }
   }
 
@@ -87,6 +121,7 @@ export class ProductController {
         console.error(response)
         this.productFetched = [response, ...this.productFetched];
         this.productsList = this.productFetched;
+        this.notification.sppInfo('✅ Product added successfully.');
         console.info(`[${this.role}]: Product added successfully.`);
       }),
       catchError(error => {
@@ -214,6 +249,7 @@ export class ProductController {
   //Api call for Product
   private productController = {
     getProducts: (page: number, size: number, search?: string): Observable<Product[]> => this.http.get<Product[]>(this.apiBaseUrl + `?page=${page}&size=${size}&search=${search}`, { responseType: 'json' }),
+    getActiveProducts: (page: number, size: number, search?: string): Observable<Product[]> => this.http.get<Product[]>(this.apiBaseUrl + `/active?page=${page}&size=${size}&search=${search}`, { responseType: 'json' }),
     postProduct: (product: FormData): Observable<Product> => this.http.post<Product>(this.apiBaseUrl, product, { responseType: 'json' }),
     getProductById: (Id: number): Observable<Product> => this.http.get<Product>(this.apiBaseUrl + `/${Id}`, { responseType: 'json' }),
     putProductById: (Id: number, product: FormData): Observable<Product> => this.http.put<Product>(this.apiBaseUrl + `/${Id}`, product, { responseType: 'json' }),

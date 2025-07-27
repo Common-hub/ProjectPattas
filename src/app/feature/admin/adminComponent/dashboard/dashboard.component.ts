@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
     this.orderController.$adminOrders.subscribe(order => {
       this.orderList = order;
       this.completeOrders = this.orderList.filter(order => order.orderStatus === 'DELIVERED').length
-      this.pendingOrders = this.orderList.filter(order => order.orderStatus.toLowerCase() === 'PLACED' || 'PROCESSING' || 'SHIPPED').length
+      this.pendingOrders = this.orderList.filter(order => ['PLACED', 'PROCESSING', 'SHIPPED'].includes(order.orderStatus.toLowerCase())).length
     })
   }
 
@@ -46,10 +46,15 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  filter(type: string) {
-    this.orderList = this.orderList.filter(order => order.orderStatus.toLowerCase() === type)
-    this.orderController.adminOrders = this.orderList;
-  }
+  // filter(type: string) {
+  //   this.orderList = this.orderList.filter(order => order.orderStatus.toLowerCase() === type)
+  //   this.orderController.adminOrders = this.orderList;
+  //   this.orderController.$adminOrders.subscribe(order => {
+  //   this.orderList = order;
+  //     this.completeOrders = this.orderList.filter(order => order.orderStatus === 'DELIVERED').length
+  //     this.pendingOrders = this.orderList.filter(order => ['PLACED', 'PROCESSING', 'SHIPPED'].includes(order.orderStatus.toLowerCase())).length
+  //   })
+  // }
 
   onStatusChange(status: string) {
     // alert(this.orderList[0].orderStatus)

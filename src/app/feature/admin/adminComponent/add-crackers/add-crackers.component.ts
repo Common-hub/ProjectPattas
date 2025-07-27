@@ -64,6 +64,7 @@ export class AddCrackersComponent implements OnInit {
     addedProduct.append('price', price);
     addedProduct.append('stockQuantity', this.addProducts.controls['stockQuantity'].value);
     addedProduct.append('image', this.image);
+    addedProduct.append('active', true.toString());
 
     this.productController.postProduct(addedProduct).subscribe(success => {
       if (success) {

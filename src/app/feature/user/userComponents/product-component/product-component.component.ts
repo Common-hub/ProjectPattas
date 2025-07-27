@@ -36,12 +36,14 @@ export class ProductComponent implements OnInit {
         this.cartQuantity.push({ productId: product.id, quantity: 0 })
       })
     });
-    this.addCartItem.$inCart.subscribe(response => {
+    if(this.authunticateUser.isUserLoggedIn) {
+      this.addCartItem.$inCart.subscribe(response => {
       response.forEach(item => {
         const index = this.cartQuantity.findIndex(i => i.productId === item.product.productId);
         this.cartQuantity[index].quantity = item.quantity;
       })
-    })
+    });
+    }
   }
 
   sortProducts(type: string): void {
