@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
   isEdit: boolean = false;
   iserror: boolean = false;
   inprocess: boolean = false;
-  isUpdated: boolean = false;
+  status!: OrderStatus;
 
   constructor(public orderController: OrderController, private authenticate: AuthorizeService, private notify: UserInteractionService) { }
 
@@ -56,8 +56,13 @@ export class DashboardComponent implements OnInit {
   //   })
   // }
 
-  onStatusChange(status: string) {
-    // alert(this.orderList[0].orderStatus)
+  onStatusUpdate(status: string): string[] {
+    const index = this.orderStatus.findIndex(x => x === status);
+    return this.orderStatus.slice(index)
+  }
+
+  onStatusChange(): boolean {
+    return ['shipped', 'delivered'].includes(this.status?.toLowerCase()) ? true : false;
   }
 
   sortProducts(type: keyof OrderAdmin, ascending: boolean = false): void {
@@ -84,7 +89,10 @@ export class DashboardComponent implements OnInit {
   editStatus(orderId: number) {
     console.log(this.isEdit);
     const index = this.orderList.findIndex(i => i.id === orderId);
-    if (this.isEditable === orderId) { } else {
+    if (this.isEditable !== null) {
+      this.notify.sppWarning("Update the selected Item first!!");
+    } else if (this.isEditable === orderId) {
+    } else {
       this.isEditable = orderId;
       this.backUp = JSON.parse(JSON.stringify({ ...this.orderList[index] }));
       console.log(JSON.stringify(this.orderList[index]) === JSON.stringify(this.backUp));
@@ -94,11 +102,14 @@ export class DashboardComponent implements OnInit {
   updateStatus(orderId: number) {
     const index = this.orderList.findIndex(i => i.id === orderId);
     if (this.isEditable === orderId) {
-      const invalidStatus = this.orderList[index].orderStatus === 'SHIPPED';
+      this.orderList[index].orderStatus = this.status;
+      const invalidStatus = this.orderList[index].orderStatus === 'SHIPPED' || this.orderList[index].orderStatus === 'DELIVERED';
       const emptyFields = !this.orderList[index].trackingId || !this.orderList[index].logisticsPartner;
       this.iserror = invalidStatus && emptyFields;
-      // console.log(this.iserror)
-      if (!this.iserror) {
+      if (this.iserror) {
+        this.notify.sppWarning("Please fill both Logistics partner and Tracking ID fields when Shipping.");
+        this.onStatusChange();
+      } else {
         const noChanges = JSON.stringify(this.orderList[index]) === JSON.stringify(this.backUp) ? true : false;
         if (noChanges) {
           this.notify.sppWarning("Detected No Changes.⁉");
@@ -110,11 +121,9 @@ export class DashboardComponent implements OnInit {
           setTimeout(() => {
             this.inprocess = this.orderController.flageOff;
           }, 2000);
-          this.isEdit= false;
+          this.isEdit = false;
           this.isEditable = null;
         }
-      }else{
-        this.notify.sppWarning("Please fill both Logistics partner and Tracking ID fields when Shipping.");
       }
     }
   }

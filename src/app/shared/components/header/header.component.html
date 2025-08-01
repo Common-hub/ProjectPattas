@@ -3,14 +3,21 @@
         <div class="row align-items-center g-1">
 
             <!-- Menu Icon -->
-            <div class="d-md-none fs-1 text-start">
+            <!-- <div class="d-md-none fs-1 text-start">
                 <i class="bi bi-menu-button-fill fs-4"></i>
+            </div> -->
+
+            <!-- Logo -->
+            <div class="col-2 col-md-1 text-end" *ngIf="!showSearch()">
+                <a [routerLink]="[ '{{draftItems}}/' ]">
+                    <img src="/assets/SPP.png" alt="Logo" height="40" width="40" />
+                </a>
             </div>
 
             <!-- Search Input and Suggestions -->
             <div class="col-9 col-md-6 position-relative">
                 <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchKey"
-                    (input)="onsearch($event)" />
+                    (input)="onsearch($event)" *ngIf="showSearch()" />
 
                 <!-- Suggestions List -->
                 <ul class="list-group position-absolute w-100 suggest-dropdown mt-1" [hidden]="hide">
@@ -25,7 +32,7 @@
             </div>
 
             <!-- Logo -->
-            <div class="col-2 col-md-1 text-end">
+            <div class="col-2 col-md-1 text-end" *ngIf="showSearch()">
                 <a [routerLink]="[ '{{draftItems}}/' ]">
                     <img src="/assets/SPP.png" alt="Logo" height="40" width="40" />
                 </a>
@@ -38,8 +45,9 @@
                         <span [innerHTML]="item.key"></span>
                     </a>
                 </ng-container>
-                <span class="btn text-danger" (click)="logout()">
-                    <i class="bi bi-power"></i>
+                <span class="btn text-danger" (click)="logout()" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="Logout">
+                    <i class="bi bi-person-circle fs-4"></i>
                 </span>
             </div>
 

@@ -6,11 +6,11 @@
                     <tr>
                         <th scope="col" colspan="2">
                             <strong>
-                                <span class="badge badge-success" >Completed Order
+                                <span class="badge badge-success">Completed Order
                                     &nbsp;&nbsp;
                                     {{completeOrders}}</span> &nbsp; &nbsp; &nbsp;
                                 &nbsp; &nbsp;
-                                <span class="badge badge-warning" >Pending Order &nbsp;&nbsp;
+                                <span class="badge badge-warning">Pending Order &nbsp;&nbsp;
                                     {{pendingOrders}}</span>
                             </strong>
                         </th>
@@ -70,8 +70,8 @@
                             <td><strong>{{orderItem.orderDate | date: 'dd-mm-yyy'}}</strong></td>
 
                             <ng-container *ngIf="isEditable !== orderItem.id">
-                                <td><strong>{{orderItem.logisticsPartner}}</strong></td>
-                                <td><strong>{{orderItem.trackingId}}</strong></td>
+                                <td><strong>{{orderItem.logisticsPartner || 'NA'}}</strong></td>
+                                <td><strong>{{orderItem.trackingId || 'NA'}}</strong></td>
                                 <td><span class="badge"
                                         [ngClass]="getStatus(orderItem.orderStatus)"><strong>{{orderItem.orderStatus}}</strong></span>
                                 </td>
@@ -80,17 +80,23 @@
                                         [disabled]="['DELIVERED','CANCELLED','FAILED','REFUNDED','RETURNED'].includes(orderItem.orderStatus)"><i
                                             class="bi bi-pen-fill"></i></button></td>
                             </ng-container>
-
-                            <ng-container *ngIf="isEditable === orderItem.id && orderItem.orderStatus === 'SHIPPED'">
-                                <td><input type="text" name="parnername" id="'tracker'+orderItem.id"
-                                        [(ngModel)]="orderItem.logisticsPartner"></td>
-                                <td><input type="text" name="trackingId" id="'tracker'+orderItem.id"
-                                        [(ngModel)]="orderItem.trackingId"></td>
+                            <ng-container *ngIf="isEditable === orderItem.id">
                                 <td>
-                                    <select name="status" id="orderItem.orderStatus" class="badge"
-                                        (change)="onStatusChange(orderItem.orderStatus)"
-                                        [(ngModel)]="orderItem.orderStatus">
-                                        <option *ngFor="let status of orderStatus" [value]="status"> {{status |
+                                    <span *ngIf="!onStatusChange()"><strong>{{orderItem.logisticsPartner ||
+                                            'NA'}}</strong></span>
+                                    <input type=" text" name="parnername" id="'tracker'+orderItem.id"
+                                        [(ngModel)]="orderItem.logisticsPartner" *ngIf="onStatusChange()">
+                                </td>
+                                <td>
+                                    <span *ngIf="!onStatusChange()"><strong>{{orderItem.trackingId ||
+                                            'NA'}}</strong></span>
+                                    <input type=" text" name="trackingId" id="'tracker'+orderItem.id"
+                                        [(ngModel)]="orderItem.trackingId" *ngIf="onStatusChange()">
+                                </td>
+                                <td><select name="status" id="orderItem.id" class="badge" [(ngModel)]="status"
+                                        [ngModel]="orderItem.orderStatus" (change)="onStatusChange()">
+                                        <option *ngFor="let status of onStatusUpdate(orderItem.orderStatus)"
+                                            [value]="status" [disabled]="status === orderItem.orderStatus"> {{status |
                                             titlecase }} </option>
                                     </select>
                                 </td>

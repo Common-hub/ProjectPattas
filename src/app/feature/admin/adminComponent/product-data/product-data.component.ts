@@ -40,7 +40,8 @@ export class ProductDataComponent implements OnInit {
     this.totalPages = this.productController.TotalPages;
     this.productUpdation = this.formBuilder.group({
       stockQuantity: ['', Validators.required],
-      price: ['', Validators.required]
+      price: ['', Validators.required],
+      active: ['', Validators.required],
     })
   }
 
@@ -54,11 +55,13 @@ export class ProductDataComponent implements OnInit {
       updatedItem.append('description', this.productsList[index].description);
       updatedItem.append('price', price);
       updatedItem.append('stockQuantity', this.productsList[index].stockQuantity.toString());
+      updatedItem.append('active', this.productsList[index].active.toString());
       updatedItem.append('image', this.imageFile);
     } else {
       const i = this.productsList.findIndex(p => p.id === productId);
       index = i;
       const editedFlag = this.flagCheck !== {} as any ? JSON.stringify(this.flagCheck) === JSON.stringify(this.productsList[i]) ? false : true : false;
+      alert(this.productsList[i].active)
       if (editedFlag) {
         const price = parseFloat(this.productsList[index].price.toFixed(2)).toString();
         updatedItem.append('name', this.productsList[index].name);
@@ -66,10 +69,9 @@ export class ProductDataComponent implements OnInit {
         updatedItem.append('price', price);
         updatedItem.append('stockQuantity', this.productsList[index].stockQuantity.toString());
         updatedItem.append('image', this.imageFile);
+        updatedItem.append('active', this.productsList[index].active.toString());
       }
     }
-
-    console.log(Array.from(updatedItem as any).length !== 0, Array.from(updatedItem as any))
     if (Array.from(updatedItem as any).length !== 0) {
       this.productController.putProductsByid(index, updatedItem);
       this.editableItem = null;
@@ -123,7 +125,8 @@ export class ProductDataComponent implements OnInit {
     if (this.isEdit) {
       var editedFlag = false;
       editedFlag = this.productsList[i].imageUrl !== this.flagCheck.imageUrl || Number(this.productsList[i].price) !== Number(this.flagCheck.price) ||
-        Number(this.productsList[i].stockQuantity) !== Number(this.flagCheck.stockQuantity);
+        Number(this.productsList[i].stockQuantity) !== Number(this.flagCheck.stockQuantity) || this.productsList[i].active !== this.flagCheck.active ||
+        Number(this.productsList[i].discount) !== Number(this.flagCheck.discount);
       if (editedFlag) {
         const confirm = await this.notification.openWindow('confirm')
         if (confirm) {
@@ -161,7 +164,7 @@ export class ProductDataComponent implements OnInit {
     const inputValue = event.target.value.trim();
 
     var regex: RegExp = /^\d+$/;
-    if (input === 'price') regex = /^\d+(\.\d{0,2})?$/;
+    if (input === 'price' || input === 'discount') regex = /^\d+(\.\d{0,2})?$/;
 
     if (inputValue !== '' && !regex.test(inputValue)) {
       event.target.value = inputValue.slice(0, -1);

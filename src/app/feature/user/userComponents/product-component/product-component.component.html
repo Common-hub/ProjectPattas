@@ -3,11 +3,12 @@
     <div class="row">
       <div class="el-wrapper col-12">
         <div class="box-up">
-          <img class="img" [src]="apiBaseUrl+product.imageUrl" alt="" height="85%" width="80%">
+          <img class="img" [src]="product.imageUrl" alt="" height="80%" width="70%">
           <div class="img-info">
             <div class="info-inner">
               <span class="p-name">{{product.name}}</span>
               <span class="p-company">{{product.description}}</span>
+              <span class="p-company" *ngIf="product.discount > 0">Discount : {{product.discount}} %</span>
             </div>
           </div>
         </div>
@@ -24,7 +25,11 @@
           </div>
           <div class="cart" href="#" (click)="updateCartItems('addItem', product.id)"
             *ngIf="cartQuantity[i].quantity == 0 && product.stockQuantity > 0 ">
-            <span class="price">₹ {{product.price}} /-</span>
+            <span class="price">
+              <label *ngIf="product.discount === 0">₹ {{product.price}} /-</label>
+              <label *ngIf="product.discount > 0" style="text-decoration: line-through;">₹ {{product.price}} /-</label>
+              <label *ngIf="product.discount > 0">₹ {{product.price * product.discount}} /-</label>
+            </span>
             <span class="add-to-cart">
               <span class="txt">Add in cart</span>
             </span>

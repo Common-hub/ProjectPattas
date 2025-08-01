@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserControllerService } from '../controller/user-controller.service';
 import { Router } from '@angular/router';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
 import { otpVerification, userRegistration } from 'src/app/shared/models';
+import { UserControllerService } from '../controller/user-controller.service';
 import { AuthGuardGuard } from '../core/guard/auth-guard.guard';
 
 @Component({
@@ -26,7 +26,7 @@ export class LoginComponentComponent implements OnInit {
   seconds: number = 0;
   private interval: any;
 
-  constructor(private formBuilder: FormBuilder, private api:UserControllerService, private route: Router, private notification: UserInteractionService,
+  constructor(private formBuilder: FormBuilder, private api: UserControllerService, private route: Router, private notification: UserInteractionService,
     private authorization: AuthGuardGuard) { }
 
   ngOnInit(): void {
@@ -134,9 +134,13 @@ export class LoginComponentComponent implements OnInit {
     return password !== confirmPassword ? false : true;
   }
 
+  navigate() {
+    this.route.navigate(['/user/productsList'])
+  }
+
   userLogin() {
     setTimeout(() => {
-    this.notification.showLoader();
+      this.notification.showLoader();
     }, 2000);
     let login = {
       email: this.login.controls['userName'].value,

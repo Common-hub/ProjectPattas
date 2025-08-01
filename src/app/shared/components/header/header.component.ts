@@ -29,7 +29,6 @@ export class HeaderComponent implements OnInit {
     setTimeout(() => {
       this.search.getSuggestions().subscribe(respnseName => this.names = respnseName);
     }, 10000);
-
     const searchParam = this.route.snapshot.queryParamMap.get('search');
     if (searchParam == '') {
       // Clear the 'search' query param on page load
@@ -57,6 +56,10 @@ export class HeaderComponent implements OnInit {
     else {
       this.router.navigate(['login'])
     }
+  }
+
+  showSearch() {
+    return this.router.url == `/${this.authorize.userAuthority}/productsList` ? true : false;
   }
 
   onsearch(term: Event | string) {
@@ -87,6 +90,7 @@ export class HeaderComponent implements OnInit {
       );
       this.suggestions = identifiedMatched.length >= 1 ? identifiedMatched : [];
     } else {
+      this.searchKey = '';
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { search: null },
@@ -99,8 +103,9 @@ export class HeaderComponent implements OnInit {
 
   selectedProduct(name: string) {
     this.hide = true;
+    this.searchKey = name;
     this.searchResult.searchWord = this.searchKey;
-    this.router.navigate([`user/productsList&search=${this.searchKey}`])
+    this.router.navigate([`/${this.authorize.userAuthority}/productsList`], { queryParams: { search: this.searchKey } });
   }
 
   showProfile() {
@@ -114,6 +119,6 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.authorize.isUserLoggedIn ? this.search.openWindow('confirmLogout') : this.search.openWindow('confirmLogin');
+    this.authorize.isUserLoggedIn ? this.search.openWindow('confirmLogout') : this.router.navigate(['login']);
   }
 }

@@ -22,7 +22,8 @@
         <h3> {{head}}</h3>
         <div id="signup" *ngIf="!EmailVerify">
             <label for="">Name</label>
-            <input type="text" name="email" class="user" id="email" formControlName="name" placeholder="Enter username" autofocus>
+            <input type="text" name="email" class="user" id="email" formControlName="name" placeholder="Enter username"
+                autofocus>
             <p style="color: red; display: flex; flex-direction: column;"
                 *ngIf="sign.controls['name'].touched && sign.controls['name'].invalid">
                 <small *ngIf="sign.controls['name'].errors?.['required']">UserName is a Mandatory Field</small>
@@ -100,7 +101,7 @@
         <button *ngIf="changeBool" type="submit">Change</button>
     </div>
     <div class="links">
-        <!-- <p (click)="changeForm('F')" *ngIf="!changeBool">Forgot Password?</p> -->
+        <p (click)="naviagte()" *ngIf="LoginBool">Products</p>
         <p (click)="changeForm('S')" *ngIf="!signUpBool">SignUp!</p>
         <p (click)="changeForm('L')" *ngIf="!LoginBool"> Login!</p>
     </div>

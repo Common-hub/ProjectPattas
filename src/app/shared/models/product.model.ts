@@ -4,7 +4,9 @@ export interface Product {
   description: string;
   price: number;
   imageUrl: string;
-  stockQuantity: number
+  stockQuantity: number;
+  active: boolean;
+  discount: number;
 }
 
 export type NewProduct = Omit<Product, 'id' | 'image'> & { image: File; }

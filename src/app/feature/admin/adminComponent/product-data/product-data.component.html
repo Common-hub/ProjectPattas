@@ -4,7 +4,7 @@
             <table class="noData" *ngIf="productsList.length === 0">
                 <thead>
                     <tr colspan="6">
-                        <td><Strong>No Products in Inventory. to add producs <a [routerLink]="[ 'admin/addProducts']">
+                        <td><Strong>No Products in Inventory. to add producs <a [routerLink]="['/admin/addProducts']">
                                     click here</a>.</Strong></td>
                     </tr>
                 </thead>
@@ -15,6 +15,7 @@
             <thead class=" table-dark">
                 <tr>
                     <th scope="col">Id</th>
+                    <th scope="col">ActiveProduct</th>
                     <th scope="col">PreView</th>
                     <th scope="col"><span class="sortable"><span>ProductName</span><span class="sort"><i
                                     class="bi bi-caret-up" (click)="sortProducts('name',true)"></i><i
@@ -29,6 +30,10 @@
                                     class="bi bi-caret-up" (click)="sortProducts('price',true)"></i><i
                                     class="bi bi-caret-down" (click)="sortProducts('price',false)"></i></span></span>
                     </th>
+                    <th scope="col"><span class="sortable"><span>Discount</span><span class="sort"><i
+                                    class="bi bi-caret-up" (click)="sortProducts('discount',true)"></i><i
+                                    class="bi bi-caret-down" (click)="sortProducts('discount',false)"></i></span></span>
+                    </th>
                     <th scope="col" colspan="3">RequiredAction</th>
                 </tr>
             </thead>
@@ -37,17 +42,30 @@
                     <tr [class.editor]="editableItem === product.id">
                         <td scope="row">{{product.id}}</td>
                         <ng-container *ngIf="editableItem !== product.id">
-                            <td><img src="{{apiBaseUrl+product.imageUrl}}" alt="{{product.name}}" height="60" width="50"
-                                    srcset="" class="table-image-preview"></td>
+                            <td scope="row">
+                                <label class="switch">
+                                    <input type="checkbox" [checked]="product.active" disabled>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td><img src="{{product.imageUrl}}" alt="{{product.name}}" height="60" width="50" srcset=""
+                                    class="table-image-preview"></td>
                             <td>{{product.name}}</td>
                             <td>{{product.description}}</td>
                             <td>{{product.stockQuantity}}</td>
                             <td>{{product.price | currency: 'INR': 'symbol'}}</td>
+                            <td>{{product.discount || 0 + ' %'}}</td>
                         </ng-container>
                         <ng-container *ngIf="editableItem === product.id">
+                            <td scope="row">
+                                <label class="switch">
+                                    <input type="checkbox" [checked]="product.active" [(ngModel)]="product.active">
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
                             <td>
-                                <img src="{{apiBaseUrl+product.imageUrl}}" alt="{{product.name}}" height="60" width="50"
-                                    srcset="" class="table-image-preview">
+                                <img src="{{product.imageUrl}}" alt="{{product.name}}" height="60" width="50" srcset=""
+                                    class="table-image-preview">
                                 <input type="file" name="pic" accept="png" (change)="multipart($event)">
                             </td>
                             <td>{{product.name}}</td>
@@ -57,16 +75,18 @@
                                     maxlength="5"></td>
                             <td><input type="text" name="" [id]="product.name + index" [(ngModel)]="flagCheck.price"
                                     (input)="restrictText($event, 'price')" maxlength="6"></td>
+                            <td><input type="text" name="" [id]="product.name + index" [(ngModel)]="flagCheck.discount"
+                                    (input)="restrictText($event, 'discount')" maxlength="6"></td>
                         </ng-container>
                         <td><button type="button" class="btn btn-sm btn-outline-info" data-toggle="tooltip"
                                 data-placement="left" title="Edit" (click)="enableEdit(product.id)"><i
-                                    class="bi bi-sm bi-pen-fill"></i></button></td>
+                                    ngClass=" isEdit ? bi-sm bi-pen-fill : bi-sm bi-pen"></i></button></td>
                         <td><button type="button" class="btn btn-sm btn-outline-primary" data-toggle="tooltip"
                                 data-placement="bottom" title="Update" (click)="updateProduct(product.id)"
-                                [disabled]="!isEdit"><i class="bi bi-sm bi-upload"></i></button></td>
+                                *ngIf="isEdit">Save</button></td>
                         <td><button type="button" class="btn btn-sm btn-outline-danger" data-toggle="tooltip"
-                                (click)="deleteProduct(product.id)" data-placement="right" title="Delete"><i
-                                    class="bi bi-sm bi-trash-fill"></i></button>
+                                *ngIf="isEdit" (click)="deleteProduct(product.id)" data-placement="right"
+                                title="Delete"><i class="bi bi-sm bi-trash-fill"></i></button>
                         </td>
                     </tr>
                 </ng-container>
