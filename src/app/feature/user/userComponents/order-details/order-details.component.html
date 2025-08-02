@@ -50,8 +50,10 @@
                                     <tr *ngFor="let order of specOrders; let i = index">
                                         <td>{{order.product.name}}</td>
                                         <td>{{order.quantity}}</td>
-                                        <td colspan="2"><strong>₹ {{order.price}}</strong></td>
-                                        <td><strong>₹ {{order.quantity * order.price}}</strong></td>
+                                        <td colspan="2"><strong>₹ {{order.discount === 0 ? order.price : (order.price *
+                                                (order.discount / 100))}}</strong></td>
+                                        <td><strong>₹ {{order.quantity * (order.discount === 0 ? order.price :
+                                                (order.price * (order.discount / 100)))}}</strong></td>
                                     </tr>
                                     <tr>
                                         <th colspan="2">

@@ -8,7 +8,7 @@
             <div class="info-inner">
               <span class="p-name">{{product.name}}</span>
               <span class="p-company">{{product.description}}</span>
-              <span class="p-company" *ngIf="product.discount > 0">Discount : {{product.discount}} %</span>
+              <span class="p-company">Discount : {{product.discount}} %</span>
             </div>
           </div>
         </div>
@@ -25,11 +25,11 @@
           </div>
           <div class="cart" href="#" (click)="updateCartItems('addItem', product.id)"
             *ngIf="cartQuantity[i].quantity == 0 && product.stockQuantity > 0 ">
-            <span class="price">
-              <label *ngIf="product.discount === 0">₹ {{product.price}} /-</label>
-              <label *ngIf="product.discount > 0" style="text-decoration: line-through;">₹ {{product.price}} /-</label>
-              <label *ngIf="product.discount > 0">₹ {{product.price * product.discount}} /-</label>
-            </span>
+            <span class="price">₹ {{
+              product.discount === 0
+              ? (+product.price).toFixed(2)
+              : (+product.price - (+product.price * (+product.discount / 100))).toFixed(2)
+              }}/-</span>
             <span class="add-to-cart">
               <span class="txt">Add in cart</span>
             </span>

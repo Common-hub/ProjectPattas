@@ -61,7 +61,13 @@ export class OrderDetailsComponent implements OnInit {
         this.orders = order;
         this.orders.forEach(order => {
           order.orderItemDto.forEach(orderprice => {
-            this.totalPrice += orderprice.price;
+            orderprice.product.forEach(product => {
+              if (product.discount === 0) {
+                this.totalPrice += orderprice.price;
+              } else {
+                this.totalPrice += orderprice.price - (orderprice.price * (product.discount / 100));
+              }
+            });
           })
         })
       }
