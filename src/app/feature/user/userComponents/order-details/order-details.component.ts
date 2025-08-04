@@ -132,7 +132,8 @@ export class OrderDetailsComponent implements OnInit {
 
   getCurrentState() {
     const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
-    return index !== -1 ? index : 0; // Return 0 if status not foun
+    return ['shipped', 'delivered', 'cancelled', 'returned', 'refunded'].includes(this.orders[0].status?.toLowerCase()) ? [this.orders[0].status] :
+      this.orderStatus.slice(0, index);
   }
 
   downloadInvoice() {

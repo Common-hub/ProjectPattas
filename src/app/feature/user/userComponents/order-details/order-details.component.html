@@ -50,10 +50,12 @@
                                     <tr *ngFor="let order of specOrders; let i = index">
                                         <td>{{order.product.name}}</td>
                                         <td>{{order.quantity}}</td>
-                                        <td colspan="2"><strong>₹ {{order.discount === 0 ? order.price : (order.price *
-                                                (order.discount / 100))}}</strong></td>
-                                        <td><strong>₹ {{order.quantity * (order.discount === 0 ? order.price :
-                                                (order.price * (order.discount / 100)))}}</strong></td>
+                                        <td colspan="2"><strong>₹ {{order.discount === 0 ? +order.price : (+order.price
+                                                - (+order.price *
+                                                (+order.discount / 100))) | number: '1.0-2'}}</strong></td>
+                                        <td><strong>₹ {{+order.quantity * (order.discount === 0 ? +order.price :
+                                                +order.price - (+order.price * (+order.discount / 100))) | number:
+                                                '1.0-2'}}</strong></td>
                                     </tr>
                                     <tr>
                                         <th colspan="2">
@@ -123,8 +125,8 @@
                                 <div class="top-status">
                                     <h5>ORDER #{{orders[0].orderId}}</h5>
                                     <ul>
-                                        <li *ngFor="let statusMsg of orderStatus; let i = index"
-                                            [ngClass]="{'active': i <= getCurrentState()}">
+                                        <li *ngFor="let statusMsg of getCurrentState() ; let i = index"
+                                            ngClass="active">
                                             <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
                                                 *ngIf="orders[0].status !== 'CANCELLED'" viewBox="0 0 512 512"
                                                 width="50" height="50">

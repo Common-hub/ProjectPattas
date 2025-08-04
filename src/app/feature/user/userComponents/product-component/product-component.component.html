@@ -25,6 +25,8 @@
           </div>
           <div class="cart" href="#" (click)="updateCartItems('addItem', product.id)"
             *ngIf="cartQuantity[i].quantity == 0 && product.stockQuantity > 0 ">
+            <span class="price" *ngIf="product.discount > 0" style="text-decoration: line-through;">₹
+              {{(+product.price)}}/-</span>
             <span class="price">₹ {{
               product.discount === 0
               ? (+product.price).toFixed(2)

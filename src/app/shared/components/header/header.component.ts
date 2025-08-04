@@ -59,7 +59,8 @@ export class HeaderComponent implements OnInit {
   }
 
   showSearch() {
-    return this.router.url == `/${this.authorize.userAuthority}/productsList` ? true : false;
+    const url = this.authorize.isUserLoggedIn ? `/${this.authorize.userAuthority}/productsList` : '/user/productsList';
+    return this.router.url === url;
   }
 
   onsearch(term: Event | string) {
