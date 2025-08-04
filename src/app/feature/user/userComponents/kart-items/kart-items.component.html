@@ -19,7 +19,7 @@
       <div for="" class="col-2 col-md-2 text-start h5">Amount</div>
     </div>
     <div class="col-12-col-md-12 d-flex align-items-center justify-content-between p-3" *ngFor="let item of itemIncart">
-      <img src="{{apiBaseUrl+item.product.imageUrl}}" class="col-3 col-md-3 float-left" height="40px" width="30px"
+      <img src="{{item.product.imageUrl}}" class="col-3 col-md-3 float-left" height="40px" width="30px"
         alt="{{item.product.name}}">
       <label for="name" class="col-4 col-md-3">{{item.product.name}}</label>
       <div class="quantity">

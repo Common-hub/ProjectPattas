@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.producthandeler.fetchProducts(0, 15);
-    if (this.activityMonitor.isUserLoggedIn) this.cart.fetchCart();
     this.activityMonitor.setupActivityListeners();
     setTimeout(() => {
       this.activityMonitor.checkActivity()

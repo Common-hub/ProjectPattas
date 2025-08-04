@@ -46,70 +46,71 @@ export class ProductController {
     if (search === undefined) search = '';
     if (!this.inQueue) {
       this.inQueue = true;
-      if(this.role === 'admin') {
+      if (this.role === 'admin') {
         this.productController.getProducts(page, size, search).pipe(
-        tap((response: any) => {
-          if (response) {
-            const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
-            _FilteredProducts.map((products: Product) => {
-              products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
-            });
-            this.productsList = _FilteredProducts;
-            this.pagenator.chunkInitializer(response.totalElements, size);
-            const productNames = _FilteredProducts.map((product: Product) => product.name);
-            this.notification.setSuggesttions(productNames);
-            var successMsg = '';
-            if (this.authorize.isUserLoggedIn) {
-              if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
-              else if (this.role === 'user') {
-                successMsg = '🛍️ Products fetched successfully for User.';
+          tap((response: any) => {
+            if (response) {
+              const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
+              _FilteredProducts.map((products: Product) => {
+                products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
+              });
+              this.productsList = _FilteredProducts;
+              this.pagenator.chunkInitializer(response.totalElements, size);
+              const productNames = _FilteredProducts.map((product: Product) => product.name);
+              this.notification.setSuggesttions(productNames);
+              var successMsg = '';
+              if (this.authorize.isUserLoggedIn) {
+                if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
+                else if (this.role === 'user') {
+                  successMsg = '🛍️ Products fetched successfully for User.';
+                }
               }
+              this.notification.sppInfo(successMsg);
+              console.log('[Products] productFetch Success....');
             }
-            this.notification.sppInfo(successMsg);
-            console.log('[Products] productFetch Success....');
-          }
-        }),
-        catchError(error => {
-          this.notification.sppError('❌ ' + error.error);
-          this.clearProducts();
-          this.isFetched = false;
-          console.error('[Products] productFetch Failed!....');
-          return of([]);
-        }),
-        finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
-      }else{
+          }),
+          catchError(error => {
+            this.notification.sppError('❌ ' + error.error);
+            this.clearProducts();
+            this.isFetched = false;
+            console.error('[Products] productFetch Failed!....');
+            return of([]);
+          }),
+          finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
+      } else {
         this.productController.getActiveProducts(page, size, search).pipe(
-        tap((response: any) => {
-          if (response) {
-            const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
-            _FilteredProducts.map((products: Product) => {
-              products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
-            });
-            this.productsList = _FilteredProducts;
-            this.pagenator.chunkInitializer(response.totalElements, size);
-            const productNames = _FilteredProducts.map((product: Product) => product.name);
-            this.notification.setSuggesttions(productNames);
-            var successMsg = '';
-            if (this.authorize.isUserLoggedIn) {
-              if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
-              else if (this.role === 'user') {
-                successMsg = '🛍️ Products fetched successfully for User.';
+          tap((response: any) => {
+            if (response) {
+              const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
+              _FilteredProducts.map((products: Product) => {
+                products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
+              });
+              this.productsList = _FilteredProducts;
+              this.pagenator.chunkInitializer(response.totalElements, size);
+              const productNames = _FilteredProducts.map((product: Product) => product.name);
+              this.notification.setSuggesttions(productNames);
+              var successMsg = '';
+              if (this.authorize.isUserLoggedIn) {
+                if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
+                else if (this.role === 'user') {
+                  successMsg = '🛍️ Products fetched successfully for User.';
+                }
               }
+              this.notification.sppInfo(successMsg);
+              console.log('[Products] productFetch Success....');
             }
-            this.notification.sppInfo(successMsg);
-            console.log('[Products] productFetch Success....');
-          }
-        }),
-        catchError(error => {
-          this.notification.sppError('❌ ' + error.error);
-          this.clearProducts();
-          this.isFetched = false;
-          console.error('[Products] productFetch Failed!....');
-          return of([]);
-        }),
-        finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
+          }),
+          catchError(error => {
+            this.notification.sppError('❌ ' + error.error);
+            this.clearProducts();
+            this.isFetched = false;
+            console.error('[Products] productFetch Failed!....');
+            return of([]);
+          }),
+          finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
       }
-      
+
+      if (this.authorize.isUserLoggedIn) this.cart.fetchCart();
     }
   }
 
