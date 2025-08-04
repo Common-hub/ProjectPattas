@@ -27,8 +27,6 @@ export class KartItemsComponent implements OnInit {
         this.grandTotal += item.product.price * item.quantity;
       })
     })
-    console.log(this.itemIncart.length);
-
   }
 
   updateProduct(action: 'Increase' | 'Decrease', itemId: number) {
@@ -37,9 +35,9 @@ export class KartItemsComponent implements OnInit {
       this.itemIncart[index].quantity += 1;
       this.cartController.addCartItem = { productId: this.itemIncart[index].product.productId, quantity: this.itemIncart[index].quantity };
     } else if (action === 'Decrease') {
+      this.itemIncart[index].quantity -= 1;
       if (this.itemIncart[index].quantity === 0)
         this.cartController.removeCartItem(this.itemIncart[index].product.productId);
-      this.itemIncart[index].quantity -= 1;
       this.cartController.addCartItem = { productId: this.itemIncart[index].product.productId, quantity: this.itemIncart[index].quantity };
     }
     this.getgrandTotal();
@@ -48,7 +46,8 @@ export class KartItemsComponent implements OnInit {
   getgrandTotal(): number {
     this.cartController.$inCart.subscribe(response => {
       response.forEach(item => {
-        this.grandTotal += item.product.price * item.quantity;
+        this.grandTotal += item.product.discount === 0 ? item.product.price * item.quantity :
+          (item.product.price - (item.product.price * (item.product.discount / 100))) * item.quantity;
       })
     })
     return this.grandTotal;
