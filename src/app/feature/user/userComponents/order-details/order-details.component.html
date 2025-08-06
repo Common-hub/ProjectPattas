@@ -338,7 +338,7 @@
                                     <input placeholder="e.g. Bovell" value="{{name.lName}}" id="firstname" type="text"
                                         disabled />
                                 </div>
-                                <div class="last">
+                                <div class="first">
                                     <label for="firstname">Email</label>
                                     <input placeholder="e.g. rb@apple.com" id="firstname" value="{{userdetails.email}}"
                                         type="email" disabled />
@@ -439,7 +439,8 @@
                             </div>
                         </section> -->
                     <div class="form__confirmation">
-                        <button [disabled]="addressForm.invalid" (click)="confirmOrder()">Place Order</button>
+                        <button [disabled]="addressForm.invalid" (click)="confirmOrder()">{{placeOrder ? 'Place Order' :
+                            'Save Address' }}</button>
                     </div>
                 </div>
             </div>

@@ -17,7 +17,7 @@ export class KartItemsComponent implements OnInit {
   itemIncart: inCart[] = [];
   grandTotal: number = 0;
 
-  constructor(private cartController: CartController, private router: Router, private userDetails: UserControllerService) { }
+  constructor(public cartController: CartController, private router: Router, private userDetails: UserControllerService) { }
 
   ngOnInit(): void {
     this.cartController.$inCart.subscribe(response => {

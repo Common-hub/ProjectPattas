@@ -31,6 +31,9 @@ export class OrderDetailsComponent implements OnInit {
   constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder, private details: UserControllerService, private notify: UserInteractionService) { }
 
   ngOnInit(): void {
+    const order = localStorage.getItem('ordered');
+    this.placeOrder = order != undefined ? order === 'false' ? false : true : false;
+
     this.addressForm = this.fb.group({
       addressL1: ['', Validators.required],
       addressL2: ['', Validators.required],
@@ -121,22 +124,27 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   confirmOrder() {
-    const address = this.addressForm.controls['addressL1'].value + '+' + this.addressForm.controls['addressL2'].value + '+' +
-      this.addressForm.controls['country'].value + '+' + this.addressForm.controls['state'].value + '+' +
-      this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value + '+'
+    this.notify.sppInfo("Address Saved Succesful 👍");
+    this.addressForm.reset();
+    if (this.placeOrder) {
+      const address = this.addressForm.controls['addressL1'].value + '+' + this.addressForm.controls['addressL2'].value + '+' +
+        this.addressForm.controls['country'].value + '+' + this.addressForm.controls['state'].value + '+' +
+        this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value + '+'
 
-    this.apiInteraction.postOrder(address).subscribe(resp => {
-      this.notify.sppInfo(resp);
-      this.isAdd = false;
-      this.isOrder = true;
-      this.placeOrder = false;
-    })
+      this.apiInteraction.postOrder(address).subscribe(resp => {
+        this.notify.sppInfo(resp);
+        this.isAdd = false;
+        this.isOrder = true;
+        localStorage.setItem('ordered', this.placeOrder.toString())
+      })
+    }
+    this.addressForm.reset();
   }
 
   getCurrentState() {
     const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
     return ['shipped', 'delivered', 'cancelled', 'returned', 'refunded'].includes(this.orders[0].status?.toLowerCase()) ? [this.orders[0].status] :
-      this.orderStatus.slice(0, index);
+      index === 0 ? [this.orders[0].status] : this.orderStatus.slice(0, index);
   }
 
   downloadInvoice() {
