@@ -92,6 +92,7 @@ export class HeaderComponent implements OnInit {
       this.suggestions = identifiedMatched.length >= 1 ? identifiedMatched : [];
     } else {
       this.searchKey = '';
+      this.router.navigate([`/${this.authorize.userAuthority}/productsList`], { queryParams: { search: this.searchKey } });
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { search: null },
