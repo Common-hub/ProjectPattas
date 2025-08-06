@@ -36,9 +36,11 @@ export class KartItemsComponent implements OnInit {
       this.cartController.addCartItem = { productId: this.itemIncart[index].product.productId, quantity: this.itemIncart[index].quantity };
     } else if (action === 'Decrease') {
       this.itemIncart[index].quantity -= 1;
-      if (this.itemIncart[index].quantity === 0)
+      if (this.itemIncart[index].quantity === 0) {
         this.cartController.removeCartItem(this.itemIncart[index].product.productId);
-      this.cartController.addCartItem = { productId: this.itemIncart[index].product.productId, quantity: this.itemIncart[index].quantity };
+      } else {
+        this.cartController.addCartItem = { productId: this.itemIncart[index].product.productId, quantity: this.itemIncart[index].quantity };
+      }
     }
     this.getgrandTotal();
   }

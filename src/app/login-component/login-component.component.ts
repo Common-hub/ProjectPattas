@@ -47,9 +47,9 @@ export class LoginComponentComponent implements OnInit {
 
   changeForm(hint: string): void {
     const formConfig: { [key: string]: any } = {
-      L: { head: "Login USER", resetForm: () => this.login.reset(), login: true, signUp: false, change: false },
-      S: { head: "New User Registration", resetForm: () => this.sign.reset(), login: false, signUp: true, change: false },
-      F: { head: "Forget Password", resetForm: () => { }, login: false, signUp: false, change: true }
+      L: { head: "Login USER", resetForm: () => this.login.reset(), login: true, signUp: false, change: false, EmailVerify: false },
+      S: { head: "New User Registration", resetForm: () => this.sign.reset(), login: false, signUp: true, change: false, EmailVerify: false },
+      F: { head: "Forget Password", resetForm: () => { }, login: false, signUp: false, change: true, EmailVerify: false }
     };
 
     const config = formConfig[hint];
@@ -59,6 +59,7 @@ export class LoginComponentComponent implements OnInit {
       this.LoginBool = config.login;
       this.signUpBool = config.signUp;
       this.changeBool = config.change;
+      this.EmailVerify = config.EmailVerify;
     }
   }
 
@@ -99,6 +100,7 @@ export class LoginComponentComponent implements OnInit {
   }
 
   resendOtp() {
+    this.register();
     this.resetTimer();
   }
 

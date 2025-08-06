@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserControllerService } from 'src/app/controller/user-controller.service';
+import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
 import { address, Order, ORDER_STATUS_VALUES, OrderStatus, userDetails } from 'src/app/shared/models';
 
 @Component({
@@ -20,13 +21,14 @@ export class OrderDetailsComponent implements OnInit {
   isAdd: boolean = false;
   isOrder: boolean = true;
   isSpecorder: boolean = false;
+  placeOrder: boolean = true;
   billingAdd!: address;
   shippingAdd!: address;
   addressForm!: FormGroup;
   totalPrice: number = 0;
   selectedOrderId: number = 0;
 
-  constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder, private details: UserControllerService) { }
+  constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder, private details: UserControllerService, private notify: UserInteractionService) { }
 
   ngOnInit(): void {
     this.addressForm = this.fb.group({
@@ -124,9 +126,10 @@ export class OrderDetailsComponent implements OnInit {
       this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value + '+'
 
     this.apiInteraction.postOrder(address).subscribe(resp => {
-      console.log(resp);
+      this.notify.sppInfo(resp);
       this.isAdd = false;
       this.isOrder = true;
+      this.placeOrder = false;
     })
   }
 
