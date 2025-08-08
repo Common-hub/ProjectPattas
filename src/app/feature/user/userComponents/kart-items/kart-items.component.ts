@@ -52,7 +52,7 @@ export class KartItemsComponent implements OnInit {
           (item.product.price - (item.product.price * (item.product.discount / 100))) * item.quantity;
       })
     })
-    return this.grandTotal;
+    return Number(this.grandTotal.toFixed(2));
   }
 
   submitOrder() {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class UserInteractionService {
   //search
   private SearchKeyword = new BehaviorSubject<string>('');
   currentSearch = this.SearchKeyword.asObservable();
-  private FilteredSugegestions = new BehaviorSubject<string[]>([]);
+  private FilteredSugegestions = new BehaviorSubject<Set<string>>(new Set());
   $resultProducts = this.FilteredSugegestions.asObservable();
 
   //notification
@@ -46,8 +46,11 @@ export class UserInteractionService {
     this.SearchKeyword.next(key);
   }
 
-  setSuggesttions(keyItems: string[]) {
-    this.FilteredSugegestions.next(keyItems);
+  setSuggesttions(keyItems: Set<string>) {
+    const currentSet = this.FilteredSugegestions.getValue();
+    const updatedSet = new Set(currentSet);
+    keyItems.forEach(item => updatedSet.add(item));
+    this.FilteredSugegestions.next(updatedSet);
   }
 
   getSuggestions() {

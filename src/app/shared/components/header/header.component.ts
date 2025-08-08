@@ -27,7 +27,13 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.navigations = this.authorize.allowedRoutes();
     setTimeout(() => {
-      this.search.getSuggestions().subscribe(respnseName => this.names = respnseName);
+      this.search.getSuggestions().subscribe(respnseName => {
+        const suggestions: Set<string> = new Set();
+        respnseName.forEach(suggest => {
+          suggestions.add(suggest);
+          this.names = Array.from(suggestions);
+        })
+      });
     }, 1000);
     const searchParam = this.route.snapshot.queryParamMap.get('search');
     if (searchParam == '') {

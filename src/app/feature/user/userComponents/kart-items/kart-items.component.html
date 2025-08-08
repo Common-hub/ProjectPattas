@@ -1,5 +1,5 @@
 <div class="cart">
-  <div class="col-12 col-md-12 header d-flex flex-row align-items-center p-1" style="border: 1px solid;">
+  <div class="col-12 col-md-12 header d-flex flex-row align-items-center p-1">
     <label for="header" class="float-left col-10 col-md-11 h3"><strong>Item In cart</strong></label>
     <!-- <label for="header" class="float-right col-2 col-md-1 h6 text-danger"><strong>removeItem</strong></label> -->
   </div>
@@ -26,7 +26,7 @@
         <button class="minus" aria-label="Decrease" (click)="updateProduct('Decrease',item.id)"
           *ngIf="item.quantity > 1">&minus;</button>
         <button class="minus" aria-label="Decrease" (click)="updateProduct('Decrease',item.id)"
-          *ngIf="item.quantity === 1"><i class="bi bi-trash"></i></button>
+          *ngIf="item.quantity <= 1"><i class="bi bi-trash"></i></button>
         <input type="number" class="input-box" [(ngModel)]="item.quantity" min="1" max="3">
         <button class="plus" aria-label="Increase" (click)="updateProduct('Increase',item.id)">&plus;</button>
       </div>

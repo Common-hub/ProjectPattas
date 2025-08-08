@@ -64,19 +64,11 @@ export class OrderDetailsComponent implements OnInit {
     this.apiInteraction.getOrder().subscribe((order: Order[]) => {
       if (order.length >= 1) {
         this.orders = order;
-        this.orders.forEach(order => {
-          order.orderItemDto.forEach(orderprice => {
-            orderprice.product.forEach(product => {
-              if (product.discount === 0) {
-                this.totalPrice += orderprice.price;
-              } else {
-                this.totalPrice += orderprice.price - (orderprice.price * (product.discount / 100));
-              }
-            });
-          })
-        })
       }
-    })
+    },
+      (error) => {
+        this.notify.sppError(error.error[0])
+      })
   }
 
   logout() {
@@ -89,6 +81,7 @@ export class OrderDetailsComponent implements OnInit {
     this.isSpecorder = true;
     this.specOrders = this.orders[i].orderItemDto;
     this.selectedOrderId = this.orders[i].orderId;
+    this.getTotal(i)
   }
 
   // sameAddress(iSame: boolean) {
@@ -145,6 +138,14 @@ export class OrderDetailsComponent implements OnInit {
     const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
     return ['shipped', 'delivered', 'cancelled', 'returned', 'refunded'].includes(this.orders[0].status?.toLowerCase()) ? [this.orders[0].status] :
       index === 0 ? [this.orders[0].status] : this.orderStatus.slice(0, index);
+  }
+
+  getTotal(index: number) {
+    this.totalPrice = 0;
+    this.orders[index].orderItemDto.forEach(products => {
+      this.totalPrice += products.price;
+    });
+    return this.totalPrice;
   }
 
   downloadInvoice() {
