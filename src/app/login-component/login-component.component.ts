@@ -20,6 +20,7 @@ export class LoginComponentComponent implements OnInit {
   changeBool: boolean = false;
   EmailVerify: boolean = false;
   canResend: boolean = false;
+  enabled: boolean = true;
   head: string = "Login";
   response: string = "";
   minutes: number = 3;
@@ -102,6 +103,7 @@ export class LoginComponentComponent implements OnInit {
   resendOtp() {
     this.register();
     this.resetTimer();
+    this.enabled = false;
   }
 
   resetTimer() {

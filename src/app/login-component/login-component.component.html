@@ -93,12 +93,18 @@
     </form>
 
     <div class="form__confirmation">
-        <button *ngIf="LoginBool" type="submit" [disabled]="login.invalid" (click)="userLogin()">Login </button>
-        <button *ngIf="signUpBool" type="submit" [disabled]="!passwordMatchValidator() || sign.invalid"
-            (click)="register()">SignUp</button>
-        <button *ngIf="EmailVerify" [disabled]="!canResend" (click)="resendOtp()">Resend OTP</button>
-        <button *ngIf="EmailVerify" type="submit" [disabled]="sign.invalid" (click)="verify()">Verify</button>
-        <button *ngIf="changeBool" type="submit">Change</button>
+        <ng-container *ngIf="LoginBool">
+            <button type="submit" [disabled]="login.invalid" (click)="userLogin()">Login </button>
+        </ng-container>
+        <ng-container *ngIf="signUpBool">
+            <button type="submit" [disabled]="!passwordMatchValidator() || sign.invalid"
+                (click)="register()">SignUp</button>
+        </ng-container>
+        <ng-container *ngIf="EmailVerify">
+            <button [disabled]="!canResend && enabled" (click)="resendOtp()">Resend OTP</button>
+            <button type="submit" [disabled]="sign.invalid && enabled" (click)="verify()">Verify</button>
+        </ng-container>
+        <!-- <button *ngIf="changeBool" type="submit">Change</button> -->
     </div>
     <div class="links">
         <p (click)="navigate()" *ngIf="LoginBool">Home</p>

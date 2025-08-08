@@ -37,6 +37,7 @@ export class ProductComponent implements OnInit {
       })
     });
     if (this.authunticateUser.isUserLoggedIn) {
+      this.addCartItem.fetchCart();
       this.addCartItem.$inCart.subscribe(response => {
         response.forEach(item => {
           const index = this.cartQuantity.findIndex(i => i.productId === item.product.productId);

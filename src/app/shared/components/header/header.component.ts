@@ -28,7 +28,7 @@ export class HeaderComponent implements OnInit {
     this.navigations = this.authorize.allowedRoutes();
     setTimeout(() => {
       this.search.getSuggestions().subscribe(respnseName => this.names = respnseName);
-    }, 10000);
+    }, 1000);
     const searchParam = this.route.snapshot.queryParamMap.get('search');
     if (searchParam == '') {
       // Clear the 'search' query param on page load
@@ -80,25 +80,19 @@ export class HeaderComponent implements OnInit {
       }).then(() => {
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: { search: searchKeyword },
+          queryParams: { search: this.searchKey },
           queryParamsHandling: 'merge',
           replaceUrl: true
         });
       });
-
       const identifiedMatched = this.names.filter(keyword =>
         keyword.toLowerCase().includes(searchKeyword.toLowerCase())
       );
       this.suggestions = identifiedMatched.length >= 1 ? identifiedMatched : [];
     } else {
       this.searchKey = '';
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { search: null },
-        queryParamsHandling: 'merge',
-        replaceUrl: true
-      });
       this.suggestions = [];
+      this.searchResult.fetchProducts(0, 15);
     }
   }
 

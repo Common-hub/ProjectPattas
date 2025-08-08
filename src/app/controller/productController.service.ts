@@ -98,6 +98,7 @@ export class ProductController {
               }
               this.notification.sppInfo(successMsg);
               console.log('[Products] productFetch Success....');
+              if (this.authorize.isUserLoggedIn) this.cart.fetchCart();
             }
           }),
           catchError(error => {
@@ -109,8 +110,6 @@ export class ProductController {
           }),
           finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
       }
-
-      if (this.authorize.isUserLoggedIn) this.cart.fetchCart();
     }
   }
 

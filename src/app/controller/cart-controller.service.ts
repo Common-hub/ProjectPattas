@@ -31,7 +31,6 @@ export class CartController {
     }),
       catchError(error => {
         this.notification.sppError('❌ ' + error.error);
-
         console.error('[Products] productFetch Failed!....');
         return of([]);
       }),
@@ -59,7 +58,7 @@ export class CartController {
       this.fetchCart();
     }),
       catchError(error => {
-        this.notification.sppError('❌ ' + error.error);
+        this.notification.sppError('❌ ' + error.error[0]);
         console.error('[Products] productFetch Failed!....');
         return of([]);
       }),
@@ -84,10 +83,10 @@ export class CartController {
     return this.$cartProducts;
   }
   //cartController
-  cartController = {
+  private cartController = {
     getCart: (): Observable<inCart[]> => this.http.get<inCart[]>(this.apiBaseUrl + 'cart', { responseType: 'json' }),
-    updateCartWithItem: (cartItems: cartItems | cartItems[]): Observable<string> => this.http.post<string>(this.apiBaseUrl + 'cart/add', cartItems),
-    deleteCart: (Id: number): Observable<string> => this.http.delete<string>(this.apiBaseUrl + `cart/remove/${Id}`)
+    updateCartWithItem: (cartItems: cartItems | cartItems[]): Observable<string> => this.http.post(this.apiBaseUrl + 'cart/add', cartItems, { responseType: 'text' }),
+    deleteCart: (Id: number): Observable<string> => this.http.delete(this.apiBaseUrl + `cart/remove/${Id}`, { responseType: 'text' })
   }
 
 }
