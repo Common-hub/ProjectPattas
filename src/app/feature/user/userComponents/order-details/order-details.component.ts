@@ -27,6 +27,8 @@ export class OrderDetailsComponent implements OnInit {
   shippingAdd!: address;
   addressForm!: FormGroup;
   totalPrice: number = 0;
+  logisticsPartner: string = '';
+  trackingId: string = '';
   selectedOrderId: number = 0;
 
   constructor(private route: Router, private apiInteraction: UserControllerService,
@@ -87,7 +89,7 @@ export class OrderDetailsComponent implements OnInit {
   showOrderStatus(i: number) {
     this.isOrder = false;
     this.isSpecorder = true;
-    this.specOrders = this.orders[i].orderItemDto;
+    this.specOrders = this.orders[i].items;
     this.selectedOrderId = this.orders[i].orderId;
     this.getTotal(i)
   }
@@ -163,9 +165,11 @@ export class OrderDetailsComponent implements OnInit {
 
   getTotal(index: number) {
     this.totalPrice = 0;
-    this.orders[index].orderItemDto.forEach(products => {
+    this.orders[index].items.forEach(products => {
       this.totalPrice += products.price;
     });
+    this.logisticsPartner = this.orders[index].logisticsPartner;
+    this.trackingId = this.orders[index].trackingId;
     return this.totalPrice;
   }
 

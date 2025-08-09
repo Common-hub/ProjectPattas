@@ -53,11 +53,13 @@
                                         <td>{{order.product.name}}</td>
                                         <td>{{order.quantity}}</td>
                                         <td colspan="2"><strong>₹ {{order.price}}</strong></td>
-                                        <td><strong>₹ {{order.price}}</strong></td>
+                                        <td><strong>₹ {{order.quantity * order.price}}</strong></td>
                                     </tr>
                                     <tr>
                                         <th colspan="2">
-                                            Payment Status: <span class="badge badge-warning">PENDING</span>
+                                            LogisticsPartner : <span>{{logisticsPartner || 'We are processing your order
+                                                '}}</span><br>
+                                            TrackingId : <span>{{trackingId || 'We are processing your order '}}</span>
                                         </th>
                                         <th colspan="6" style="text-align: right;">
                                             <span class="text-muted">Total Price</span> <br>

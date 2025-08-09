@@ -21,6 +21,9 @@ export type OrderAdmin = Omit<Order, 'orderId' | 'status'> & {
   id: number;
   trackingId: string;
   logisticsPartner: string;
+  userName: string;
+  userPhone: string;
+  address: string;
   orderStatus: OrderStatus;
 };
 
@@ -38,10 +41,12 @@ export interface cartItems {
 
 export interface Order {
   orderId: number;
-  orderItemDto: [{ product: Product, price: number, quantity: number }];
+  items: [{ product: Product, price: number, quantity: number }];
   status: OrderStatus;
   orderDate: Date;
   address: string;
+  trackingId: string;
+  logisticsPartner: string;
 }
 
 export type OrderStatus =

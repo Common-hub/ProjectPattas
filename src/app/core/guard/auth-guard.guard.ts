@@ -55,7 +55,6 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
 
   loginHelper(params: Credentials) {
     console.info("[Guard]: Verifyng User.");
-    this.notify.showLoader();
     this.loginHelperService.userController.login(params).subscribe(response => {
       if (response) {
         const authorized = response;
@@ -74,11 +73,9 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
         this.loginHelperService.getUser().subscribe(response => {
           this.loginHelperService.userDetail = response;
         });
-        this.notify.hideLoader();
       }
     }, (error) => {
       console.info(`[Gaurd]: User Failed to Verify 🔐.`);
-      this.notify.hideLoader();
       this.notify.sppError(error.error);
     });
   }

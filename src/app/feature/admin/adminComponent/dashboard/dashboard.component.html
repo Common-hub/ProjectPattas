@@ -43,6 +43,30 @@
                             </span>
                         </th>
                         <th scope="col">
+                            <span class="sortable">Ordered PlacedBy
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('userName',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('userName',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sortable">Contact
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('userPhone',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('userPhone',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sortable">Ordered Address
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('address',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('address',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
                             <span class="sortable">Logistics Partner
                                 <span class="sort">
                                     <i class="bi bi-caret-up" (click)="sortProducts('orderDate',true)"></i>
@@ -69,9 +93,12 @@
                     <ng-container *ngFor="let orderItem of (orderController.$AdminOrderList | async);let index = index">
                         <tr>
                             <td><strong>{{index +1}}</strong></td>
-                            <td><span (click)="orderController.billInvoice(orderItem.id)"
+                            <td><span (click)="openPopup(orderItem.id)"
                                     class="billLink"><strong>{{orderItem.id}}</strong></span></td>
                             <td><strong>{{orderItem.orderDate | date: 'dd-MM-yyyy'}}</strong></td>
+                            <td><strong>{{orderItem.userName}}</strong></td>
+                            <td><strong>{{orderItem.userPhone}}</strong></td>
+                            <td><strong>{{addressT(orderItem.address)}}</strong></td>
 
                             <ng-container *ngIf="isEditable !== orderItem.id">
                                 <td><strong>{{orderItem.logisticsPartner || 'NA'}}</strong></td>
@@ -114,6 +141,37 @@
                     </ng-container>
                 </tbody>
             </table>
+
+            <div *ngIf="specOrders.length >=1" class="popup-overlay">
+                <div class="popup-content">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col" colspan="2">Price</th>
+                                <th scope="col">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let order of specOrders; let i = index">
+                                <td>{{order.product.name}}</td>
+                                <td>{{order.quantity}}</td>
+                                <td colspan="2"><strong>₹ {{order.price}}</strong></td>
+                                <td><strong>₹ {{order.quantity * order.price}}</strong></td>
+                            </tr>
+                            <tr>
+                                <th colspan="6" style="text-align: right;">
+                                    <span class="text-muted">Total Price</span> <br>
+                                    <strong>₹ {{totalPrice}}</strong>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button (click)="closePopup()" class="float-end btn btn-outline-danger">Close</button>
+                </div>
+            </div>
         </ng-container>
 
     </div>

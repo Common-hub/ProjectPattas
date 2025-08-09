@@ -45,7 +45,6 @@ export class OrderController {
     console.info('[Gaurd]:  Fetching the Orders Recived...');
     this.loader.showLoader();
     this.orderController.getAllOrders().pipe(tap(orderResp => {
-      console.log(orderResp)
       this.unfilteredOrderAd = orderResp;
       this.adminOrders = orderResp;
       this.loader.sppInfo('Orders Fetch SuccessFul 👍.');

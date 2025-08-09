@@ -12,11 +12,13 @@ import { ORDER_STATUS_VALUES, OrderAdmin, OrderStatus, updateOrder } from 'src/a
 export class DashboardComponent implements OnInit {
 
   orderList: OrderAdmin[] = [];
+  specOrders: any[] = [];
   orderStatus: OrderStatus[] = ORDER_STATUS_VALUES;
   editedOrderItem: OrderAdmin = {} as OrderAdmin;
   pendingOrders: number = 0;
   completeOrders: number = 0;
   totalOrders: number = 0;
+  totalPrice: number = 0;
   isEditable: number | null = null
   backUp!: OrderAdmin
   isEdit: boolean = false;
@@ -67,6 +69,21 @@ export class DashboardComponent implements OnInit {
     return ['shipped', 'delivered'].includes(this.status?.toLowerCase()) ? true : false;
   }
 
+  addressT(value: string): string {
+    return value?.replace(/\+/g, ', ') || '';
+  }
+
+  openPopup(order: any) {
+    this.totalPrice = 0;
+    this.specOrders = this.orderList[order].items;
+    this.specOrders.forEach(products => {
+      this.totalPrice += products.price;
+    });
+  }
+
+  closePopup() {
+    this.specOrders = [];
+  }
   sortProducts(type: keyof OrderAdmin, ascending: boolean = false): void {
     this.orderList.sort((a, b) => {
       // 2. Handle string comparison safely

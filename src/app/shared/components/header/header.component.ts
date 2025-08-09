@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: UserControllerService, private authorize: AuthorizeService, private searchResult: ProductController) { }
 
   ngOnInit(): void {
-    this.navigations = this.authorize.allowedRoutes();
+    this.navigations = this.authorize.isUserLoggedIn ? this.authorize.allowedRoutes() : [];
     setTimeout(() => {
       this.search.getSuggestions().subscribe(respnseName => {
         const suggestions: Set<string> = new Set();
