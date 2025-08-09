@@ -49,7 +49,6 @@ export class ProductDataComponent implements OnInit {
     const updatedItem = new FormData();
     const index = this.productsList.findIndex(p => p.id === productId);
     if (index === -1) return; // Product not found
-
     const price = parseFloat(Number(this.flagCheck.price).toFixed(2)).toString();
     updatedItem.append('name', this.flagCheck.name);
     updatedItem.append('description', this.flagCheck.description);
@@ -64,7 +63,7 @@ export class ProductDataComponent implements OnInit {
     if (Array.from(updatedItem as any).length !== 0) {
       await this.productController.putProductsByid(productId, updatedItem);
       // Update the product in the list so the view reflects the change
-      this.productsList[index] = { ...this.productsList[index], ...this.flagCheck };
+      // this.productsList[index] = { ...this.productsList[index], ...this.flagCheck };
       this.editableItem = null;
       this.isEdit = false;
       this.productController.productsList = this.productsList;

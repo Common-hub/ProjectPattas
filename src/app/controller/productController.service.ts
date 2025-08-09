@@ -166,11 +166,12 @@ export class ProductController {
     console.info(`[${role}]: Trying to update product${id}`);
     this.notification.showLoader();
     this.productController.putProductById(id, productItem).pipe(
-      tap(response => {
+      tap((response: any) => {
         const products = this.productsLists.value;
         const index = products.findIndex(product => product.id === response.id);
         if (index > -1) {
           products[index] = { ...products[index], ...response };
+          products[index].active = response.activeProduct
           this.productsLists.next([...products]);
           console.info('[Products]: Updated list after updation.');
           this.notification.sppInfo('✅ Product Updation Succesfully.')
