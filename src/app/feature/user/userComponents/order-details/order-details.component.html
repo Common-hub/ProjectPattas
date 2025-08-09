@@ -10,7 +10,8 @@
                             <div class="mt-3">
                                 <h4>{{userdetails.name}}</h4>
                                 <p class="text-secondary mb-1">{{userdetails.email}}</p>
-                                <p class="text-muted font-size-sm">{{userdetails.address}}</p>
+                                <p class="text-muted font-size-sm">{{userAddress.city + ' , '+ userAddress.state}}
+                                </p>
                             </div>
                         </div>
                         <div class="list-group list-group-flush text-center mt-4">
@@ -381,7 +382,7 @@
                                     <div class="zip">
                                         <label for="zip">Zip / Postal Code</label>
                                         <input placeholder="e.g. 95014" id="zip" type="text" name="zip"
-                                            formControlName="zip" maxlength="6" />
+                                            formControlName="zip" maxlength="6" (input)="restrictText($event)" />
                                     </div>
                                     <div class="country">
                                         <label for="country">Country</label>

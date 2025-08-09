@@ -33,7 +33,6 @@ export class KartItemsComponent implements OnInit {
         this.totalPrice += (prod.quantity * prod.finalPrice)
       })
     })
-
   }
 
   calculateGrandTotal(products: any[]): number {
@@ -60,13 +59,7 @@ export class KartItemsComponent implements OnInit {
     this.userDetails.$UserData.subscribe(response => {
       details = response;
     });
-    if (details.address) {
-      this.userDetails.postOrder(details.address);
-      this.router.navigate(['user/orderStatus']);
-    } else {
-      this.userDetails.addressFound = true;
-      this.router.navigate(['user/orderStatus']);
-    }
+    this.userDetails.addressFound = true;
+    this.router.navigate(['user/orderStatus']);
   }
-
 }

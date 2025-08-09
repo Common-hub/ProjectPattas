@@ -13,7 +13,7 @@ import { address, Order, ORDER_STATUS_VALUES, OrderStatus, userDetails } from 's
 })
 export class OrderDetailsComponent implements OnInit {
 
-  userAddress: string[] = [];
+  userAddress!: address;
   orders: Order[] = [];
   specOrders: any[] = [];
   orderStatus: OrderStatus[] = ORDER_STATUS_VALUES;
@@ -29,9 +29,21 @@ export class OrderDetailsComponent implements OnInit {
   totalPrice: number = 0;
   selectedOrderId: number = 0;
 
-  constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder, private details: UserControllerService, private notify: UserInteractionService, private cart: CartController) { }
+  constructor(private route: Router, private apiInteraction: UserControllerService,
+    private fb: FormBuilder, private details: UserControllerService, private notify: UserInteractionService,
+    private cart: CartController) { }
 
   ngOnInit(): void {
+    this.apiInteraction.getOrder().subscribe(order => {
+      if (order.length > 1) {
+        this.orders = order;
+      }
+    },
+      (error) => {
+        const errorMsg = error?.error || error?.message || 'Unknown error';
+        this.notify.sppError('❌ ' + errorMsg);
+      }
+    )
     const order = localStorage.getItem('ordered');
     this.placeOrder = order != undefined ? order === 'false' ? false : true : false;
     if (this.details.$addressFound) { this.screentoggle('address') }
@@ -54,17 +66,17 @@ export class OrderDetailsComponent implements OnInit {
     this.details.$UserDetail.subscribe(response => {
       this.userdetails = response;
       const userName = response && response.name.split(" ");
-      this.name = { fName: userName[0], lName: userName[1] }
-    })
-
-    this.apiInteraction.getOrder().subscribe((order: Order[]) => {
-      if (order.length >= 1) {
-        this.orders = order;
+      this.name = { fName: userName[0], lName: userName[1] };
+      const address = response.address.split('+');
+      this.userAddress = {
+        ddL1: address[0] || '',
+        AddL2: address[1] || '',
+        city: address[2] || '',
+        state: address[3] || '',
+        zip: Number(address[4]) || 0,
+        country: address[5] || ''
       }
-    },
-      (error) => {
-        this.notify.sppError(error.error[0])
-      })
+    })
   }
 
   logout() {
@@ -113,45 +125,34 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   confirmOrder() {
-    if (this.details.addressFound) {
-      this.apiInteraction.postOrder(this.userdetails.address).subscribe((resp: any) => {
-        this.notify.sppInfo(resp);
-        this.addressForm.reset();
-        this.isAdd = false;
-        this.isOrder = true;
-        this.placeOrder = true;
-        this.cart.fetchCart();
-        localStorage.setItem('ordered', this.placeOrder.toString())
-        this.apiInteraction.getOrder().subscribe((order: Order[]) => {
-          if (order.length >= 1) {
-            this.orders = order;
-          }
+    this.notify.sppInfo("Address Saved Succesful 👍");
+    const address = this.addressForm.controls['addressL1'].value + '+' + this.addressForm.controls['addressL2'].value + '+' +
+      this.addressForm.controls['country'].value + '+' + this.addressForm.controls['state'].value + '+' +
+      this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value;
+    this.apiInteraction.postOrder(address).subscribe((orderResp: any) => {
+      this.notify.sppInfo(orderResp);
+      this.addressForm.reset();
+      this.isAdd = false;
+      this.isOrder = true;
+      this.placeOrder = true;
+      this.cart.fetchCart();
+      localStorage.setItem('ordered', this.placeOrder.toString())
+      this.apiInteraction.getOrder().subscribe({
+        next: (orders) => {
+          this.orders = orders;
         },
-          (error) => {
-            this.notify.sppError(error.error[0])
-          })
-      },
-        (error) => {
-          this.notify.sppError(error.error[0])
-        })
-    }
-    else {
-      this.notify.sppInfo("Address Saved Succesful 👍");
-      const address = this.addressForm.controls['addressL1'].value + '+' + this.addressForm.controls['addressL2'].value + '+' +
-        this.addressForm.controls['country'].value + '+' + this.addressForm.controls['state'].value + '+' +
-        this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value;
-      this.apiInteraction.postOrder(address).subscribe((orderResp: any) => {
-        console.clear();
-        console.log("orderPlaxed");
-        this.notify.sppInfo(orderResp);
-        this.addressForm.reset();
-        this.isAdd = false;
-        this.isOrder = true;
-        this.placeOrder = true;
-        this.cart.fetchCart();
-        localStorage.setItem('ordered', this.placeOrder.toString())
-      })
-    }
+        error: (err) => {
+          this.notify.sppError(err?.error?.message || 'Failed to fetch updated orders');
+        }
+      });
+    })
+  }
+
+  restrictText(event: any) {
+    const inputValue = event.target.value.trim();
+    const onlyDigits = inputValue.replace(/\D/g, '');
+    const limitedDigits = onlyDigits.slice(0, 6);
+    event.target.value = limitedDigits;
   }
 
   getCurrentState() {

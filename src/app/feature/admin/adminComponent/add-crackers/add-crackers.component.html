@@ -16,8 +16,8 @@
 			<label>Description</label>
 			<input type="text" name="desc" placeholder="ProductDescription" formControlName="description">
 			<label>cost</label>
-			<input type="text" name="cost" placeholder="₹ Rupee." formControlName="price"
-				(input)="restrictText($event,'price')">
+			<input type="text" name="cost" placeholder="₹ Rupee." formControlName="price" min="0" max="100"
+				maxlength="3" minlength="1" (input)="restrictText($event,'price')">
 			<label>discount</label>
 			<input type="text" name="stock" placeholder="Avilable stockQuantity" formControlName="discount"
 				(input)="restrictText($event,'discount')">

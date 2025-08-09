@@ -33,8 +33,8 @@ export class OrderController {
       this.unfilteredOrder = orders;
       this.loader.sppInfo('Orders Fetch SuccessFul 👍.');
     }), catchError(error => {
-      this.loader.sppError('❌ ' + error.error);
-      // this.clearOrders();
+      const errorMsg = error?.error || error?.message || 'Unknown error';
+      this.loader.sppError('❌ ' + errorMsg);
       console.error('[Products] productFetch Failed!....');
       return of([]);
     }),
@@ -50,7 +50,8 @@ export class OrderController {
       this.adminOrders = orderResp;
       this.loader.sppInfo('Orders Fetch SuccessFul 👍.');
     }), catchError(error => {
-      this.loader.sppError('❌ ' + error.error);
+      const errorMsg = error?.error || error?.message || 'Unknown error';
+      this.loader.sppError('❌ ' + errorMsg);
       // this.clearOrders();
       console.error('[Products] productFetch Failed!....');
       return of([]);
@@ -65,7 +66,8 @@ export class OrderController {
       this.loader.sppInfo("✔ Order Placed Sucesfully 👍.");
       this.router.navigate(['user/orderStatus']);
     }), catchError(error => {
-      this.loader.sppError('❌ ' + error.error);
+      const errorMsg = error?.error || error?.message || 'Unknown error';
+      this.loader.sppError('❌ ' + errorMsg);
       console.error('[Products] order Placement Failed!....');
       return of([]);
     }),
@@ -90,7 +92,8 @@ export class OrderController {
       console.info("[Gaurd]:AllDone...");
       this.loader.sppInfo(billDetails[0]);
     }), catchError(error => {
-      this.loader.sppError('❌ ' + error.error);
+      const errorMsg = error?.error || error?.message || 'Unknown error';
+      this.loader.sppError('❌ ' + errorMsg);
       console.info('[Products] Failed to generate invoice!....');
       return of([]);
     }),
@@ -113,7 +116,8 @@ export class OrderController {
       this.fetchAdminOrders();
       this.flageOff = false
     }), catchError(error => {
-      this.loader.sppError('❌ ' + error.error[0]);
+      const errorMsg = error?.error || error?.message || 'Unknown error';
+      this.loader.sppError('❌ ' + errorMsg);
       console.error('[guard] updated order status failed');
       return of([]);
     }),
@@ -138,6 +142,6 @@ export class OrderController {
     getOrders: (): Observable<Order[]> => this.http.get<Order[]>(this.apiBaseUrl, { responseType: 'json' }),
     downloadInvoice: (orderId: number): Observable<string[]> => this.http.get<string[]>(this.apiBaseUrl + `${orderId}/invoice`),
     getAllOrders: (): Observable<OrderAdmin[]> => this.http.get<OrderAdmin[]>(this.apiBaseUrl + 'allOrders'),
-    updateStatus: (status: updateOrder) => this.http.put<string>(this.apiBaseUrl + 'update', status)
+    updateStatus: (status: updateOrder) => this.http.put(this.apiBaseUrl + 'update', status, { responseType: 'text' })
   }
 }
