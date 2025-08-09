@@ -159,21 +159,26 @@ export class ProductController {
   putProductsByid(id: number, productItem: FormData) {
     console.info(`[${this.role}]: Trying to update product${id}`);
     this.notification.showLoader();
-    this.productController.putProductById(id, productItem).pipe(tap(response => {
-      alert('€ Im here!!')
-      const index = this.productsList.findIndex(products => products.id === response.id);
-      if (index > -1) {
-        this.productsList[index] = { ...this.productsList[index], ...response };
-        this.productsList = [...this.productsList]
-        console.info('[Products]: Updated list after updation.');
-        this.notification.sppInfo('✅ Product Updation Succesfully.')
-      }
-    }),
+    this.productController.putProductById(id, productItem).pipe(
+      tap(response => {
+        // Use the current value of the BehaviorSubject
+        const products = this.productsLists.value;
+        const index = products.findIndex(product => product.id === response.id);
+        if (index > -1) {
+          products[index] = { ...products[index], ...response };
+          this.productsLists.next([...products]);
+          console.info('[Products]: Updated list after updation.');
+          this.notification.sppInfo('✅ Product Updation Succesfully.')
+        }
+      }),
       catchError(error => {
-        this.notification.sppError('❌ ' + error.error);
-        console.error('[Products] Failed to update product!');
+        const errorMsg = error?.error || error?.message || 'Unknown error';
+        this.notification.sppError('❌ ' + errorMsg);
+        console.error('[Products] Failed to update product!', error);
         return of(null as any);
-      }), finalize(() => this.notification.hideLoader())).subscribe()
+      }),
+      finalize(() => this.notification.hideLoader())
+    ).subscribe()
   }
 
   getProductsByid(id: number) {

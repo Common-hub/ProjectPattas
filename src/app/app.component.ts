@@ -15,10 +15,14 @@ export class AppComponent implements OnInit {
   title = 'Suriya Pryo Park';
   isLoggedIn: boolean = false;
   navigations: { route: string; key: string; }[] = [];
-  private inactivityLimit = 15 * 60 * 1000;
 
-  constructor(private router: Router, private activityMonitor: AuthorizeService, private producthandeler: ProductController, private search: UserInteractionService,
-    private cart: CartController) {
+  constructor(
+    private router: Router,
+    private activityMonitor: AuthorizeService,
+    private producthandeler: ProductController,
+    private search: UserInteractionService,
+    private cart: CartController
+  ) {
     activityMonitor.reStoreFromSession();
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -30,10 +34,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.producthandeler.fetchProducts(0, 15);
-    this.activityMonitor.setupActivityListeners();
-    setTimeout(() => {
-      this.activityMonitor.checkActivity()
-    }, this.inactivityLimit);
     this.navigations = this.activityMonitor.allowedRoutes();
   }
 

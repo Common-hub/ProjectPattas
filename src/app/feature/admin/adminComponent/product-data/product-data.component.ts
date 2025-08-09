@@ -45,39 +45,29 @@ export class ProductDataComponent implements OnInit {
     })
   }
 
-  updateProduct(productId: number, isUpdate?: boolean) {
+  async updateProduct(productId: number, isUpdate?: boolean) {
     const updatedItem = new FormData();
-    var index: number = 0;
-    if (isUpdate) {
-      index = productId;
-      const price = parseFloat(Number(this.flagCheck.price).toFixed(2)).toString();
-      updatedItem.append('name', this.productsList[index].name);
-      updatedItem.append('description', this.productsList[index].description);
-      updatedItem.append('price', price);
-      updatedItem.append('stockQuantity', this.flagCheck.stockQuantity.toString());
-      updatedItem.append('image', this.imageFile ? this.imageFile : new Blob());
-      updatedItem.append('active', this.flagCheck.active.toString());
-      updatedItem.append('discount', this.flagCheck.discount.toString());
-    } else {
-      const i = this.productsList.findIndex(p => p.id === productId);
-      index = i;
-      const editedFlag = this.flagCheck !== {} as any ? JSON.stringify(this.flagCheck) === JSON.stringify(this.productsList[i]) ? false : true : false;
-      if (editedFlag) {
-        const price = parseFloat(Number(this.flagCheck.price).toFixed(2)).toString();
-        updatedItem.append('name', this.productsList[index].name);
-        updatedItem.append('description', this.productsList[index].description);
-        updatedItem.append('price', price);
-        updatedItem.append('stockQuantity', this.flagCheck.stockQuantity.toString());
-        updatedItem.append('image', this.imageFile ? this.imageFile : new Blob());
-        updatedItem.append('active', this.flagCheck.active.toString());
-        updatedItem.append('discount', this.flagCheck.discount.toString());
-      }
+    const index = this.productsList.findIndex(p => p.id === productId);
+    if (index === -1) return; // Product not found
+
+    const price = parseFloat(Number(this.flagCheck.price).toFixed(2)).toString();
+    updatedItem.append('name', this.flagCheck.name);
+    updatedItem.append('description', this.flagCheck.description);
+    updatedItem.append('price', price);
+    updatedItem.append('stockQuantity', this.flagCheck.stockQuantity.toString());
+    if (this.imageFile) {
+      updatedItem.append('image', this.imageFile);
     }
+    updatedItem.append('active', this.flagCheck.active.toString());
+    updatedItem.append('discount', this.flagCheck.discount.toString());
+
     if (Array.from(updatedItem as any).length !== 0) {
-      this.productController.putProductsByid(index, updatedItem);
+      await this.productController.putProductsByid(productId, updatedItem);
+      // Update the product in the list so the view reflects the change
+      this.productsList[index] = { ...this.productsList[index], ...this.flagCheck };
       this.editableItem = null;
       this.isEdit = false;
-      this.productController.productsList = this.productsList
+      this.productController.productsList = this.productsList;
     }
   }
 
@@ -121,23 +111,26 @@ export class ProductDataComponent implements OnInit {
     this.productController.productsList = this.productsList;
   }
 
-  async enableEdit(index: number) {
-    const i = this.productsList.findIndex(product => product.id === index)
+  async enableEdit(id: number) {
+    const index = this.productsList.findIndex(product => product.id === id);
+    if (index === -1) return;
     if (this.isEdit) {
-      var editedFlag = false;
-      editedFlag = this.productsList[i].imageUrl !== this.flagCheck.imageUrl || Number(this.productsList[i].price) !== Number(this.flagCheck.price) ||
-        Number(this.productsList[i].stockQuantity) !== Number(this.flagCheck.stockQuantity) || this.productsList[i].active !== this.flagCheck.active ||
-        Number(this.productsList[i].discount) !== Number(this.flagCheck.discount);
+      let editedFlag = false;
+      editedFlag = this.productsList[index].imageUrl !== this.flagCheck.imageUrl ||
+        Number(this.productsList[index].price) !== Number(this.flagCheck.price) ||
+        Number(this.productsList[index].stockQuantity) !== Number(this.flagCheck.stockQuantity) ||
+        this.productsList[index].active !== this.flagCheck.active ||
+        Number(this.productsList[index].discount) !== Number(this.flagCheck.discount);
       if (editedFlag) {
-        const confirm = await this.notification.openWindow('confirm')
+        const confirm = await this.notification.openWindow('confirm');
         if (confirm) {
           this.isEdit = false;
           this.editableItem = null;
-          this.updateProduct(i, true);
+          await this.updateProduct(this.productsList[index].id, true);
         } else {
           this.isEdit = false;
           this.editableItem = null;
-          this.productsList[i] = this.flagCheck;
+          this.productsList[index] = this.flagCheck;
         }
       } else {
         this.isEdit = false;
@@ -145,8 +138,8 @@ export class ProductDataComponent implements OnInit {
       }
     } else {
       this.isEdit = true;
-      this.editableItem = index;
-      this.flagCheck = { ...this.productsList[i] };
+      this.editableItem = id;
+      this.flagCheck = { ...this.productsList[index] };
       console.log(this.flagCheck);
     }
   }
@@ -172,3 +165,4 @@ export class ProductDataComponent implements OnInit {
     }
   }
 }
+

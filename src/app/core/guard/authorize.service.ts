@@ -8,57 +8,16 @@ import { UserInteractionService } from '../service/user-interaction.service';
 export class AuthorizeService {
   private jwtToken = '';
   private _Token = '';
-  private inactivityLimit = 15 * 60 * 1000; // 15 minutes inactivity limit
-  private lastActivity = Date.now();
 
   isAlerted: boolean = false;
 
 
   constructor(private alert: UserInteractionService, private router: Router) {
-    if (this._Token !== '') console.log('[Log] setting JWT Token .....');
-  }
-
-  setupActivityListeners() {
-    ['click', 'mousemove', 'keydown', 'touchstart'].forEach(evt => {
-      console.info("[Gaurd]: Found no activity.");
-      window.addEventListener(evt, () => {
-        this.lastActivity = Date.now();
-        if (this.isAlerted) this.isAlerted = false; // reset alert if user is back
-      })
-    });
-  }
-
-  checkActivity() {
-    console.info("[guard]: Activity Checker.");
-    const inactiveTime = Date.now() - this.lastActivity;
-    if (inactiveTime > this.inactivityLimit) {
-      console.info("[Gaurd]: Found no activity.")
-      this.activityMonitor();
-    }
+    // No inactivity logic needed
   }
 
   get isUserLoggedIn() {
     return this.userIdentifier !== '' ? true : false;
-  }
-
-  private async activityMonitor() {
-    var responed: boolean = false;
-    if (!this.isAlerted) {
-      this.isAlerted = true;
-      const timeout = new Promise<boolean>(res => setTimeout(() => res(false), 60 * 1000));
-      const confirmed = await Promise.race([this.alert.openWindow('session'), timeout]);
-      if (confirmed) {
-        console.info("[Gaurd]: user retained session.")
-        responed = true;
-      } else {
-        console.info("[Gaurd]: user has been logged out.")
-        this.alert.sppError('👋 No response or declined. Logging out.');
-        sessionStorage.clear();
-        console.info("[Guard]: Deleted all items form session.")
-        this.alert.isVisible(false);
-        this.router.navigate(['/login']);
-      };
-    }
   }
 
   set authToken(token: string) {
