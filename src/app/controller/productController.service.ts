@@ -31,22 +31,25 @@ export class ProductController {
   _TotalPages = this.pageTotal.asObservable();
   _EditedItem = this.editedItem.asObservable();
 
-
   public isFetched = false;
-  private role = this.authorize.userAuthority;
   private inQueue: boolean = false;
   private $search = '';
 
-  constructor(private http: HttpClient, private cart: CartController,
-    private authorize: AuthorizeService, private pagenator: PaginationHelperService,
-    private notification: UserInteractionService) { }
+  constructor(
+    private http: HttpClient,
+    private cart: CartController,
+    private authorize: AuthorizeService,
+    private pagenator: PaginationHelperService,
+    private notification: UserInteractionService
+  ) { }
 
   fetchProducts(page: number, size: number, search?: string) {
     console.info('[Products] productFetch started....');
     if (search === undefined) search = '';
     if (!this.inQueue) {
       this.inQueue = true;
-      if (this.authorize.userAuthority === 'admin') {
+      const role = this.authorize.userAuthority;
+      if (role === 'admin') {
         this.productController.getProducts(page, size, search).pipe(
           tap((response: any) => {
             if (response) {
@@ -58,12 +61,10 @@ export class ProductController {
               this.pagenator.chunkInitializer(response.totalElements, size);
               const productNames = _FilteredProducts.map((product: Product) => product.name);
               this.notification.setSuggesttions(productNames);
-              var successMsg = '';
+              let successMsg = '';
               if (this.authorize.isUserLoggedIn) {
-                if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
-                else if (this.role === 'user') {
-                  successMsg = '🛍️ Products fetched successfully for User.';
-                }
+                if (role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
+                else if (role === 'user') successMsg = '🛍️ Products fetched successfully for User.';
               }
               this.notification.sppInfo(successMsg);
               console.log('[Products] productFetch Success....');
@@ -76,7 +77,8 @@ export class ProductController {
             console.error('[Products] productFetch Failed!....');
             return of([]);
           }),
-          finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
+          finalize(() => { this.notification.hideLoader(); this.inQueue = false; })
+        ).subscribe();
       } else {
         this.productController.getActiveProducts(page, size, search).pipe(
           tap((response: any) => {
@@ -89,12 +91,10 @@ export class ProductController {
               this.pagenator.chunkInitializer(response.totalElements, size);
               const productNames = _FilteredProducts.map((product: Product) => product.name);
               this.notification.setSuggesttions(productNames);
-              var successMsg = '';
+              let successMsg = '';
               if (this.authorize.isUserLoggedIn) {
-                if (this.role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
-                else if (this.role === 'user') {
-                  successMsg = '🛍️ Products fetched successfully for User.';
-                }
+                if (role === 'admin') successMsg = '📦 Inventory fetched successfully for Admin.';
+                else if (role === 'user') successMsg = '🛍️ Products fetched successfully for User.';
               }
               this.notification.sppInfo(successMsg);
               console.log('[Products] productFetch Success....');
@@ -108,21 +108,22 @@ export class ProductController {
             console.error('[Products] productFetch Failed!....');
             return of([]);
           }),
-          finalize(() => { this.notification.hideLoader(); this.inQueue = false; })).subscribe();
+          finalize(() => { this.notification.hideLoader(); this.inQueue = false; })
+        ).subscribe();
       }
     }
   }
 
   postProduct(product: FormData): Observable<boolean> {
-    console.info(`[${this.role}]: Adding Product to Database...`);
+    const role = this.authorize.userAuthority;
+    console.info(`[${role}]: Adding Product to Database...`);
     this.notification.showLoader();
     return this.productController.postProduct(product).pipe(
       tap(response => {
-        console.error(response)
         this.productFetched = [response, ...this.productFetched];
         this.productsList = [...this.productFetched];
         this.notification.sppInfo('✅ Product added successfully.');
-        console.info(`[${this.role}]: Product added successfully.`);
+        console.info(`[${role}]: Product added successfully.`);
       }),
       catchError(error => {
         console.error(error.error, error)
@@ -130,19 +131,22 @@ export class ProductController {
         console.error('[Products] Failed to add product!');
         return of(false);
       }),
-      map(() => true)
-      , finalize(() => this.notification.hideLoader()));
+      map(() => true),
+      finalize(() => this.notification.hideLoader())
+    );
   }
 
   deleteProduct(id: number) {
-    console.info(`[${this.role}]: Deleting product with ID ${id}...`);
+    const role = this.authorize.userAuthority;
+    console.info(`[${role}]: Deleting product with ID ${id}...`);
     this.notification.showLoader();
     this.productController.deleteProductById(id).pipe(
       tap(response => {
         this.notification.sppInfo(response);
-        console.info(`[${this.role}]: Product deletion successful.`);
+        console.info(`[${role}]: Product deletion successful.`);
       }),
-      switchMap(() => this.productController.getProducts(this.CurrentPage.value, this.itemSize.value)), tap((response: any) => {
+      switchMap(() => this.productController.getProducts(this.CurrentPage.value, this.itemSize.value)),
+      tap((response: any) => {
         this.productFetched = response?.content ?? [];
         this.productsList = this.productFetched;
         console.info('[Products]: Updated list Updated after deletion.');
@@ -153,15 +157,16 @@ export class ProductController {
         console.error('[Products] Failed to delete product!');
         return of([]);
       })
-      , finalize(() => this.notification.hideLoader())).subscribe();
+      , finalize(() => this.notification.hideLoader())
+    ).subscribe();
   }
 
   putProductsByid(id: number, productItem: FormData) {
-    console.info(`[${this.role}]: Trying to update product${id}`);
+    const role = this.authorize.userAuthority;
+    console.info(`[${role}]: Trying to update product${id}`);
     this.notification.showLoader();
     this.productController.putProductById(id, productItem).pipe(
       tap(response => {
-        // Use the current value of the BehaviorSubject
         const products = this.productsLists.value;
         const index = products.findIndex(product => product.id === response.id);
         if (index > -1) {
@@ -182,19 +187,23 @@ export class ProductController {
   }
 
   getProductsByid(id: number) {
-    console.info(`[${this.role}]: Getting Product[${id}].`);
+    const role = this.authorize.userAuthority;
+    console.info(`[${role}]: Getting Product[${id}].`);
     this.notification.showLoader();
-    this.productController.getProductById(id).pipe(tap(response => {
-      const product = response;
-      this.productsList = [{ ...product }];
-      console.info(`[${this.role}]: the product is fetched Succesfully`);
-      this.notification.sppInfo('✅ Product Fetch Succesfully.')
-    }),
+    this.productController.getProductById(id).pipe(
+      tap(response => {
+        const product = response;
+        this.productsList = [{ ...product }];
+        console.info(`[${role}]: the product is fetched Succesfully`);
+        this.notification.sppInfo('✅ Product Fetch Succesfully.')
+      }),
       catchError(error => {
         this.notification.sppError('❌ ' + error.error);
         console.error('[Products] Failed to delete product!');
         return of(null as any);
-      }), finalize(() => this.notification.hideLoader())).subscribe();
+      }),
+      finalize(() => this.notification.hideLoader())
+    ).subscribe();
   }
 
   filteredProducts(keyWord: string) {
