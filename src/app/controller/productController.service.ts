@@ -119,9 +119,12 @@ export class ProductController {
     console.info(`[${role}]: Adding Product to Database...`);
     this.notification.showLoader();
     return this.productController.postProduct(product).pipe(
-      tap(response => {
-        this.productFetched = [response, ...this.productFetched];
-        this.productsList = [...this.productFetched];
+      tap((response: any) => {
+        const products = this.productsLists.value;
+        const resp: Product = response;
+        resp.active = response.activeProduct;
+        products.push(resp)
+        this.productsList = products;
         this.notification.sppInfo('✅ Product added successfully.');
         console.info(`[${role}]: Product added successfully.`);
       }),
