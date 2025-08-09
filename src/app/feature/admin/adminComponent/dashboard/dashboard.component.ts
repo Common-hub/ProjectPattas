@@ -116,7 +116,7 @@ export class DashboardComponent implements OnInit {
         } else {
           this.inprocess = true;
           const tracker = this.orderList[index].trackingId !== null ? this.orderList[index].trackingId : '';
-          const uplodedItem: updateOrder = { id: this.orderList[index].id, orderStatus: this.orderList[index].orderStatus, trackingId: tracker, logistictsPartner: this.orderList[index].logisticsPartner }
+          const uplodedItem: updateOrder = { id: this.orderList[index].id, orderStatus: this.orderList[index].orderStatus, trackingId: tracker, logisticsPartner: this.orderList[index].logisticsPartner }
           this.orderController.updateOrderItem(uplodedItem);
           setTimeout(() => {
             this.inprocess = this.orderController.flageOff;
