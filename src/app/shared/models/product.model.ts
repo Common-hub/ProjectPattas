@@ -76,5 +76,5 @@ export interface updateOrder {
   id: number;
   trackingId: string;
   orderStatus: string;
-  logistictsPartner?: string;
+  logisticsPartner?: string;
 }
