@@ -14,45 +14,45 @@ export class KartItemsComponent implements OnInit {
 
   apiBaseUrl: string = environment.imageBaseUrl;
 
-  itemIncart: inCart[] = [];
-  grandTotal: number = 0;
+  itemIncart: Set<inCart> = new Set();
+  totalPrice: number = 0;
+  cartItems: inCart[] = [];
 
   constructor(public cartController: CartController, private router: Router, private userDetails: UserControllerService) { }
 
   ngOnInit(): void {
     this.cartController.$inCart.subscribe(response => {
+      this.itemIncart.clear();
+      this.totalPrice = 0;
       response.forEach(item => {
-        this.itemIncart.push(item);
-        console.log(this.itemIncart)
-        this.grandTotal += item.product.price * item.quantity;
+        this.itemIncart.add(item);
+      })
+      this.cartItems = Array.from(this.itemIncart);
+      this.totalPrice = 0;
+      this.itemIncart.forEach(prod => {
+        this.totalPrice += (prod.quantity * prod.finalPrice)
       })
     })
+
+  }
+
+  calculateGrandTotal(products: any[]): number {
+    return products.reduce((sum, item) => sum + item.finalPrice);
   }
 
   updateProduct(action: 'Increase' | 'Decrease', itemId: number) {
-    const index = this.itemIncart.findIndex(i => i.id === itemId);
+    const index = this.cartItems.findIndex(i => i.id === itemId);
     if (action === 'Increase') {
-      this.itemIncart[index].quantity += 1;
-      this.cartController.addCartItem = { productId: this.itemIncart[index].product.productId, quantity: this.itemIncart[index].quantity };
+      this.cartItems[index].quantity += 1;
+      this.cartController.addCartItem = { productId: this.cartItems[index].product.productId, quantity: this.cartItems[index].quantity };
     } else if (action === 'Decrease') {
-      this.itemIncart[index].quantity -= 1;
-      if (this.itemIncart[index].quantity === 0) {
-        this.cartController.removeCartItem(this.itemIncart[index].product.productId);
+      this.cartItems[index].quantity -= 1;
+      if (this.cartItems[index].quantity === 0) {
+        this.cartController.removeCartItem(this.cartItems[index].product.productId);
       } else {
-        this.cartController.addCartItem = { productId: this.itemIncart[index].product.productId, quantity: this.itemIncart[index].quantity };
+        this.cartController.addCartItem = { productId: this.cartItems[index].product.productId, quantity: this.cartItems[index].quantity };
       }
     }
-    this.getgrandTotal();
-  }
-
-  getgrandTotal(): number {
-    this.cartController.$inCart.subscribe(response => {
-      response.forEach(item => {
-        this.grandTotal += item.product.discount === 0 ? item.product.price * item.quantity :
-          (item.product.price - (item.product.price * (item.product.discount / 100))) * item.quantity;
-      })
-    })
-    return Number(this.grandTotal.toFixed(2));
   }
 
   submitOrder() {

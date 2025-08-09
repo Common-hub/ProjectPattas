@@ -28,6 +28,7 @@ export interface inCart {
   id: number;
   product: inCartProduct;
   quantity: number;
+  finalPrice: number;
 }
 
 export interface cartItems {

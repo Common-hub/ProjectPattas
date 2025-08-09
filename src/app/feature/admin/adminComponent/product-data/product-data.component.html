@@ -54,12 +54,12 @@
                             <td>{{product.description}}</td>
                             <td>{{product.stockQuantity}}</td>
                             <td>{{product.price | currency: 'INR': 'symbol'}}</td>
-                            <td>{{product.discount || 0 + ' %'}}</td>
+                            <td>{{product.discount + ' %'|| 0 + ' %'}}</td>
                         </ng-container>
                         <ng-container *ngIf="editableItem === product.id">
                             <td scope="row">
                                 <label class="switch">
-                                    <input type="checkbox" [checked]="product.active" [(ngModel)]="product.active">
+                                    <input type="checkbox" [checked]="product.active" [(ngModel)]="flagCheck.active">
                                     <span class="slider round"></span>
                                 </label>
                             </td>

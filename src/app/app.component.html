@@ -12,6 +12,8 @@
 <searchbar *ngIf="isLoggedIn"></searchbar>
 
 <main class="container">
+    <ngx-spinner bdColor="rgba(0,0,0, 0.3)" size="large" color="#64d6e2" type="square-jelly-box" [fullScreen]="true">
+    </ngx-spinner>
     <alert></alert>
     <router-outlet></router-outlet>
 </main>

@@ -18,7 +18,7 @@
                 class="bi bi-cart3"></span>&nbsp; View Cart
                 </a>    
         <a class="b1" [routerLink]="[ 'user/orderStatus']" routerLinkActive="active" *ngIf="!isAdmin"><span
-                class="bi bi-bag-check-fill"></span>&nbsp;Orders
+                class="bi bi-bag-check"></span>&nbsp;Orders
                 </a>
         <a class="b1" [routerLink]="[ 'admin/dashBoard']" routerLinkActive="active" *ngIf="isAdmin"><span
                 class="bi bi-speedometer2"></span>&nbsp;DashBoard

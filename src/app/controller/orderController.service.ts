@@ -113,7 +113,7 @@ export class OrderController {
       this.fetchAdminOrders();
       this.flageOff = false
     }), catchError(error => {
-      this.loader.sppError('❌ ' + error.error);
+      this.loader.sppError('❌ ' + error.error[0]);
       console.error('[guard] updated order status failed');
       return of([]);
     }),

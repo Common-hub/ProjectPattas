@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CartController } from 'src/app/controller/cart-controller.service';
 import { UserControllerService } from 'src/app/controller/user-controller.service';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
 import { address, Order, ORDER_STATUS_VALUES, OrderStatus, userDetails } from 'src/app/shared/models';
@@ -28,12 +29,12 @@ export class OrderDetailsComponent implements OnInit {
   totalPrice: number = 0;
   selectedOrderId: number = 0;
 
-  constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder, private details: UserControllerService, private notify: UserInteractionService) { }
+  constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder, private details: UserControllerService, private notify: UserInteractionService, private cart: CartController) { }
 
   ngOnInit(): void {
     const order = localStorage.getItem('ordered');
     this.placeOrder = order != undefined ? order === 'false' ? false : true : false;
-
+    if (this.details.$addressFound) { this.screentoggle('address') }
     this.addressForm = this.fb.group({
       addressL1: ['', Validators.required],
       addressL2: ['', Validators.required],
@@ -49,11 +50,6 @@ export class OrderDetailsComponent implements OnInit {
       // bZip: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
       // bCountry: ['', Validators.required]
     })
-
-    if (this.details.$addressFound) {
-      this.isAdd = true;
-      this.isOrder = false;
-    }
 
     this.details.$UserDetail.subscribe(response => {
       this.userdetails = response;
@@ -117,27 +113,51 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   confirmOrder() {
-    this.notify.sppInfo("Address Saved Succesful 👍");
-    this.addressForm.reset();
-    if (this.placeOrder) {
-      const address = this.addressForm.controls['addressL1'].value + '+' + this.addressForm.controls['addressL2'].value + '+' +
-        this.addressForm.controls['country'].value + '+' + this.addressForm.controls['state'].value + '+' +
-        this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value + '+'
-
-      this.apiInteraction.postOrder(address).subscribe(resp => {
+    if (this.details.addressFound) {
+      this.apiInteraction.postOrder(this.userdetails.address).subscribe((resp: any) => {
         this.notify.sppInfo(resp);
+        this.addressForm.reset();
         this.isAdd = false;
         this.isOrder = true;
+        this.placeOrder = true;
+        this.cart.fetchCart();
+        localStorage.setItem('ordered', this.placeOrder.toString())
+        this.apiInteraction.getOrder().subscribe((order: Order[]) => {
+          if (order.length >= 1) {
+            this.orders = order;
+          }
+        },
+          (error) => {
+            this.notify.sppError(error.error[0])
+          })
+      },
+        (error) => {
+          this.notify.sppError(error.error[0])
+        })
+    }
+    else {
+      this.notify.sppInfo("Address Saved Succesful 👍");
+      const address = this.addressForm.controls['addressL1'].value + '+' + this.addressForm.controls['addressL2'].value + '+' +
+        this.addressForm.controls['country'].value + '+' + this.addressForm.controls['state'].value + '+' +
+        this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value;
+      this.apiInteraction.postOrder(address).subscribe((orderResp: any) => {
+        console.clear();
+        console.log("orderPlaxed");
+        this.notify.sppInfo(orderResp);
+        this.addressForm.reset();
+        this.isAdd = false;
+        this.isOrder = true;
+        this.placeOrder = true;
+        this.cart.fetchCart();
         localStorage.setItem('ordered', this.placeOrder.toString())
       })
     }
-    this.addressForm.reset();
   }
 
   getCurrentState() {
     const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
     return ['shipped', 'delivered', 'cancelled', 'returned', 'refunded'].includes(this.orders[0].status?.toLowerCase()) ? [this.orders[0].status] :
-      index === 0 ? [this.orders[0].status] : this.orderStatus.slice(0, index);
+      index === 0 ? [this.orders[0].status] : this.orderStatus.slice(0, index + 1);
   }
 
   getTotal(index: number) {

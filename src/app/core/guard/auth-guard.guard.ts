@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
+import { ProductController } from 'src/app/controller/productController.service';
 import { UserControllerService } from '../../controller/user-controller.service';
 import { Credentials } from '../../shared/models';
 import { UserInteractionService } from '../service/user-interaction.service';
@@ -12,12 +13,13 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
   userRole: string = '';
 
   constructor(private router: Router, private jwtToken: AuthorizeService, private notify: UserInteractionService,
-    private loginHelperService: UserControllerService) {
+    private loginHelperService: UserControllerService, private products: ProductController) {
     this.userRole = jwtToken.userAuthority;
   }
 
   canLoad(route: Route, segments: UrlSegment[]): boolean {
     console.info('[Guard]: Checking Responsiblites.');
+    this.userRole = this.jwtToken.userAuthority;
     if (this.userRole !== '' && this.userRole === route.data?.['role']) {
       console.info('[Guard]: User alllowed for the Route.');
       return true;
@@ -34,6 +36,7 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
   }
 
   private authorizer(route: ActivatedRouteSnapshot): boolean {
+    this.userRole = this.jwtToken.userAuthority;
     if (!this.jwtToken.isUserLoggedIn && !route.data?.['public']) {
       this.notify.sppWarning('Login to Continue');
       this.router.navigate(['login']);
@@ -58,6 +61,7 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
         const authorized = response;
         this.jwtToken.authToken = authorized.token;
         this.userRole = this.jwtToken.userAuthority;
+        this.products.fetchProducts(0, 15);
         if (this.jwtToken.userAuthority === 'user') {
           console.info(`[${this.userRole}]: User Verified 🔐.`);
           this.notify.sppInfo("✅ Welcome back! You’ve logged in successfully.");
@@ -69,14 +73,13 @@ export class AuthGuardGuard implements CanActivate, CanLoad {
         }
         this.loginHelperService.getUser().subscribe(response => {
           this.loginHelperService.userDetail = response;
-          console.log(this.loginHelperService.userDetail)
         });
         this.notify.hideLoader();
       }
     }, (error) => {
       console.info(`[Gaurd]: User Failed to Verify 🔐.`);
-      this.notify.sppError(error.error);
       this.notify.hideLoader();
+      this.notify.sppError(error.error);
     });
   }
 }

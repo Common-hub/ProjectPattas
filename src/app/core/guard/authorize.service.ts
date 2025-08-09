@@ -63,6 +63,7 @@ export class AuthorizeService {
 
   set authToken(token: string) {
     this.jwtToken = token;
+    this._Token = token;
     sessionStorage.setItem('token', token);
   }
 
@@ -127,7 +128,7 @@ export class AuthorizeService {
       return [
         { route: 'user/productsList', key: `<span class="bi bi-houses"></span>&nbsp; <label class="d-none d-md-inline"> Home</label>` },
         { route: 'user/viewCart', key: `<span class="bi bi-cart3"></span>&nbsp; <label class="d-none d-md-inline">  View Cart</label>` },
-        { route: 'user/orderStatus', key: `<span class="bi bi-bag-check-fill"></span>&nbsp; <label class="d-none d-md-inline"> Orders</label>` }
+        { route: 'user/orderStatus', key: `<span class="bi bi-bag-check"></span>&nbsp; <label class="d-none d-md-inline"> Orders</label>` }
       ]
     }
     return []

@@ -67,7 +67,7 @@
                             <td><strong>{{index +1}}</strong></td>
                             <td><span (click)="orderController.billInvoice(orderItem.id)"
                                     class="billLink"><strong>{{orderItem.id}}</strong></span></td>
-                            <td><strong>{{orderItem.orderDate | date: 'dd-mm-yyy'}}</strong></td>
+                            <td><strong>{{orderItem.orderDate | date: 'dd-MM-yyyy'}}</strong></td>
 
                             <ng-container *ngIf="isEditable !== orderItem.id">
                                 <td><strong>{{orderItem.logisticsPartner || 'NA'}}</strong></td>

@@ -41,7 +41,6 @@ export class CartController {
     console.info("[Gaurd]: Getting the items in buffer.");
     this.cartController.getCart().pipe(tap(response => {
       this.inCart = response;
-      console.info(response)
       console.info("[Guard]: Retiving cart Succesful.")
     }),
       catchError(error => {
@@ -76,6 +75,7 @@ export class CartController {
   }
 
   set inCart(inCart: inCart[]) {
+    this.cartProducts.next([]);
     this.cartProducts.next(inCart);
   }
 
@@ -85,8 +85,8 @@ export class CartController {
   //cartController
   private cartController = {
     getCart: (): Observable<inCart[]> => this.http.get<inCart[]>(this.apiBaseUrl + 'cart', { responseType: 'json' }),
-    updateCartWithItem: (cartItems: cartItems | cartItems[]): Observable<string> => this.http.post(this.apiBaseUrl + 'cart/add', cartItems, { responseType: 'text' }),
-    deleteCart: (Id: number): Observable<string> => this.http.delete(this.apiBaseUrl + `cart/remove/${Id}`, { responseType: 'text' })
+    updateCartWithItem: (cartItems: cartItems | cartItems[]) => this.http.post(this.apiBaseUrl + 'cart/add', cartItems, { responseType: 'text' }),
+    deleteCart: (Id: number) => this.http.delete(this.apiBaseUrl + `cart/remove/${Id}`, { responseType: 'text' })
   }
 
 }

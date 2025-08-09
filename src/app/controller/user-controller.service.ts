@@ -75,7 +75,7 @@ export class UserControllerService {
     return this.http.get(this.apiBaseUrl + `order/${orderId}/invoice`, { responseType: 'blob' })
   }
   postOrder(address: any): Observable<any> {
-    return this.http.post(this.apiBaseUrl + `order/place?address=${JSON.stringify(address).toString()}`, { responseType: 'text' })
+    return this.http.post(this.apiBaseUrl + 'order/place', { address: address }, { responseType: 'text' })
   }
 
   set userDetail(details: userDetails) {

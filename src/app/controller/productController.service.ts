@@ -46,7 +46,7 @@ export class ProductController {
     if (search === undefined) search = '';
     if (!this.inQueue) {
       this.inQueue = true;
-      if (this.role === 'admin') {
+      if (this.authorize.userAuthority === 'admin') {
         this.productController.getProducts(page, size, search).pipe(
           tap((response: any) => {
             if (response) {
@@ -120,14 +120,13 @@ export class ProductController {
       tap(response => {
         console.error(response)
         this.productFetched = [response, ...this.productFetched];
-        this.productsList = this.productFetched;
+        this.productsList = [...this.productFetched];
         this.notification.sppInfo('✅ Product added successfully.');
         console.info(`[${this.role}]: Product added successfully.`);
       }),
       catchError(error => {
         console.error(error.error, error)
         this.notification.sppError('❌ ' + error.error);
-        this.clearProducts();
         console.error('[Products] Failed to add product!');
         return of(false);
       }),
@@ -151,7 +150,6 @@ export class ProductController {
       }),
       catchError(error => {
         this.notification.sppError('❌ ' + error.error);
-        this.clearProducts();
         console.error('[Products] Failed to delete product!');
         return of([]);
       })
@@ -162,9 +160,12 @@ export class ProductController {
     console.info(`[${this.role}]: Trying to update product${id}`);
     this.notification.showLoader();
     this.productController.putProductById(id, productItem).pipe(tap(response => {
-      const updatedIndex = [...this.productFetched]
-      const index = updatedIndex.findIndex(index => index.id === response.id);
+      const updatedIndex = [...this.productsList]
+      const index = this.productsList.findIndex(products => products.id === response.id);
+      console.clear()
+      console.log(updatedIndex[index])
       updatedIndex[index] = response;
+      this.productFetched = updatedIndex;
       this.productsList = [...updatedIndex];
       console.info('[Products]: Updated list after updation.');
       this.notification.sppInfo('✅ Product Updation Succesfully.')
@@ -172,8 +173,8 @@ export class ProductController {
       catchError(error => {
         this.notification.sppError('❌ ' + error.error);
         this.clearProducts();
-        console.error('[Products] Failed to delete product!');
-        return of([]);
+        console.error('[Products] Failed to update product!');
+        return of(null as any);
       }), finalize(() => this.notification.hideLoader())).subscribe()
   }
 
@@ -188,9 +189,8 @@ export class ProductController {
     }),
       catchError(error => {
         this.notification.sppError('❌ ' + error.error);
-        this.clearProducts();
         console.error('[Products] Failed to delete product!');
-        return of([]);
+        return of(null as any);
       }), finalize(() => this.notification.hideLoader())).subscribe();
   }
 

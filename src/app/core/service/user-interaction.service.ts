@@ -32,13 +32,11 @@ export class UserInteractionService {
 
   //loader
   showLoader() {
-    this.toggleSpinner++;
-    if (this.toggleSpinner === 1) this.spinner.show();
+    this.spinner.show();
   }
 
   hideLoader() {
-    this.toggleSpinner--;
-    if (this.toggleSpinner === 0) this.spinner.hide();
+    this.spinner.hide();
   }
 
   //search

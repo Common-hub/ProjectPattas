@@ -50,25 +50,27 @@ export class ProductDataComponent implements OnInit {
     var index: number = 0;
     if (isUpdate) {
       index = productId;
-      const price = parseFloat(this.productsList[index].price.toFixed(2)).toString();
+      const price = parseFloat(Number(this.flagCheck.price).toFixed(2)).toString();
       updatedItem.append('name', this.productsList[index].name);
       updatedItem.append('description', this.productsList[index].description);
       updatedItem.append('price', price);
-      updatedItem.append('stockQuantity', this.productsList[index].stockQuantity.toString());
-      updatedItem.append('image', this.imageFile === undefined ? '' : this.imageFile);
+      updatedItem.append('stockQuantity', this.flagCheck.stockQuantity.toString());
+      updatedItem.append('image', this.imageFile);
+      updatedItem.append('active', this.flagCheck.active.toString());
+      updatedItem.append('discount', this.flagCheck.discount.toString());
     } else {
       const i = this.productsList.findIndex(p => p.id === productId);
       index = i;
       const editedFlag = this.flagCheck !== {} as any ? JSON.stringify(this.flagCheck) === JSON.stringify(this.productsList[i]) ? false : true : false;
       if (editedFlag) {
-        const price = parseFloat(this.productsList[index].price.toFixed(2)).toString();
+        const price = parseFloat(Number(this.flagCheck.price).toFixed(2)).toString();
         updatedItem.append('name', this.productsList[index].name);
         updatedItem.append('description', this.productsList[index].description);
         updatedItem.append('price', price);
-        updatedItem.append('stockQuantity', this.productsList[index].stockQuantity.toString());
-        updatedItem.append('image', this.imageFile === undefined ? '' : this.imageFile);
-        updatedItem.append('active', this.productsList[index].active.toString());
-        updatedItem.append('discount', this.productsList[index].discount.toString());
+        updatedItem.append('stockQuantity', this.flagCheck.stockQuantity.toString());
+        updatedItem.append('image', this.imageFile ? this.imageFile : '');
+        updatedItem.append('active', this.flagCheck.active.toString());
+        updatedItem.append('discount', this.flagCheck.discount.toString());
       }
     }
     if (Array.from(updatedItem as any).length !== 0) {
