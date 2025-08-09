@@ -34,7 +34,7 @@
                                     class="bi bi-caret-up" (click)="sortProducts('discount',true)"></i><i
                                     class="bi bi-caret-down" (click)="sortProducts('discount',false)"></i></span></span>
                     </th>
-                    <th scope="col" colspan="3">RequiredAction</th>
+                    <th scope="col" colspan="2">RequiredAction</th>
                 </tr>
             </thead>
             <tbody class=" table-hover ">
@@ -84,10 +84,10 @@
                         <td><button type="button" class="btn btn-sm btn-outline-primary" data-toggle="tooltip"
                                 data-placement="bottom" title="Update" (click)="updateProduct(product.id)"
                                 *ngIf="isEdit">Save</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-danger" data-toggle="tooltip"
+                        <!-- <td><button type="button" class="btn btn-sm btn-outline-danger" data-toggle="tooltip"
                                 *ngIf="isEdit" (click)="deleteProduct(product.id)" data-placement="right"
                                 title="Delete"><i class="bi bi-sm bi-trash-fill"></i></button>
-                        </td>
+                        </td> -->
                     </tr>
                 </ng-container>
             </tbody>

@@ -160,19 +160,17 @@ export class ProductController {
     console.info(`[${this.role}]: Trying to update product${id}`);
     this.notification.showLoader();
     this.productController.putProductById(id, productItem).pipe(tap(response => {
-      const updatedIndex = [...this.productsList]
+      alert('€ Im here!!')
       const index = this.productsList.findIndex(products => products.id === response.id);
-      console.clear()
-      console.log(updatedIndex[index])
-      updatedIndex[index] = response;
-      this.productFetched = updatedIndex;
-      this.productsList = [...updatedIndex];
-      console.info('[Products]: Updated list after updation.');
-      this.notification.sppInfo('✅ Product Updation Succesfully.')
+      if (index > -1) {
+        this.productsList[index] = { ...this.productsList[index], ...response };
+        this.productsList = [...this.productsList]
+        console.info('[Products]: Updated list after updation.');
+        this.notification.sppInfo('✅ Product Updation Succesfully.')
+      }
     }),
       catchError(error => {
         this.notification.sppError('❌ ' + error.error);
-        this.clearProducts();
         console.error('[Products] Failed to update product!');
         return of(null as any);
       }), finalize(() => this.notification.hideLoader())).subscribe()

@@ -292,7 +292,7 @@
                                             <th scope="col">Order ID</th>
                                             <th scope="col">Date</th>
                                             <th scope="col" colspan="2">Status</th>
-                                            <th scope="col"></th>
+                                            <!-- <th scope="col"></th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -304,8 +304,8 @@
                                             <td colspan="2"><strong><span
                                                         class="badge badge-warning">{{order.status}}</span></strong>
                                             </td>
-                                            <td><span class="badge badge-danger" *ngIf="order.status !== 'DELIVERED'">
-                                                    Cancel</span></td>
+                                            <!-- <td><span class="badge badge-danger" *ngIf="order.status !== 'DELIVERED'">
+                                                    Cancel</span></td> -->
                                         </tr>
                                     </tbody>
                                 </table>

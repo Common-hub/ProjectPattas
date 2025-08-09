@@ -55,7 +55,7 @@ export class ProductDataComponent implements OnInit {
       updatedItem.append('description', this.productsList[index].description);
       updatedItem.append('price', price);
       updatedItem.append('stockQuantity', this.flagCheck.stockQuantity.toString());
-      updatedItem.append('image', this.imageFile);
+      updatedItem.append('image', this.imageFile ? this.imageFile : new Blob());
       updatedItem.append('active', this.flagCheck.active.toString());
       updatedItem.append('discount', this.flagCheck.discount.toString());
     } else {
@@ -68,7 +68,7 @@ export class ProductDataComponent implements OnInit {
         updatedItem.append('description', this.productsList[index].description);
         updatedItem.append('price', price);
         updatedItem.append('stockQuantity', this.flagCheck.stockQuantity.toString());
-        updatedItem.append('image', this.imageFile ? this.imageFile : '');
+        updatedItem.append('image', this.imageFile ? this.imageFile : new Blob());
         updatedItem.append('active', this.flagCheck.active.toString());
         updatedItem.append('discount', this.flagCheck.discount.toString());
       }
