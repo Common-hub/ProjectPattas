@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
   editedOrderItem: OrderAdmin = {} as OrderAdmin;
   pendingOrders: number = 0;
   completeOrders: number = 0;
+  totalOrders: number = 0;
   isEditable: number | null = null
   backUp!: OrderAdmin
   isEdit: boolean = false;
@@ -29,8 +30,9 @@ export class DashboardComponent implements OnInit {
     this.orderController.fetchAdminOrders();
     this.orderController.$adminOrders.subscribe(order => {
       this.orderList = order;
-      this.completeOrders = this.orderList.filter(order => order.orderStatus === 'DELIVERED').length
-      this.pendingOrders = this.orderList.filter(order => ['PLACED', 'PROCESSING', 'SHIPPED'].includes(order.orderStatus.toLowerCase())).length
+      this.completeOrders = this.orderList.filter(order => order.orderStatus === 'DELIVERED').length;
+      this.pendingOrders = this.orderList.filter(order => ['PLACED', 'CONFIRMED', 'PROCESING', 'SHIPPED'].includes(order.orderStatus.toUpperCase())).length;
+      this.totalOrders = this.orderList.length;
     })
   }
 
