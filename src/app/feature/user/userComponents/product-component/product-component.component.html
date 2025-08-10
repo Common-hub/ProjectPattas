@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
+      *ngFor="let product of (productController._ProductDTO | async); let i = index">
+
+      <div class="card h-100 shadow-sm border-0">
+
+        <!-- Product Image -->
+        <div class="position-relative">
+          <img class="card-img-top img-fluid" [src]="product.imageUrl" alt="{{product.name}}">
+        </div>
+
+        <!-- Product Info -->
+        <div class="card-body d-flex flex-column justify-content-between">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text text-muted mb-1">{{ product.description }}</p>
+          <p class="text-danger fw-bold mb-2" *ngIf="product.discount > 0">
+            Discount: {{ product.discount }}%
+          </p>
+
+          <!-- Price Section -->
+          <div>
+            <span class="text-decoration-line-through text-muted me-2"
+              *ngIf="product.discount > 0 && cartQuantity[i].quantity == 0">
+              <del>₹{{ (+product.price).toFixed(2) }}</del>
+            </span>
+            <span class="fw-bold text-success">
+              ₹{{ product.discount === 0
+              ? (+product.price).toFixed(2)
+              : (+product.price - (+product.price * (+product.discount / 100))).toFixed(2) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Cart Controls -->
+        <div class="card-footer bg-white border-0">
+          <!-- If product is in cart -->
+          <div class="quantity" *ngIf="cartQuantity[i].quantity > 0">
+            <button class="minus" aria-label="Decrease"
+              (click)="updateCartItems('removeItem', product.id)">&minus;</button>
+            <input type="number" class="input-box" [(ngModel)]="cartQuantity[i].quantity" min="1" max="3">
+            <button class="plus" aria-label="Increase" (click)="updateCartItems('addItem', product.id)">&plus;</button>
+          </div>
+
+          <!-- If not in cart -->
+          <button class="btn btn-primary w-100 mt-2" *ngIf="cartQuantity[i].quantity == 0 && product.stockQuantity > 0"
+            (click)="updateCartItems('addItem', product.id)">
+            Add to Cart
+          </button>
+
+          <!-- Out of Stock -->
+          <button class="btn btn-danger w-100 mt-2" disabled *ngIf="product.stockQuantity == 0">
+            Out of Stock
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

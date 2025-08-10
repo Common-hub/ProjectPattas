@@ -1,0 +1,31 @@
+<form action="" [formGroup]="addProducts">
+	<div id="product_information">
+		<div id="image_preview">
+			<div id="product_image">
+				<span *ngIf="imageSrc === ''"> <strong>Preview Image</strong> </span>
+				<img src={{imageSrc}} height="228px" width="320px" *ngIf="imageSrc !==''">
+			</div>
+			<div id="product_control">
+				<input type="file" name="pic" accept="image/*" (change)="previewImg($event);"
+					formControlName="imageUrl">
+			</div>
+		</div>
+		<div id="product_details">
+			<label>name</label>
+			<input type="text" name="name" placeholder="ProductName" formControlName="name">
+			<label>Description</label>
+			<input type="text" name="desc" placeholder="ProductDescription" formControlName="description">
+			<label>cost</label>
+			<input type="text" name="cost" placeholder="₹ Rupee." formControlName="price" min="0" max="100"
+				maxlength="3" minlength="1" (input)="restrictText($event,'price')">
+			<label>discount</label>
+			<input type="text" name="stock" placeholder="Avilable stockQuantity" formControlName="discount"
+				(input)="restrictText($event,'discount')">
+			<label>stock</label>
+			<input type="text" name="stock" placeholder="Avilable stockQuantity" formControlName="stockQuantity"
+				(input)="restrictText($event,'stock')">
+			<button style="float: right;" [disabled]="addProducts.invalid" (click)="addProduct()"> Add Item</button>
+		</div>
+	</div>
+</form>
+<hr style="color: black;">
