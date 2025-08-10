@@ -1,30 +1,55 @@
-<form action="" [formGroup]="addProducts">
-	<div id="product_information">
-		<div id="image_preview">
-			<div id="product_image">
-				<span *ngIf="imageSrc === ''"> <strong>Preview Image</strong> </span>
-				<img src={{imageSrc}} height="228px" width="320px" *ngIf="imageSrc !==''">
-			</div>
-			<div id="product_control">
-				<input type="file" name="pic" accept="image/*" (change)="previewImg($event);"
-					formControlName="imageUrl">
+<form [formGroup]="addProducts" class="container py-3">
+	<div class="row g-4 align-items-center">
+		<!-- Image Preview & Upload -->
+		<div class="col-12 col-md-5">
+			<div class="card h-100">
+				<div class="card-body d-flex flex-column align-items-center justify-content-center">
+					<div class="mb-3 w-100 text-center">
+						<span *ngIf="imageSrc === ''"><strong>Preview Image</strong></span>
+						<img *ngIf="imageSrc !== ''" [src]="imageSrc" class="img-fluid rounded"
+							style="max-height:228px; max-width:100%;">
+					</div>
+					<div class="w-100">
+						<input type="file" class="form-control" accept="image/*" (change)="previewImg($event);"
+							formControlName="imageUrl">
+					</div>
+				</div>
 			</div>
 		</div>
-		<div id="product_details">
-			<label>name</label>
-			<input type="text" name="name" placeholder="ProductName" formControlName="name">
-			<label>Description</label>
-			<input type="text" name="desc" placeholder="ProductDescription" formControlName="description">
-			<label>cost</label>
-			<input type="text" name="cost" placeholder="₹ Rupee." formControlName="price" min="0" max="100"
-				maxlength="3" minlength="1" (input)="restrictText($event,'price')">
-			<label>discount</label>
-			<input type="text" name="stock" placeholder="Avilable stockQuantity" formControlName="discount"
-				(input)="restrictText($event,'discount')">
-			<label>stock</label>
-			<input type="text" name="stock" placeholder="Avilable stockQuantity" formControlName="stockQuantity"
-				(input)="restrictText($event,'stock')">
-			<button style="float: right;" [disabled]="addProducts.invalid" (click)="addProduct()"> Add Item</button>
+		<!-- Product Details -->
+		<div class="col-12 col-md-7">
+			<div class="card h-100">
+				<div class="card-body">
+					<div class="mb-3">
+						<label class="form-label">Name</label>
+						<input type="text" class="form-control" placeholder="Product Name" formControlName="name">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Description</label>
+						<input type="text" class="form-control" placeholder="Product Description"
+							formControlName="description">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Cost</label>
+						<input type="text" class="form-control" placeholder="₹ Rupee." formControlName="price" min="0"
+							max="100" maxlength="3" minlength="1" (input)="restrictText($event,'price')">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Discount</label>
+						<input type="text" class="form-control" placeholder="Discount" formControlName="discount"
+							(input)="restrictText($event,'discount')">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Stock</label>
+						<input type="text" class="form-control" placeholder="Available stock quantity"
+							formControlName="stockQuantity" (input)="restrictText($event,'stock')">
+					</div>
+					<div class="d-grid d-md-flex justify-content-md-end">
+						<button type="button" class="btn btn-warning px-4" [disabled]="addProducts.invalid"
+							(click)="addProduct()">Add Item</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </form>

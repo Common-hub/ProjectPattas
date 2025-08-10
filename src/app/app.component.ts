@@ -33,13 +33,15 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.producthandeler.fetchProducts(0, 15);
     this.activityMonitor.routes.subscribe(routes => {
       this.navigations = routes;
     });
+    this.producthandeler.fetchProducts(0, 15);
   }
 
   logout() {
     this.activityMonitor.isUserLoggedIn ? this.search.openWindow('confirmLogout') : this.search.openWindow('confirmLogin');
+    this.activityMonitor.clear();
+    this.activityMonitor.allowedRoutes();
   }
 }

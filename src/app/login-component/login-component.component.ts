@@ -143,9 +143,6 @@ export class LoginComponentComponent implements OnInit {
   }
 
   userLogin() {
-    setTimeout(() => {
-      this.notification.showLoader();
-    }, 2000);
     let login = {
       email: this.login.controls['userName'].value,
       password: this.login.controls['password'].value

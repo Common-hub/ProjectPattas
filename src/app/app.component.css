@@ -105,3 +105,10 @@ main {
     text-shadow: 0 2px 4px rgba(251, 4, 4, 0.3);
     font-size: x-large;
 }
+
+@media (max-width: 767.98px) {
+    .content-with-bottom-bar {
+        padding-bottom: 60px;
+        /* Adjust to your bottom bar's height */
+    }
+}

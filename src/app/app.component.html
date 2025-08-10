@@ -11,14 +11,15 @@
 </ngx-spinner>
 <searchbar *ngIf="isLoggedIn"></searchbar>
 
-<main class="container">
+<main class="container content-with-bottom-bar">
     <ngx-spinner bdColor="rgba(0,0,0, 0.3)" size="large" color="#64d6e2" type="square-jelly-box" [fullScreen]="true">
     </ngx-spinner>
     <alert></alert>
     <router-outlet></router-outlet>
 </main>
 
-<div *ngIf="isLoggedIn" class="col-12 d-inline d-md-none justify-content-center mobile-bottom-buttons">
+<div *ngIf="isLoggedIn" class="col-12 d-inline d-md-none justify-content-center mobile-bottom-buttons"
+    style="position: fixed; bottom: 0; left: 0; right: 0; background: #fff; z-index: 1050; box-shadow: 0 -2px 8px rgba(0,0,0,0.05); padding: 8px 0;">
     <ng-container *ngFor="let item of navigations">
         <a [routerLink]="[item.route]" class="btn btn-link col-3" routerLinkActive="active">
             <span [innerHTML]="item.key"></span>
