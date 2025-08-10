@@ -1,48 +1,68 @@
-<header class="p-1 fixed-top">
+<header class="p-2 fixed-top bg-white shadow-sm">
     <div class="container-fluid">
-        <div class="row align-items-center g-1">
-
-            <!-- Menu Icon -->
-            <div class="d-md-none fs-1 text-start">
-                <i class="bi bi-menu-button-fill fs-4"></i>
-            </div>
-
-            <!-- Search Input and Suggestions -->
-            <div class="col-9 col-md-6 position-relative">
-                <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchKey"
-                    (input)="onsearch($event)" />
-
-                <!-- Suggestions List -->
-                <ul class="list-group position-absolute w-100 suggest-dropdown mt-1" [hidden]="hide">
-                    <li class="list-group-item" *ngIf="searchKey !== ''" (click)="onsearch(searchKey)">
-                        {{searchKey}}
-                    </li>
-                    <li class=" list-group-item" *ngFor="let keyword of suggestions" (click)="onsearch(keyword)">
-                        {{ keyword }}
-                        <sub class="text-muted float-right">in categories</sub>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Logo -->
-            <div class="col-2 col-md-1 text-end">
-                <a [routerLink]="[ '{{draftItems}}/' ]">
-                    <img src="/assets/SPP.png" alt="Logo" height="40" width="40" />
-                </a>
-            </div>
-
-            <!-- Navigation Buttons (hidden on mobile) -->
-            <div class="col-12 col-md-5 d-none d-md-flex justify-content-end flex-wrap">
-                <ng-container *ngFor="let item of navigations">
-                    <a [routerLink]="[item.route]" class="btn btn-link b1" routerLinkActive="active">
-                        <span [innerHTML]="item.key"></span>
-                    </a>
-                </ng-container>
-                <span class="btn text-danger" (click)="logout()">
-                    <i class="bi bi-power"></i>
-                </span>
-            </div>
-
+      <div class="row align-items-center g-2">
+  
+        <!-- Mobile Menu Icon (visible only on mobile) -->
+        <!-- <div class="col-auto d-md-none">
+          <button class="btn btn-outline-secondary p-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+            <i class="bi bi-list fs-4"></i>
+          </button>
+        </div> -->
+  
+        <!-- Logo (always visible unless hidden by *ngIf) -->
+        <div class="col-auto" >
+          <a [routerLink]="[ '{{draftItems}}/' ]">
+            <img src="/assets/SPP.png" alt="Logo" height="40" width="40" class="img-fluid" />
+          </a>
         </div>
+  
+        <!-- Search Bar (full width on mobile, centered on desktop) -->
+        <div class="col flex-grow-1 position-relative">
+          <input type="text" class="form-control" placeholder="Search..."
+            [(ngModel)]="searchKey" (input)="onsearch($event)" *ngIf="showSearch()" />
+  
+          <!-- Suggestions Dropdown -->
+          <ul class="list-group position-absolute w-100 mt-1 shadow-sm" *ngIf="!hide">
+            <li class="list-group-item" *ngIf="searchKey !== ''" (click)="selectedProduct(searchKey)">
+              {{ searchKey }}
+            </li>
+            <li class="list-group-item" *ngFor="let keyword of suggestions" (click)="selectedProduct(keyword)">
+              {{ keyword }}
+              <sub class="text-muted float-end">in categories</sub>
+            </li>
+          </ul>
+        </div>
+  
+        <!-- Desktop Navigation (hidden on mobile) -->
+        <div class="col-md-auto d-none d-md-flex align-items-center gap-2">
+          <ng-container *ngFor="let item of navigations">
+            <a [routerLink]="[item.route]" class="btn btn-link text-nowrap" routerLinkActive="active">
+              <span [innerHTML]="item.key"></span>
+            </a>
+          </ng-container>
+          <button class="btn btn-outline-danger" (click)="logout()" title="Logout">
+            <i class="bi bi-person-circle fs-4"></i>
+          </button>
+        </div>
+  
+      </div>
     </div>
-</header>
+  </header>
+  
+  <!-- Mobile Offcanvas Menu -->
+  <!-- <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Menu</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ng-container *ngFor="let item of navigations">
+        <a [routerLink]="[item.route]" class="btn btn-link w-100 text-start" routerLinkActive="active">
+          <span [innerHTML]="item.key"></span>
+        </a>
+      </ng-container>
+      <hr>
+      <button class="btn btn-outline-danger w-100" (click)="logout()">Logout</button>
+    </div>
+  </div> -->
+  

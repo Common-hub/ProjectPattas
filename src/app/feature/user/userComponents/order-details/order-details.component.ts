@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CartController } from 'src/app/controller/cart-controller.service';
 import { UserControllerService } from 'src/app/controller/user-controller.service';
-import { address, Order, ORDER_STATUS_VALUES, OrderStatus } from 'src/app/shared/models';
+import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
+import { address, Order, ORDER_STATUS_VALUES, OrderStatus, userDetails } from 'src/app/shared/models';
 
 @Component({
   selector: 'app-order-details',
@@ -11,22 +13,42 @@ import { address, Order, ORDER_STATUS_VALUES, OrderStatus } from 'src/app/shared
 })
 export class OrderDetailsComponent implements OnInit {
 
-  userAddress: string[] = [];
+  userAddress!: address;
   orders: Order[] = [];
+  specOrders: any[] = [];
   orderStatus: OrderStatus[] = ORDER_STATUS_VALUES;
-  userDetails: any = '';
-  name: {fName: string, lName:string} = {fName: '', lName: ''};
+  userdetails: userDetails = {} as userDetails;
+  name: { fName: string, lName: string } = { fName: '', lName: '' };
   isAdd: boolean = false;
   isOrder: boolean = true;
   isSpecorder: boolean = false;
+  placeOrder: boolean = true;
   billingAdd!: address;
   shippingAdd!: address;
-
   addressForm!: FormGroup;
+  totalPrice: number = 0;
+  logisticsPartner: string = '';
+  trackingId: string = '';
+  selectedOrderId: number = 0;
 
-  constructor(private route: Router, private apiInteraction: UserControllerService, private fb: FormBuilder) { }
+  constructor(private route: Router, private apiInteraction: UserControllerService,
+    private fb: FormBuilder, private details: UserControllerService, private notify: UserInteractionService,
+    private cart: CartController) { }
 
   ngOnInit(): void {
+    this.apiInteraction.getOrder().subscribe(order => {
+      if (order.length > 1) {
+        this.orders = order;
+      }
+    },
+      (error) => {
+        const errorMsg = error?.error || error?.message || 'Unknown error';
+        this.notify.sppError('❌ ' + errorMsg);
+      }
+    )
+    const order = localStorage.getItem('ordered');
+    this.placeOrder = order != undefined ? order === 'false' ? false : true : false;
+    if (this.details.$addressFound) { this.screentoggle('address') }
     this.addressForm = this.fb.group({
       addressL1: ['', Validators.required],
       addressL2: ['', Validators.required],
@@ -43,21 +65,19 @@ export class OrderDetailsComponent implements OnInit {
       // bCountry: ['', Validators.required]
     })
 
-    if (sessionStorage.getItem('address') === 'true') {
-      this.isAdd = true;
-      this.isOrder = false;
-    }
-    this.apiInteraction.getUser().subscribe(user=>{
-      this.userDetails = user;
-      var names = this.userDetails.name.split(' ');
-      this.name = {fName: names[0], lName: names[1] ? names[1] : '--'};
-      console.log(this.userDetails);
-      
-    })
-
-    this.apiInteraction.getOrder().subscribe((order: Order[]) => {
-      this.orders = order;
-      console.log(order, this.orders[0].status);
+    this.details.$UserDetail.subscribe(response => {
+      this.userdetails = response;
+      const userName = response && response.name.split(" ");
+      this.name = { fName: userName[0], lName: userName[1] };
+      const address = response.address.split('+');
+      this.userAddress = {
+        ddL1: address[0] || '',
+        AddL2: address[1] || '',
+        city: address[2] || '',
+        state: address[3] || '',
+        zip: Number(address[4]) || 0,
+        country: address[5] || ''
+      }
     })
   }
 
@@ -66,13 +86,12 @@ export class OrderDetailsComponent implements OnInit {
     this.route.navigate(['/productsList'])
   }
 
-  getsubtotal(i: number) {
-    return this.orders[i].products[i].price * this.orders[i].products[i].orderedQuantity;
-  }
-
   showOrderStatus(i: number) {
     this.isOrder = false;
     this.isSpecorder = true;
+    this.specOrders = this.orders[i].items;
+    this.selectedOrderId = this.orders[i].orderId;
+    this.getTotal(i)
   }
 
   // sameAddress(iSame: boolean) {
@@ -107,22 +126,70 @@ export class OrderDetailsComponent implements OnInit {
     }
   }
 
-  confirmOrder(){
-    const address = this.addressForm.controls['addressL1'].value +','+ this.addressForm.controls['addressL2'].value +','+
-    this.addressForm.controls['country'].value +','+ this.addressForm.controls['state'].value +','+
-    this.addressForm.controls['zip'].value +','+ this.addressForm.controls['city'].value +','
-
-    this.apiInteraction.postOrder(address).subscribe(resp=>{
-      console.log(resp);
+  confirmOrder() {
+    this.notify.sppInfo("Address Saved Succesful 👍");
+    const address = this.addressForm.controls['addressL1'].value + '+' + this.addressForm.controls['addressL2'].value + '+' +
+      this.addressForm.controls['country'].value + '+' + this.addressForm.controls['state'].value + '+' +
+      this.addressForm.controls['zip'].value + '+' + this.addressForm.controls['city'].value;
+    this.apiInteraction.postOrder(address).subscribe((orderResp: any) => {
+      this.notify.sppInfo(orderResp);
+      this.addressForm.reset();
       this.isAdd = false;
-      this.isOrder = true;      
+      this.isOrder = true;
+      this.placeOrder = true;
+      this.cart.fetchCart();
+      localStorage.setItem('ordered', this.placeOrder.toString())
+      this.apiInteraction.getOrder().subscribe({
+        next: (orders) => {
+          this.orders = orders;
+        },
+        error: (err) => {
+          this.notify.sppError(err?.error?.message || 'Failed to fetch updated orders');
+        }
+      });
     })
   }
 
-  getCurrentState(){    
-      const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
-      console.log(index);
-      
-    return index !== -1 ? index : 0; // Return 0 if status not foun
+  restrictText(event: any) {
+    const inputValue = event.target.value.trim();
+    const onlyDigits = inputValue.replace(/\D/g, '');
+    const limitedDigits = onlyDigits.slice(0, 6);
+    event.target.value = limitedDigits;
+  }
+
+  getCurrentState() {
+    const index = this.orderStatus.findIndex((status) => status === this.orders[0].status);
+    return ['shipped', 'delivered', 'cancelled', 'returned', 'refunded'].includes(this.orders[0].status?.toLowerCase()) ? [this.orders[0].status] :
+      index === 0 ? [this.orders[0].status] : this.orderStatus.slice(0, index + 1);
+  }
+
+  getTotal(index: number) {
+    this.totalPrice = 0;
+    this.orders[index].items.forEach(products => {
+      this.totalPrice += products.price;
+    });
+    this.logisticsPartner = this.orders[index].logisticsPartner;
+    this.trackingId = this.orders[index].trackingId;
+    return this.totalPrice;
+  }
+
+  downloadInvoice() {
+    this.apiInteraction.getInvoice(this.selectedOrderId).subscribe((response: Blob) => {
+      const blob = new Blob([response], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+
+      // To open in new tab:
+      window.open(url);
+
+      // OR to trigger download:
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice_${this.selectedOrderId}.pdf`;
+      a.click();
+
+      // Cleanup
+      URL.revokeObjectURL(url);
+    });
+
   }
 }

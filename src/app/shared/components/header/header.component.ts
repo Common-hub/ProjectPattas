@@ -21,15 +21,21 @@ export class HeaderComponent implements OnInit {
   size: number = 10;
   totalPages: number = 0;
   hide: boolean = false;
+screenWidth: any;
 
   constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: UserControllerService, private authorize: AuthorizeService, private searchResult: ProductController) { }
 
   ngOnInit(): void {
-    this.navigations = this.authorize.allowedRoutes();
+    this.navigations = this.authorize.isUserLoggedIn ? this.authorize.allowedRoutes() : [];
     setTimeout(() => {
-      this.search.getSuggestions().subscribe(respnseName => this.names = respnseName);
-    }, 10000);
-
+      this.search.getSuggestions().subscribe(respnseName => {
+        const suggestions: Set<string> = new Set();
+        respnseName.forEach(suggest => {
+          suggestions.add(suggest);
+          this.names = Array.from(suggestions);
+        })
+      });
+    }, 1000);
     const searchParam = this.route.snapshot.queryParamMap.get('search');
     if (searchParam == '') {
       // Clear the 'search' query param on page load
@@ -59,19 +65,20 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  showSearch() {
+    const url = this.authorize.isUserLoggedIn ? `/${this.authorize.userAuthority}/productsList` : '/user/productsList';
+    return this.router.url.includes(url);
+  }
+
   onsearch(term: Event | string) {
     const input = typeof term === 'string' ? term : (term.target as HTMLInputElement).value;
     this.hide = false;
     if (typeof term === 'string') {
       this.searchKey = term;
-      this.hide = true;
-      this.searchResult.searchWord = this.searchKey;
-      this.router.navigate([`user/productsList&search=${this.searchKey}`])
     }
     const searchKeyword = input.trim();
 
     if (searchKeyword !== '') {
-      // Always clear then set — workaround to force router update
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { search: null },
@@ -80,26 +87,27 @@ export class HeaderComponent implements OnInit {
       }).then(() => {
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: { search: searchKeyword },
+          queryParams: { search: this.searchKey },
           queryParamsHandling: 'merge',
           replaceUrl: true
         });
       });
-
       const identifiedMatched = this.names.filter(keyword =>
         keyword.toLowerCase().includes(searchKeyword.toLowerCase())
       );
       this.suggestions = identifiedMatched.length >= 1 ? identifiedMatched : [];
     } else {
-      // Clear the search param
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { search: null },
-        queryParamsHandling: 'merge',
-        replaceUrl: true
-      });
+      this.searchKey = '';
       this.suggestions = [];
+      this.searchResult.fetchProducts(0, 15);
     }
+  }
+
+  selectedProduct(name: string) {
+    this.hide = true;
+    this.searchKey = name;
+    this.searchResult.searchWord = this.searchKey;
+    this.router.navigate([`/${this.authorize.userAuthority}/productsList`], { queryParams: { search: this.searchKey } });
   }
 
   showProfile() {
@@ -113,6 +121,6 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.authorize.isUserLoggedIn ? this.search.openWindow('confirmLogout') : this.search.openWindow('confirmLogin');
+    this.authorize.isUserLoggedIn ? this.search.openWindow('confirmLogout') : this.router.navigate(['login']);
   }
 }

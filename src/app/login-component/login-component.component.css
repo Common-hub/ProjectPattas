@@ -34,6 +34,8 @@ label {
 
 .form__confirmation {
     padding: 10px 55px;
+    display: flex;
+    flex-direction: row;
 }
 
 .form__confirmation button {
@@ -49,7 +51,8 @@ label {
     outline: none;
     transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    left: 40%;
+    /* left: 40%; */
+    cursor: pointer;
 }
 
 .form__confirmation button:hover {

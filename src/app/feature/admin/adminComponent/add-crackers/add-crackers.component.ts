@@ -23,7 +23,8 @@ export class AddCrackersComponent implements OnInit {
       description: ['', Validators.required],
       price: ['', Validators.required],
       stockQuantity: ['', Validators.required],
-      imageUrl: ['', Validators.required]
+      imageUrl: ['', Validators.required],
+      discount: ['', [Validators.required, Validators.min(0), Validators.max(100)]]
     })
   }
 
@@ -34,7 +35,14 @@ export class AddCrackersComponent implements OnInit {
     const inputValue = event.target.value.trim();
 
     var regex: RegExp = /^\d+$/;
-    if (input === 'price') regex = /^\d+(\.\d{0,2})?$/;
+    if (input === 'price' || input === 'discount') regex = /^\d+(\.\d{0,2})?$/;
+
+    if (input === 'discount') {
+      if (inputValue > 100) {
+        this.notification.sppWarning("Max discount alloed 100");
+        this.addProducts.controls['discount'].setValue(100)
+      }
+    }
 
     if (inputValue !== '' && !regex.test(inputValue)) {
       event.target.value = inputValue.slice(0, -1);
@@ -64,6 +72,8 @@ export class AddCrackersComponent implements OnInit {
     addedProduct.append('price', price);
     addedProduct.append('stockQuantity', this.addProducts.controls['stockQuantity'].value);
     addedProduct.append('image', this.image);
+    addedProduct.append('discount', this.addProducts.controls['discount'].value ?? '0');
+    addedProduct.append('active', true.toString());
 
     this.productController.postProduct(addedProduct).subscribe(success => {
       if (success) {

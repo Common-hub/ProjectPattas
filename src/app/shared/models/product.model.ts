@@ -4,7 +4,9 @@ export interface Product {
   description: string;
   price: number;
   imageUrl: string;
-  stockQuantity: number
+  stockQuantity: number;
+  active: boolean;
+  discount: number;
 }
 
 export type NewProduct = Omit<Product, 'id' | 'image'> & { image: File; }
@@ -13,13 +15,24 @@ export type CartProducts = Omit<Product, 'stockQuantity'> & { orderedQuantity: n
 
 export type UpdateProduct = Partial<Omit<Product, 'image'>> & { image: File; }
 
-export type OrderAdmin = Omit<Order, 'orderId'| 'status'> & {
+export type inCartProduct = Omit<Product, 'id'> & { productId: number }
+
+export type OrderAdmin = Omit<Order, 'orderId' | 'status'> & {
   id: number;
   trackingId: string;
   logisticsPartner: string;
+  userName: string;
+  userPhone: string;
+  address: string;
   orderStatus: OrderStatus;
 };
 
+export interface inCart {
+  id: number;
+  product: inCartProduct;
+  quantity: number;
+  finalPrice: number;
+}
 
 export interface cartItems {
   productId: number;
@@ -28,11 +41,12 @@ export interface cartItems {
 
 export interface Order {
   orderId: number;
-  products: CartProducts[];
+  items: [{ product: Product, price: number, quantity: number }];
   status: OrderStatus;
-  totalPrice: number;
   orderDate: Date;
   address: string;
+  trackingId: string;
+  logisticsPartner: string;
 }
 
 export type OrderStatus =
@@ -59,8 +73,8 @@ export const ORDER_STATUS_VALUES: OrderStatus[] = [
 ];
 
 export interface updateOrder {
-  orderId: number;
+  id: number;
   trackingId: string;
   orderStatus: string;
-  logistictsPartner?: string;
+  logisticsPartner?: string;
 }

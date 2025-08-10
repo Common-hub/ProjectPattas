@@ -1,69 +1,99 @@
- 
-<div class="wrap">
-  <span class="back"> <a [routerLink]="[ '/productsList']">Back to Shop</a></span>
-  <div class="cart-header cf">
-    <strong>Items in Your Cart</strong>
-    <span class="btn" (click)="onCheckout()">Checkout</span>
-  </div>
-  <div class="cart-table">
-    <ul>
-      <!-- begin simple product -->
-      <li class="item" *ngFor="let cartItem of cartItems; let i = index">
-        <div class="item-main cf">
-          <div class="item-block ib-info cf">
-            <img class="product-img" [src]="cartItem.product.imageUrl" />
-            <div class="ib-info-meta">
-              <span class="title">{{cartItem.product.name}}</span>
-              <span class="itemno"><small>{{cartItem.product.description}}</small></span>
-            </div>
-          </div>
-          <div class="item-block ib-qty">
-            <input type="text" [(ngModel)]="cartItem.qty" class="qty" (focusout)="updateCart(i); getSubtotal();" />
-            <span class="price"><span>x</span>₹ {{cartItem.product.price}}</span>
-          </div>
-          <div class="item-block ib-total-price">
-            <span class="tp-price">₹ {{cartItem.subTotal}}</span>
-            <span class="tp-remove"><i class="i-cancel-circle"></i></span>
-          </div>
-        </div>
-        <div class="item-foot cf" *ngIf="cartItem.qty > 0">
-          <!-- <div class="if-message"><p>Space Reserved for item/promo related messaging</p></div> -->
-          <div class="if-left"><span class="if-status">In Stock</span></div>
-          <div class="if-right"><!-- <span class="blue-link">Subscription Options</span> | --><span
-              class="blue-link">Add to Wishlist</span></div>
-        </div>
-      </li>
-      <!-- end simple product -->
-    </ul>
-  </div>
-  <div class="sub-table cf">
-    <div class="summary-block">
-      <div class="sb-promo">
-        <input type="text" placeholder="Enter Promo Code" />
-        <span class="btn">Apply</span>
-      </div>
-      <ul>
-        <li class="subtotal"><span class="sb-label">Subtotal</span><span class="sb-value">₹ {{getSubtotal()}}</span>
-        </li>
-        <li class="shipping"><span class="sb-label">Shipping</span><span class="sb-value">n/a</span></li>
-        <li class="tax"><span class="sb-label">Est. Tax | <span class="tax-edit">edit <i
-                class="i-notch-down"></i></span></span><span class="sb-value">0.00</span></li>
-        <li class="tax-calculate"><input type="text" value="06484" class="tax" /><span class="btn">Calculate</span></li>
-        <li class="grand-total"><span class="sb-label">Total</span><span class="sb-value">₹ {{gTotal()}}</span></li>
-      </ul>
-    </div>
-    <div class="copy-block">
-      <p>Items will be saved in your cart for 30 days. To save items longer, add them to your <a href="#">Wish List</a>.
-      </p>
-      <p class="customer-care">
-        Call us M-F 8:00 am to 6:00 pm EST<br />
-        (877)-555-5555 or <a href="#">contact us</a>. <br />
-      </p>
+<div class="container my-4 cart-container">
+
+  <!-- Header -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <h3 class="fw-bold">🛒 Your Shopping Cart</h3>
+      <p class="text-muted mb-0">Review your items before checkout</p>
     </div>
   </div>
 
-  <div class="cart-footer cf">
-    <span class="btn" (click)="onCheckout()">Checkout</span>
-    <span class="cont-shopping" (click)="navigate()"><i class="i-angle-left"></i>Continue Shopping</span>
+  <!-- Empty Cart -->
+  <div class="text-center py-5" *ngIf="cartItems.length === 0">
+    <h5 class="fw-bold">Your cart is empty</h5>
+    <p>Browse our products and add something to your cart.</p>
+    <a class="btn btn-primary" [routerLink]="['/user/productsList']">Shop Now</a>
+  </div>
+
+  <!-- Cart Items -->
+  <div class="row g-3" *ngIf="cartItems.length > 0">
+    <div class="col-12 col-md-8">
+
+      <!-- Product Card -->
+      <div class="card mb-3 shadow-sm border-0"
+           *ngFor="let item of (cartController.$cartProducts | async)">
+        <div class="row g-0 align-items-center p-2">
+
+          <!-- Image -->
+          <div class="col-4 col-md-3 text-center">
+            <img [src]="item.product.imageUrl" 
+                 [alt]="item.product.name" 
+                 class="img-fluid rounded product-img">
+          </div>
+
+          <!-- Details -->
+          <div class="col-8 col-md-9">
+            <div class="card-body p-2 p-md-3">
+              <h6 class="card-title mb-1 fw-semibold">{{item.product.name}}</h6>
+
+              <!-- Price with discount -->
+              <div class="mb-2">
+                <span *ngIf="item.product.discount > 0" 
+                      class="text-muted text-decoration-line-through me-2">
+                  ₹{{ (+item.product.price).toFixed(2) }}
+                </span>
+                <span class="fw-bold text-danger fs-6">
+                  ₹{{ item.finalPrice }}
+                </span>
+              </div>
+
+              <!-- Quantity Control -->
+              <div class="d-flex align-items-center">
+                <button class="btn btn-outline-secondary btn-sm"
+                        (click)="updateProduct('Decrease', item.id)"
+                        *ngIf="item.quantity > 1">&minus;
+                </button>
+                <button class="btn btn-outline-danger btn-sm"
+                        (click)="updateProduct('Decrease', item.id)"
+                        *ngIf="item.quantity <= 1">
+                  <i class="bi bi-trash"></i>
+                </button>
+                <input type="number" 
+                       class="form-control form-control-sm mx-2 text-center"
+                       [(ngModel)]="item.quantity" min="1" max="3"
+                       style="width: 60px;">
+                <button class="btn btn-outline-secondary btn-sm"
+                        (click)="updateProduct('Increase', item.id)">&plus;
+                </button>
+              </div>
+
+              <!-- Amount -->
+              <div class="mt-2 small text-muted">
+                Subtotal: ₹{{ item.finalPrice * item.quantity }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="col-12 col-md-4">
+      <div class="card shadow-sm border-0 sticky-md-top p-3">
+        <h5 class="fw-bold mb-3">Order Summary</h5>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Items Total</span>
+          <span>₹{{ totalPrice }}</span>
+        </div>
+        <div class="d-flex justify-content-between fw-bold border-top pt-2">
+          <span>Total</span>
+          <span class="text-success">₹{{ totalPrice }}</span>
+        </div>
+        <button class="btn btn-primary w-100 mt-3" (click)="submitOrder()">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
   </div>
 </div>

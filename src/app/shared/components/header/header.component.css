@@ -16,3 +16,60 @@ header.fixed-top {
     /* Optional: smooth border bottom */
     border-bottom: 1px solid #ddd;
 }
+
+.buttons {
+    padding: 0 1rem;
+    display: flex;
+    right: 0;
+    gap: 5px;
+    float: right;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    font-size: large;
+    text-decoration: none;
+}
+
+.buttons a {
+    padding: 2px;
+    display: flex;
+    color: #007bff;
+}
+
+.buttons a:hover {
+    text-decoration: none;
+    color: #3c8fe9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.buttons a.active {
+    color: #3c8fe9;
+    /* background-color: rgba(0, 0, 0, 0.1); */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    font-size: large;
+}
+
+.power {
+    font-size: large;
+    color: #3c8fe9;
+    cursor: pointer;
+}
+
+.power :hover {
+    text-shadow: 0 2px 4px rgba(251, 4, 4, 0.3);
+    font-size: x-large;
+}
+
+header {
+    z-index: 1050; /* keep above other elements */
+  }
+  
+  .list-group-item {
+    cursor: pointer;
+  }
+  
+  .list-group-item:hover {
+    background-color: #f8f9fa;
+  }
+  

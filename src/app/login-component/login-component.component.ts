@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserControllerService } from '../controller/user-controller.service';
 import { Router } from '@angular/router';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
 import { otpVerification, userRegistration } from 'src/app/shared/models';
+import { UserControllerService } from '../controller/user-controller.service';
 import { AuthGuardGuard } from '../core/guard/auth-guard.guard';
 
 @Component({
@@ -20,13 +20,14 @@ export class LoginComponentComponent implements OnInit {
   changeBool: boolean = false;
   EmailVerify: boolean = false;
   canResend: boolean = false;
+  enabled: boolean = true;
   head: string = "Login";
   response: string = "";
   minutes: number = 3;
   seconds: number = 0;
   private interval: any;
 
-  constructor(private formBuilder: FormBuilder, private api:UserControllerService, private route: Router, private notification: UserInteractionService,
+  constructor(private formBuilder: FormBuilder, private api: UserControllerService, private route: Router, private notification: UserInteractionService,
     private authorization: AuthGuardGuard) { }
 
   ngOnInit(): void {
@@ -47,9 +48,9 @@ export class LoginComponentComponent implements OnInit {
 
   changeForm(hint: string): void {
     const formConfig: { [key: string]: any } = {
-      L: { head: "Login USER", resetForm: () => this.login.reset(), login: true, signUp: false, change: false },
-      S: { head: "New User Registration", resetForm: () => this.sign.reset(), login: false, signUp: true, change: false },
-      F: { head: "Forget Password", resetForm: () => { }, login: false, signUp: false, change: true }
+      L: { head: "Login USER", resetForm: () => this.login.reset(), login: true, signUp: false, change: false, EmailVerify: false },
+      S: { head: "New User Registration", resetForm: () => this.sign.reset(), login: false, signUp: true, change: false, EmailVerify: false },
+      F: { head: "Forget Password", resetForm: () => { }, login: false, signUp: false, change: true, EmailVerify: false }
     };
 
     const config = formConfig[hint];
@@ -59,6 +60,7 @@ export class LoginComponentComponent implements OnInit {
       this.LoginBool = config.login;
       this.signUpBool = config.signUp;
       this.changeBool = config.change;
+      this.EmailVerify = config.EmailVerify;
     }
   }
 
@@ -99,7 +101,9 @@ export class LoginComponentComponent implements OnInit {
   }
 
   resendOtp() {
+    this.register();
     this.resetTimer();
+    this.enabled = false;
   }
 
   resetTimer() {
@@ -134,9 +138,13 @@ export class LoginComponentComponent implements OnInit {
     return password !== confirmPassword ? false : true;
   }
 
+  navigate() {
+    this.route.navigate(['/user/productsList'])
+  }
+
   userLogin() {
     setTimeout(() => {
-    this.notification.showLoader();
+      this.notification.showLoader();
     }, 2000);
     let login = {
       email: this.login.controls['userName'].value,

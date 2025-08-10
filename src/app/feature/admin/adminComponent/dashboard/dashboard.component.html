@@ -6,11 +6,15 @@
                     <tr>
                         <th scope="col" colspan="2">
                             <strong>
-                                <span class="badge badge-success" (click)="filter('compeled')">Compeled Order
+                                <span class="badge badge-info">TotalOrders Recivied
+                                    &nbsp;&nbsp;
+                                    {{totalOrders}}</span> &nbsp; &nbsp; &nbsp;
+                                &nbsp; &nbsp;
+                                <span class="badge badge-success">Completed Order
                                     &nbsp;&nbsp;
                                     {{completeOrders}}</span> &nbsp; &nbsp; &nbsp;
                                 &nbsp; &nbsp;
-                                <span class="badge badge-warning" (click)="filter('placed')">Pending Order &nbsp;&nbsp;
+                                <span class="badge badge-warning">Pending Order &nbsp;&nbsp;
                                     {{pendingOrders}}</span>
                             </strong>
                         </th>
@@ -35,6 +39,30 @@
                                 <span class="sort">
                                     <i class="bi bi-caret-up" (click)="sortProducts('orderDate',true)"></i>
                                     <i class="bi bi-caret-down" (click)="sortProducts('orderDate',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sortable">Ordered PlacedBy
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('userName',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('userName',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sortable">Contact
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('userPhone',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('userPhone',false)"></i>
+                                </span>
+                            </span>
+                        </th>
+                        <th scope="col">
+                            <span class="sortable">Ordered Address
+                                <span class="sort">
+                                    <i class="bi bi-caret-up" (click)="sortProducts('address',true)"></i>
+                                    <i class="bi bi-caret-down" (click)="sortProducts('address',false)"></i>
                                 </span>
                             </span>
                         </th>
@@ -65,13 +93,16 @@
                     <ng-container *ngFor="let orderItem of (orderController.$AdminOrderList | async);let index = index">
                         <tr>
                             <td><strong>{{index +1}}</strong></td>
-                            <td><span (click)="orderController.billInvoice(orderItem.id)"
+                            <td><span (click)="openPopup(orderItem.id)"
                                     class="billLink"><strong>{{orderItem.id}}</strong></span></td>
-                            <td><strong>{{orderItem.orderDate | date: 'dd-mm-yyy'}}</strong></td>
+                            <td><strong>{{orderItem.orderDate | date: 'dd-MM-yyyy'}}</strong></td>
+                            <td><strong>{{orderItem.userName}}</strong></td>
+                            <td><strong>{{orderItem.userPhone}}</strong></td>
+                            <td><strong>{{addressT(orderItem.address)}}</strong></td>
 
                             <ng-container *ngIf="isEditable !== orderItem.id">
-                                <td><strong>{{orderItem.logisticsPartner}}</strong></td>
-                                <td><strong>{{orderItem.trackingId}}</strong></td>
+                                <td><strong>{{orderItem.logisticsPartner || 'NA'}}</strong></td>
+                                <td><strong>{{orderItem.trackingId || 'NA'}}</strong></td>
                                 <td><span class="badge"
                                         [ngClass]="getStatus(orderItem.orderStatus)"><strong>{{orderItem.orderStatus}}</strong></span>
                                 </td>
@@ -80,17 +111,23 @@
                                         [disabled]="['DELIVERED','CANCELLED','FAILED','REFUNDED','RETURNED'].includes(orderItem.orderStatus)"><i
                                             class="bi bi-pen-fill"></i></button></td>
                             </ng-container>
-
                             <ng-container *ngIf="isEditable === orderItem.id">
-                                <td><input type="text" name="parnername" id="'tracker'+orderItem.id"
-                                        [(ngModel)]="orderItem.logisticsPartner"></td>
-                                <td><input type="text" name="trackingId" id="'tracker'+orderItem.id"
-                                        [(ngModel)]="orderItem.trackingId"></td>
                                 <td>
-                                    <select name="status" id="orderItem.orderStatus" class="badge"
-                                        (change)="onStatusChange(orderItem.orderStatus)"
-                                        [(ngModel)]="orderItem.orderStatus">
-                                        <option *ngFor="let status of orderStatus" [value]="status"> {{status |
+                                    <span *ngIf="!onStatusChange()"><strong>{{orderItem.logisticsPartner ||
+                                            'NA'}}</strong></span>
+                                    <input type=" text" name="parnername" id="'tracker'+orderItem.id"
+                                        [(ngModel)]="orderItem.logisticsPartner" *ngIf="onStatusChange()">
+                                </td>
+                                <td>
+                                    <span *ngIf="!onStatusChange()"><strong>{{orderItem.trackingId ||
+                                            'NA'}}</strong></span>
+                                    <input type=" text" name="trackingId" id="'tracker'+orderItem.id"
+                                        [(ngModel)]="orderItem.trackingId" *ngIf="onStatusChange()">
+                                </td>
+                                <td><select name="status" id="orderItem.id" class="badge" [(ngModel)]="status"
+                                        [ngModel]="orderItem.orderStatus" (change)="onStatusChange()">
+                                        <option *ngFor="let status of onStatusUpdate(orderItem.orderStatus)"
+                                            [value]="status" [disabled]="status === orderItem.orderStatus"> {{status |
                                             titlecase }} </option>
                                     </select>
                                 </td>
@@ -99,11 +136,42 @@
                             </ng-container>
 
                             <td><button type="button" class="btn btn-sm btn-outline-primary"
-                                    (click)="updateStatus(orderItem.id)"><i class="bi bi-upload"></i></button></td>
+                                    (click)="updateStatus(orderItem.id)"><i class="bi bi-floppy"></i></button></td>
                         </tr>
                     </ng-container>
                 </tbody>
             </table>
+
+            <div *ngIf="specOrders.length >=1" class="popup-overlay">
+                <div class="popup-content">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col" colspan="2">Price</th>
+                                <th scope="col">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let order of specOrders; let i = index">
+                                <td>{{order.product.name}}</td>
+                                <td>{{order.quantity}}</td>
+                                <td colspan="2"><strong>₹ {{order.price}}</strong></td>
+                                <td><strong>₹ {{order.quantity * order.price}}</strong></td>
+                            </tr>
+                            <tr>
+                                <th colspan="6" style="text-align: right;">
+                                    <span class="text-muted">Total Price</span> <br>
+                                    <strong>₹ {{totalPrice}}</strong>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button (click)="closePopup()" class="float-end btn btn-outline-danger">Close</button>
+                </div>
+            </div>
         </ng-container>
 
     </div>

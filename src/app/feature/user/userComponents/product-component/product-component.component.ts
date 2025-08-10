@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProductComponent implements OnInit {
 
-  apiBaseUrl: string = environment.apiBaseUrl;
+  apiBaseUrl: string = environment.imageBaseUrl;
 
   productList: Product[] = [];
   unSortedProduct: Product[] = [];
@@ -30,27 +30,19 @@ export class ProductComponent implements OnInit {
     private addCartItem: CartController) { }
 
   ngOnInit(): void {
-    this.productController._productList.subscribe(products => {
+    this.productController._productList.subscribe((products: Product[]) => {
       this.productList = products.filter(product => product.name !== '' && product.name !== undefined && product.name !== null);
-      this.cartQuantity = Array(this.productList.length).fill({ productId: 0, quantity: 0 })
+      products.forEach(product => {
+        this.cartQuantity.push({ productId: product.id, quantity: 0 })
+      })
     });
     if (this.authunticateUser.isUserLoggedIn) {
-      const draftItems = sessionStorage.getItem('cartItemDraft');
-      if (draftItems) {
-        const cartItems = draftItems.split(' ') //this.draftItems.split(' ');
-        this.updateCartItems(cartItems[0] as 'addItem' | 'removeItem', Number(cartItems[1]));
-      }
-      this.addCartItem.cartItems.subscribe(items => {
-        if (items.length >= 1) {
-          this.cartQuantity = items;
-          const missingCount = this.productList.length - this.cartQuantity.length;
-          if (missingCount > 0) {
-            const filler = Array(missingCount).fill({ productId: 0, quantity: 0 });
-            this.cartQuantity.push(...filler);
-          }
-        } else {
-          this.cartQuantity = Array(this.productList.length).fill({ productId: 0, quantity: 0 });
-        }
+      this.addCartItem.fetchCart();
+      this.addCartItem.$inCart.subscribe(response => {
+        response.forEach(item => {
+          const index = this.cartQuantity.findIndex(i => i.productId === item.product.productId);
+          this.cartQuantity[index].quantity = item.quantity;
+        })
       });
     }
   }
@@ -68,28 +60,25 @@ export class ProductComponent implements OnInit {
       : [...this.unSortedProduct];
   }
 
-  async updateCartItems(action: 'addItem' | 'removeItem', itemId: number) {
+  async updateCartItems(action: 'addItem' | 'removeItem', productId: number) {
+    const index = this.productList.findIndex(product => product.id === productId);
     const isloggedin = this.authunticateUser.isUserLoggedIn;
     const isUser = this.authunticateUser.userAuthority === 'user';
-    if (isloggedin) {
-      this.addCartItem.productToCart // remove later
-      this.cartQuantity[itemId].productId = this.productList[itemId].id;
-      if (isUser) {
-        if (action === 'addItem') {
-          this.cartQuantity[itemId].quantity++;
-          this.addCartItem.cartItem = this.cartQuantity[itemId];
-        } else if (action === 'removeItem' && this.cartQuantity[itemId].quantity > 0) {
-          this.cartQuantity[itemId].quantity--;
-          this.addCartItem.cartItem = this.cartQuantity[itemId];
-        } else if (this.cartQuantity[itemId].quantity === 0) {
-          this.addCartItem.removeCartItem(this.productList[itemId].id);
-        }
+    if (isloggedin && isUser) {
+      if (action === 'addItem') {
+        this.cartQuantity[index].quantity += 1;
+        this.addCartItem.addCartItem = this.cartQuantity[index];
+      }
+      else if (action === 'removeItem' && this.cartQuantity[index].quantity > 0) {
+        this.cartQuantity[index].quantity -= 1;
+        this.addCartItem.addCartItem = this.cartQuantity[index];
+      } else if (action === 'removeItem' && this.cartQuantity[index].quantity == 0) {
+        this.addCartItem.removeCartItem(this.cartQuantity[index].productId)
       }
     } else {
       const requiredLoginConfirm = await this.interactive.openWindow('confirmLogin');
       if (requiredLoginConfirm) {
         this.interactive.sppInfo('Redirected to login !.');
-        sessionStorage.setItem('cartItemDraft', action + ' ' + itemId.toString());
         this.router.navigate(['login']);
       } else {
         this.interactive.sppWarning("Login to continue the Action.")

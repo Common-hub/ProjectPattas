@@ -8,61 +8,21 @@ import { UserInteractionService } from '../service/user-interaction.service';
 export class AuthorizeService {
   private jwtToken = '';
   private _Token = '';
-  private inactivityLimit = 15 * 60 * 1000; // 15 minutes inactivity limit
-  private lastActivity = Date.now();
 
   isAlerted: boolean = false;
 
 
   constructor(private alert: UserInteractionService, private router: Router) {
-    if (this._Token !== '') console.log('[Log] setting JWT Token .....');
-  }
-
-  setupActivityListeners() {
-    ['click', 'mousemove', 'keydown', 'touchstart'].forEach(evt => {
-      console.info("[Gaurd]: Found no activity.");
-      window.addEventListener(evt, () => {
-        this.lastActivity = Date.now();
-        if (this.isAlerted) this.isAlerted = false; // reset alert if user is back
-      })
-    });
-  }
-
-  checkActivity() {
-    console.info("[guard]: Activity Checker.");
-    const inactiveTime = Date.now() - this.lastActivity;
-    if (inactiveTime > this.inactivityLimit) {
-      console.info("[Gaurd]: Found no activity.")
-      this.activityMonitor();
-    }
+    // No inactivity logic needed
   }
 
   get isUserLoggedIn() {
     return this.userIdentifier !== '' ? true : false;
   }
 
-  private async activityMonitor() {
-    var responed: boolean = false;
-    if (!this.isAlerted) {
-      this.isAlerted = true;
-      const timeout = new Promise<boolean>(res => setTimeout(() => res(false), 60 * 1000));
-      const confirmed = await Promise.race([this.alert.openWindow('session'), timeout]);
-      if (confirmed) {
-        console.info("[Gaurd]: user retained session.")
-        responed = true;
-      } else {
-        console.info("[Gaurd]: user has been logged out.")
-        this.alert.sppError('👋 No response or declined. Logging out.');
-        sessionStorage.clear();
-        console.info("[Guard]: Deleted all items form session.")
-        this.alert.isVisible(false);
-        this.router.navigate(['/login']);
-      };
-    }
-  }
-
   set authToken(token: string) {
     this.jwtToken = token;
+    this._Token = token;
     sessionStorage.setItem('token', token);
   }
 
@@ -75,12 +35,13 @@ export class AuthorizeService {
   }
 
   reStoreFromSession() {
-    const token = this.userIdentifier
-    if (token !== '') {
-      console.info('[Guard]: Token restored from session Succesfull!');
-      this.authToken = token;
+    const sessionToken = sessionStorage.getItem("token");
+    if (sessionToken) {
+      this.jwtToken = sessionToken;
+      this._Token = sessionToken;
+      console.info('[Guard]: Token restored from session successfully!');
     } else {
-      console.info('[Guard]: Failed token restoration.Login!');
+      console.info('[Guard]: Failed token restoration. Login required!');
     }
   }
 
@@ -126,7 +87,7 @@ export class AuthorizeService {
       return [
         { route: 'user/productsList', key: `<span class="bi bi-houses"></span>&nbsp; <label class="d-none d-md-inline"> Home</label>` },
         { route: 'user/viewCart', key: `<span class="bi bi-cart3"></span>&nbsp; <label class="d-none d-md-inline">  View Cart</label>` },
-        { route: 'user/orderStatus', key: `<span class="bi bi-bag-check-fill"></span>&nbsp; <label class="d-none d-md-inline"> Orders</label>` }
+        { route: 'user/orderStatus', key: `<span class="bi bi-bag-check"></span>&nbsp; <label class="d-none d-md-inline"> Orders</label>` }
       ]
     }
     return []

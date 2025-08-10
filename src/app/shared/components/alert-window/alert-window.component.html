@@ -1,45 +1,56 @@
+<!-- Toast / Alert Message -->
 <div class="alertWindow">
     <div class="alert"
-        [ngClass]="{'success': toastMessage.type === 'success', 'warning': toastMessage.type === 'warning', 'error': toastMessage.type === 'error'}"
-        *ngIf="toastMessage.message">
-        <span><strong>{{ toastMessage.message }}</strong></span>
+      [ngClass]="{
+        'success': toastMessage.type === 'success',
+        'warning': toastMessage.type === 'warning',
+        'error': toastMessage.type === 'error'
+      }"
+      *ngIf="toastMessage.message">
+      <span><strong>{{ toastMessage.message }}</strong></span>
     </div>
-</div>
-<div class="confirm" *ngIf="isAlert">
+  </div>
+  
+  <!-- Confirmation Popup -->
+  <div class="confirm" *ngIf="isAlert">
+    <!-- Confirm Logout -->
     <div class="logoutLabel" *ngIf="alert === 'confirmLogout'">
-        <span><strong>Are you sure.</strong></span>
-        <span><strong>You want to logout?</strong></span>
-        <div class="buttons">
-            <button type="submit" class="btn btn-outline-primary" (click)="onSave()">Continue Shopping</button>
-            <button type="submit" class="btn btn-outline-danger" (click)="onLogout()">Logout</button>
-        </div>
+      <span><strong>Are you sure.</strong></span>
+      <span><strong>You want to logout?</strong></span>
+      <div class="buttons d-flex flex-wrap gap-2 justify-content-center">
+        <button type="submit" class="btn btn-outline-primary" (click)="onSave()">Continue Shopping</button>
+        <button type="submit" class="btn btn-outline-danger" (click)="onLogout()">Logout</button>
+      </div>
     </div>
-
+  
+    <!-- Session Timeout -->
     <div class="logoutLabel" *ngIf="alert === 'session'">
-        <span><strong>⚠️ You've been inactive. Stay logged in?. <br> will be logged out in {{countdownDisplay}}sec
-                min(s).</strong></span>
-        <div class="buttons">
-            <button type="submit" class="btn btn-outline-danger" (click)="onLogout()">End Session</button>
-            <button type="submit" class="btn btn-outline-success" (click)="onCancel()"
-                style="text-align: center;">Continue <br> Shopping</button>
-        </div>
+      <span>
+        <strong>⚠️ You've been inactive. Stay logged in?</strong><br>
+        <strong>Will be logged out in {{countdownDisplay}} sec min(s).</strong>
+      </span>
+      <div class="buttons d-flex flex-wrap gap-2 justify-content-center">
+        <button type="submit" class="btn btn-outline-danger" (click)="onLogout()">End Session</button>
+        <button type="submit" class="btn btn-outline-success text-center" (click)="onCancel()">Continue<br>Shopping</button>
+      </div>
     </div>
-
+  
+    <!-- Confirm Login -->
     <div class="logoutLabel" *ngIf="alert === 'confirmLogin'">
-        <span (click)="onCancel()" style="float: right;top: 0;"><strong>X</strong></span>
-        <span><strong>⚠️ You've tried to do Action. <br> Login to Continue.</strong></span>
-        <div class="buttons">
-            <button type="submit" class="btn btn-outline-success" (click)="onLogin()"
-                style="text-align: center;">Continue Shopping</button>
-        </div>
+      <span><strong>⚠️ You've tried to do Action. <br> Login to Continue.</strong></span>
+      <div class="buttons d-flex flex-wrap gap-2 justify-content-center">
+        <button type="submit" class="btn btn-outline-success" (click)="onLogin()">Login</button>
+        <button type="submit" class="btn btn-outline-secondary" (click)="onCancel()">Close</button>
+      </div>
     </div>
-
+  
+    <!-- Confirm Action -->
     <div class="logoutLabel" *ngIf="alert === 'confirm'">
-        <span><strong>⚠️ the action will be reverted.</strong></span>
-        <div class="buttons">
-            <button type="submit" class="btn btn-outline-success" (click)="onSave()"
-                style="text-align: center;">Update</button>
-            <button type="submit" class="btn btn-outline-danger" (click)="onCancel()">Revert</button>
-        </div>
+      <span><strong>⚠️ The action will be reverted.</strong></span>
+      <div class="buttons d-flex flex-wrap gap-3 justify-content-center">
+        <button type="submit" class="btn btn-outline-success" (click)="onSave()">Update</button>
+        <button type="submit" class="btn btn-outline-danger" (click)="onCancel()">Revert</button>
+      </div>
     </div>
-</div>
+  </div>
+  
