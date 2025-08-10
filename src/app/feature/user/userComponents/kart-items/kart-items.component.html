@@ -40,7 +40,7 @@
               <div class="mb-2">
                 <span *ngIf="item.product.discount > 0" 
                       class="text-muted text-decoration-line-through me-2">
-                  ₹{{ (+item.product.price).toFixed(2) }}
+                 <del>₹{{ (+item.product.price).toFixed(2) }}</del> 
                 </span>
                 <span class="fw-bold text-danger fs-6">
                   ₹{{ item.finalPrice }}
