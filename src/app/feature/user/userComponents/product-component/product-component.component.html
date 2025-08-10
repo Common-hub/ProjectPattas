@@ -1,0 +1,50 @@
+<div class="page-wrapper">
+  <div class="page-inner" *ngFor="let product of (productController._ProductDTO | async); let i = index">
+    <div class="row">
+      <div class="el-wrapper col-12">
+        <div class="box-up">
+          <img class="img" [src]="product.imageUrl" alt="" height="80%" width="70%">
+          <div class="img-info">
+            <div class="info-inner">
+              <span class="p-name">{{product.name}}</span>
+              <span class="p-company">{{product.description}}</span>
+              <span class="p-company">Discount : <strong>{{product.discount}}</strong> %</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="box-down">
+          <div class="quantity" *ngIf="cartQuantity[i].quantity > 0">
+            <button class="minus" aria-label="Decrease"
+              (click)="updateCartItems('removeItem', product.id)">&minus;</button>
+            <input type="number" class="input-box" [(ngModel)]="cartQuantity[i].quantity" min="1" max="3">
+            <button class="plus" aria-label="Increase" (click)="updateCartItems('addItem', product.id)">&plus;</button>
+          </div>
+          <div class="h-bg" *ngIf="cartQuantity[i].quantity == 0">
+            <div class="h-bg-inner"></div>
+          </div>
+          <div class="cart" href="#" (click)="updateCartItems('addItem', product.id)"
+            *ngIf="product.stockQuantity > 0 ">
+            <span class="price" *ngIf="product.discount > 0 && cartQuantity[i].quantity == 0 "
+              style="text-decoration: line-through;margin-left:21%;">₹
+              {{(+product.price)}}/-</span>
+            <span class="price">₹ {{
+              product.discount === 0
+              ? (+product.price).toFixed(2)
+              : (+product.price - (+product.price * (+product.discount / 100))).toFixed(2)
+              }}/-</span>
+            <span class="add-to-cart">
+              <span class="txt">Add in cart</span>
+            </span>
+          </div>
+          <div class="cart" href="#" *ngIf="product.stockQuantity == 0">
+            <span class="price">Out Of Stock</span>
+            <span class="add-to-cart">
+              <span class="txt"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

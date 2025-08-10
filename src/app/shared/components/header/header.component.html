@@ -1,0 +1,56 @@
+<header class="p-1 fixed-top">
+    <div class="container-fluid">
+        <div class="row align-items-center g-1">
+
+            <!-- Menu Icon -->
+            <!-- <div class="d-md-none fs-1 text-start">
+                <i class="bi bi-menu-button-fill fs-4"></i>
+            </div> -->
+
+            <!-- Logo -->
+            <div class="col-2 col-md-1 text-end" *ngIf="!showSearch()">
+                <a [routerLink]="[ '{{draftItems}}/' ]">
+                    <img src="/assets/SPP.png" alt="Logo" height="40" width="40" />
+                </a>
+            </div>
+
+            <!-- Search Input and Suggestions -->
+            <div class="col-9 col-md-6 position-relative">
+                <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchKey"
+                    (input)="onsearch($event)" *ngIf="showSearch()" />
+
+                <!-- Suggestions List -->
+                <ul class="list-group position-absolute w-100 suggest-dropdown mt-1" [hidden]="hide">
+                    <li class="list-group-item" *ngIf="searchKey !== ''" (click)="selectedProduct(searchKey)">
+                        {{searchKey}}
+                    </li>
+                    <li class=" list-group-item" *ngFor="let keyword of suggestions" (click)="selectedProduct(keyword)">
+                        {{ keyword }}
+                        <sub class="text-muted float-right">in categories</sub>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Logo -->
+            <div class="col-2 col-md-1 text-end" *ngIf="showSearch()">
+                <a [routerLink]="[ '{{draftItems}}/' ]">
+                    <img src="/assets/SPP.png" alt="Logo" height="40" width="40" />
+                </a>
+            </div>
+
+            <!-- Navigation Buttons (hidden on mobile) -->
+            <div class="col-12 col-md-5 d-none d-md-flex justify-content-end flex-wrap buttons">
+                <ng-container *ngFor="let item of navigations">
+                    <a [routerLink]="[item.route]" class="btn btn-link b1" routerLinkActive="active">
+                        <span [innerHTML]="item.key"></span>
+                    </a>
+                </ng-container>
+                <span class="btn text-danger" (click)="logout()" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="Logout">
+                    <i class="bi bi-person-circle fs-4"></i>
+                </span>
+            </div>
+
+        </div>
+    </div>
+</header>

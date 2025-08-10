@@ -4,13 +4,18 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "response": "ng serve --host 192.168.29.76 --disable-host-check",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "start:local": "start cmd /k \"ng serve --open --configuration development\" && start cmd /k \"java -Dspring.profiles.active=dev -jar ProjectPattas_jar/crackers-shop-0.0.1-SNAPSHOT.jar\"",
+    "start:resp": "start cmd /k \"ng serve --host 192.168.1.2 --disable-host-check --configuration development\" && start cmd /k \"java -Dspring.profiles.active=dev -jar ProjectPattas_jar/crackers-shop-0.0.1-SNAPSHOT.jar --server.address=192.168.1.2\"",
+    "start:prod": "ng serve --configuration production",
+    "start:dev": "ng serve --configuration development"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^14.0.0",
+    "@angular/animations": "^14.3.0",
     "@angular/common": "^14.0.0",
     "@angular/compiler": "^14.0.0",
     "@angular/core": "^14.0.0",
@@ -19,6 +24,11 @@
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
     "bootstrap": "^5.3.6",
+    "bootstrap-icons": "^1.13.1",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
+    "jwt-decode": "^4.0.0",
+    "ngx-spinner": "^13.1.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
@@ -28,6 +38,7 @@
     "@angular/cli": "~14.0.7",
     "@angular/compiler-cli": "^14.0.0",
     "@types/jasmine": "~4.0.0",
+    "cross-env": "^7.0.3",
     "jasmine-core": "~4.1.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",

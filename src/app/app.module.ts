@@ -1,34 +1,42 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponentComponent } from './Component/login-component/login-component.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { ProductComponent } from './Component/product-component/product-component.component';
-import { MyInterceptorInterceptor } from './interceptors/my-interceptor.interceptor';
-import { HeaderComponent } from './Component/header/header.component';
-import { AddCrackersComponent } from './Component/add-crackers/add-crackers.component';
-import { KartItemsComponent } from './Component/kart-items/kart-items.component';
+import { AdminModule } from './feature/admin/admin.module';
+import { UserModule } from './feature/user/user.module';
+import { LoginComponentComponent } from './login-component/login-component.component';
+import { AlertWindowComponent } from './shared/components/alert-window/alert-window.component';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { RouterModule } from '@angular/router';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { apiInterceptor } from './core/interceptors/my-interceptor.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponentComponent,
-    ProductComponent,
     HeaderComponent,
-    AddCrackersComponent,
-    KartItemsComponent
+    AlertWindowComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    CommonModule,
+    RouterModule,
+    AdminModule,
+    UserModule,
+    NgxSpinnerModule,
+    BrowserAnimationsModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: MyInterceptorInterceptor, multi: true}],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: apiInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+  export class AppModule { }

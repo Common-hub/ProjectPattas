@@ -1,0 +1,107 @@
+@media (max-width: 767.98px) {
+    .mobile-bottom-buttons {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+        z-index: 1040;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .mobile-bottom-buttons a:hover {
+        text-decoration: none;
+    }
+
+    .mobile-bottom-buttons a,
+    .mobile-bottom-buttons span {
+        font-size: 1.5rem;
+    }
+
+    .mobile-bottom-buttons a.active {
+        font-size: 2.5rem;
+    }
+
+    body {
+        padding-bottom: 60px;
+        /* adjust height as needed */
+    }
+}
+
+/* On desktop, hide the fixed bottom buttons container */
+@media (min-width: 768px) {
+    .mobile-bottom-buttons {
+        position: static !important;
+        display: none !important;
+        padding: 0;
+        box-shadow: none;
+        overflow: visible;
+        white-space: normal;
+    }
+
+    body {
+        padding-bottom: 0;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 100%;
+    }
+}
+
+alert {
+    z-index: 10009;
+}
+
+main {
+    overflow-y: auto;
+    height: calc(100% - 60px);
+}
+
+.buttons {
+    padding: 0 1rem;
+    display: flex;
+    right: 0;
+    gap: 5px;
+    float: right;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    font-size: large;
+}
+
+.buttons a {
+    padding: 2px;
+    display: flex;
+    color: #007bff;
+}
+
+.buttons a:hover {
+    text-decoration: none;
+    color: #3c8fe9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-bottom-buttons a.active {
+    color: #3c8fe9;
+    /* background-color: rgba(0, 0, 0, 0.1); */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    font-size: larger;
+}
+
+.power {
+    font-size: larger;
+    color: #3c8fe9;
+    cursor: pointer;
+}
+
+.power :hover {
+    text-shadow: 0 2px 4px rgba(251, 4, 4, 0.3);
+    font-size: x-large;
+}
