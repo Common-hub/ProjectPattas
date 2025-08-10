@@ -107,9 +107,10 @@ export class DashboardComponent implements OnInit {
 
   editStatus(orderId: number) {
     const index = this.orderList.findIndex(i => i.id === orderId);
-    if (this.isEditable !== null) {
+    if (this.isEditable === orderId) {
+      this.isEditable = null;
+    } else if (this.isEditable !== null) {
       this.notify.sppWarning("Update the selected Item first!!");
-    } else if (this.isEditable === orderId) {
     } else {
       this.isEditable = orderId;
       this.backUp = JSON.parse(JSON.stringify({ ...this.orderList[index] }));
