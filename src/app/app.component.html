@@ -16,6 +16,16 @@
     </ngx-spinner>
     <alert></alert>
     <router-outlet></router-outlet>
+
+    <footer class="footer py-3 bg-light text-center border-top">
+        <div class="container">
+            <small class="text-muted footer-text">
+                © {{ shopInfo.shopName }} | {{ shopInfo.address }} | 📞 {{ shopInfo.phoneNumber }} | ✉️ {{
+                shopInfo.mailId }}
+            </small>
+        </div>
+    </footer>
+
 </main>
 
 <div *ngIf="isLoggedIn" class="col-12 d-inline d-md-none justify-content-center mobile-bottom-buttons"

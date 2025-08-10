@@ -84,9 +84,9 @@ export class AlertWindowComponent implements OnInit {
 
   onLogout() {
     if (this.userRole === 'admin') {
-      this.router.navigate(['login'])
+      this.router.navigate(['/login'])
     } else {
-      this.router.navigate(['user/productsList']);
+      this.router.navigate(['/user/productsList']);
       if (this.router.url === '/user/productsList') {
         window.location.reload()
       }
@@ -94,7 +94,7 @@ export class AlertWindowComponent implements OnInit {
     this.authuntication.clear();
     this.informerClass.sppInfo('Saved used DATA !.');
     this.informerClass.sppInfo('Redirected to Default !.');
-    this.authuntication.allowedRoutes()
+    this.authuntication.routes.next([])
     this.informerClass.userResponseGetter(true);
   }
 

@@ -112,3 +112,18 @@ main {
         /* Adjust to your bottom bar's height */
     }
 }
+
+.footer-text {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .footer-text {
+        white-space: normal;
+        /* Wraps into multiple lines on mobile */
+        display: block;
+        font-size: 0.8rem;
+    }
+}
