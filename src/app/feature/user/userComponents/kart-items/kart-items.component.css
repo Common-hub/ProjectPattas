@@ -57,3 +57,23 @@
 .input-box[type="number"] {
   appearance: textfield;
 }
+
+.cart-container .product-img {
+  max-height: 120px;
+  object-fit: cover;
+}
+
+@media (max-width: 767px) {
+  .sticky-md-top {
+    position: static !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .cart-container h3 {
+    font-size: 1.2rem;
+  }
+  .product-img {
+    max-height: 80px;
+  }
+}

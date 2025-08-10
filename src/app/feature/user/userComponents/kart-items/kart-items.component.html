@@ -1,43 +1,99 @@
-<div class="cart">
-  <div class="col-12 col-md-12 header d-flex flex-row align-items-center p-1">
-    <label for="header" class="float-left col-10 col-md-11 h3"><strong>Item In cart</strong></label>
-    <!-- <label for="header" class="float-right col-2 col-md-1 h6 text-danger"><strong>removeItem</strong></label> -->
-  </div>
-  <strong>
-    <hr>
-  </strong>
-  <div class="noData" *ngIf="cartItems.length === 0">
-    <Strong>No Products in Inventory. to add producs <a [routerLink]="[ 'user/productsList']">
-        click here</a>.</Strong>
-  </div>
-  <ng-container #prod *ngIf="cartItems.length >0">
-    <div class="col-12-col-md-12 d-flex align-items-center justify-content-center hs">
-      <div for="" class="col-3 col-md-3 text-start h5">Product Image</div>
-      <div for="" class="col-4 col-md-4 text-start h5">product Name</div>
-      <div for="" class="col-1 col-md-1 text-center h5">Quantity</div>
-      <div for="" class="col-2 col-md-2 text-center h5">Rate</div>
-      <div for="" class="col-2 col-md-2 text-center h5">Amount</div>
-    </div>
-    <div class="col-12-col-md-12 d-flex align-items-center justify-content-between p-3"
-      *ngFor="let item of (cartController.$cartProducts | async)">
-      <img src="{{item.product.imageUrl}}" class="col-3 col-md-3 float-left product-img" alt="{{item.product.name}}">
-      <label for="name" class="col-4 col-md-4">{{item.product.name}}</label>
-      <div class="quantity col-1 col-md-1">
-        <button class="minus" aria-label="Decrease" (click)="updateProduct('Decrease',item.id)"
-          *ngIf="item.quantity > 1">&minus;</button>
-        <button class="minus" aria-label="Decrease" (click)="updateProduct('Decrease',item.id)"
-          *ngIf="item.quantity <= 1"><i class="bi bi-trash"></i></button>
-        <input type="number" class="input-box" [(ngModel)]="item.quantity" min="1" max="3">
-        <button class="plus" aria-label="Increase" (click)="updateProduct('Increase',item.id)">&plus;</button>
-      </div>
-      <label for="qty" class="col-2 col-md-2 text-center">{{item.finalPrice}}</label>
-      <label for="qty" class="col-2 col-md-2 text-center">{{item.finalPrice * item.quantity}}</label>
-    </div>
-    <div class="float-right p-3 d-flex flex-column col-md-5 col-6 justify-content-end">
-      <label for="" class="float-right h5 ml-auto">Grand Total:&nbsp;₹ {{ totalPrice}} /-</label>
-      <button type="submit" class="btn btn-outline-primary float-right col-md-4 col-3 ml-auto"
-        (click)="submitOrder()">Place Order</button>
-    </div>
-  </ng-container>
+<div class="container my-4 cart-container">
 
+  <!-- Header -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <h3 class="fw-bold">🛒 Your Shopping Cart</h3>
+      <p class="text-muted mb-0">Review your items before checkout</p>
+    </div>
+  </div>
+
+  <!-- Empty Cart -->
+  <div class="text-center py-5" *ngIf="cartItems.length === 0">
+    <h5 class="fw-bold">Your cart is empty</h5>
+    <p>Browse our products and add something to your cart.</p>
+    <a class="btn btn-primary" [routerLink]="['/user/productsList']">Shop Now</a>
+  </div>
+
+  <!-- Cart Items -->
+  <div class="row g-3" *ngIf="cartItems.length > 0">
+    <div class="col-12 col-md-8">
+
+      <!-- Product Card -->
+      <div class="card mb-3 shadow-sm border-0"
+           *ngFor="let item of (cartController.$cartProducts | async)">
+        <div class="row g-0 align-items-center p-2">
+
+          <!-- Image -->
+          <div class="col-4 col-md-3 text-center">
+            <img [src]="item.product.imageUrl" 
+                 [alt]="item.product.name" 
+                 class="img-fluid rounded product-img">
+          </div>
+
+          <!-- Details -->
+          <div class="col-8 col-md-9">
+            <div class="card-body p-2 p-md-3">
+              <h6 class="card-title mb-1 fw-semibold">{{item.product.name}}</h6>
+
+              <!-- Price with discount -->
+              <div class="mb-2">
+                <span *ngIf="item.product.discount > 0" 
+                      class="text-muted text-decoration-line-through me-2">
+                 <del>₹{{ (+item.product.price).toFixed(2) }}</del> 
+                </span>
+                <span class="fw-bold text-danger fs-6">
+                  ₹{{ item.finalPrice }}
+                </span>
+              </div>
+
+              <!-- Quantity Control -->
+              <div class="d-flex align-items-center">
+                <button class="btn btn-outline-secondary btn-sm"
+                        (click)="updateProduct('Decrease', item.id)"
+                        *ngIf="item.quantity > 1">&minus;
+                </button>
+                <button class="btn btn-outline-danger btn-sm"
+                        (click)="updateProduct('Decrease', item.id)"
+                        *ngIf="item.quantity <= 1">
+                  <i class="bi bi-trash"></i>
+                </button>
+                <input type="number" 
+                       class="form-control form-control-sm mx-2 text-center"
+                       [(ngModel)]="item.quantity" min="1" max="3"
+                       style="width: 60px;">
+                <button class="btn btn-outline-secondary btn-sm"
+                        (click)="updateProduct('Increase', item.id)">&plus;
+                </button>
+              </div>
+
+              <!-- Amount -->
+              <div class="mt-2 small text-muted">
+                Subtotal: ₹{{ item.finalPrice * item.quantity }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="col-12 col-md-4">
+      <div class="card shadow-sm border-0 sticky-md-top p-3">
+        <h5 class="fw-bold mb-3">Order Summary</h5>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Items Total</span>
+          <span>₹{{ totalPrice }}</span>
+        </div>
+        <div class="d-flex justify-content-between fw-bold border-top pt-2">
+          <span>Total</span>
+          <span class="text-success">₹{{ totalPrice }}</span>
+        </div>
+        <button class="btn btn-primary w-100 mt-3" (click)="submitOrder()">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

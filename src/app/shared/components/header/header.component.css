@@ -60,3 +60,16 @@ header.fixed-top {
     text-shadow: 0 2px 4px rgba(251, 4, 4, 0.3);
     font-size: x-large;
 }
+
+header {
+    z-index: 1050; /* keep above other elements */
+  }
+  
+  .list-group-item {
+    cursor: pointer;
+  }
+  
+  .list-group-item:hover {
+    background-color: #f8f9fa;
+  }
+  

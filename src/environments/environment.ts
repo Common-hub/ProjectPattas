@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  apiBaseUrl: 'http://192.168.1.2:8080/api/',
+  apiBaseUrl: 'https://project-pattasu.onrender.com/api/',
+  // apiBaseUrl: 'http://192.168.1.2:8080/api/',
   imageBaseUrl: 'http://192.168.1.2:8080/',
   production: false
 };

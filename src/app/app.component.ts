@@ -34,7 +34,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.producthandeler.fetchProducts(0, 15);
-    this.navigations = this.activityMonitor.allowedRoutes();
+    this.activityMonitor.routes.subscribe(routes => {
+      this.navigations = routes;
+    });
   }
 
   logout() {

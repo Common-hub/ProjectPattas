@@ -38,7 +38,10 @@ export class OrderDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.apiInteraction.getOrder().subscribe(order => {
       if (order.length > 1) {
-        this.orders = order;
+        this.orders = order.map((item:any) => ({
+          ...item,
+          items: item.orderItemDto
+        }));
       }
     },
       (error) => {

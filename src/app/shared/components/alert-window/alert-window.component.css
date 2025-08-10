@@ -1,4 +1,4 @@
-.alertWindow {
+/* .alertWindow {
     position: absolute;
     pointer-events: none;
     top: 60px;
@@ -67,4 +67,65 @@ button {
     background: transparent;
     font-size: larger;
     border: none;
-}
+} */
+
+.alertWindow {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .alert {
+    padding: 12px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+  }
+  .alert.success { background-color: #4caf50; }
+  .alert.warning { background-color: #ff9800; }
+  .alert.error   { background-color: #f44336; }
+  
+  .confirm {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    z-index: 1060;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+  }
+  
+  .logoutLabel span {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+  
+  .buttons {
+    margin-top: 10px;
+  }
+  
+  @media (max-width: 576px) {
+    .alertWindow {
+      top: 10px;
+      right: 10px;
+      max-width: 90%;
+      font-size: 13px;
+    }
+    .confirm {
+      padding: 15px;
+      font-size: 14px;
+    }
+    .logoutLabel span {
+      font-size: 14px;
+    }
+  }
+  
