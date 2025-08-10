@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CartController } from 'src/app/controller/cart-controller.service';
 import { UserControllerService } from 'src/app/controller/user-controller.service';
+import { AuthorizeService } from 'src/app/core/guard/authorize.service';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
 import { address, Order, ORDER_STATUS_VALUES, OrderStatus, userDetails } from 'src/app/shared/models';
 
@@ -31,17 +32,14 @@ export class OrderDetailsComponent implements OnInit {
   trackingId: string = '';
   selectedOrderId: number = 0;
 
-  constructor(private route: Router, private apiInteraction: UserControllerService,
+  constructor(private route: Router, private apiInteraction: UserControllerService, private authorise: AuthorizeService,
     private fb: FormBuilder, private details: UserControllerService, private notify: UserInteractionService,
     private cart: CartController) { }
 
   ngOnInit(): void {
     this.apiInteraction.getOrder().subscribe(order => {
       if (order.length > 1) {
-        this.orders = order.map((item:any) => ({
-          ...item,
-          items: item.orderItemDto
-        }));
+        this.orders = order;
       }
     },
       (error) => {
@@ -50,8 +48,8 @@ export class OrderDetailsComponent implements OnInit {
       }
     )
     const order = localStorage.getItem('ordered');
-    this.placeOrder = order != undefined ? order === 'false' ? false : true : false;
-    if (this.details.$addressFound) { this.screentoggle('address') }
+    this.placeOrder = order != undefined ? order === 'false' ? false : true : this.placeOrder;
+    if (this.placeOrder) { this.screentoggle('address') }
     this.addressForm = this.fb.group({
       addressL1: ['', Validators.required],
       addressL2: ['', Validators.required],
@@ -86,6 +84,8 @@ export class OrderDetailsComponent implements OnInit {
 
   logout() {
     sessionStorage.clear();
+    this.authorise.allowedRoutes();
+    this.notify.sppInfo('Logged out successfully');
     this.route.navigate(['/productsList'])
   }
 
@@ -139,7 +139,7 @@ export class OrderDetailsComponent implements OnInit {
       this.addressForm.reset();
       this.isAdd = false;
       this.isOrder = true;
-      this.placeOrder = true;
+      this.placeOrder = false;
       this.cart.fetchCart();
       localStorage.setItem('ordered', this.placeOrder.toString())
       this.apiInteraction.getOrder().subscribe({

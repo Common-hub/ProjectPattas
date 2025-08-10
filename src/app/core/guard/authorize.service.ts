@@ -52,6 +52,7 @@ export class AuthorizeService {
   clear() {
     this._Token = '';
     sessionStorage.removeItem('token');
+    this.routerArr.next([]);
     console.info(`[${this.userAuthority}]: Deleted all items form session.`)
     console.info(`[${this.userAuthority}]: Deleted all items form session.`)
   }
@@ -94,6 +95,8 @@ export class AuthorizeService {
         { route: 'user/viewCart', key: `<span class="bi bi-cart3"></span>&nbsp; <label class="d-none d-md-inline">  View Cart</label>` },
         { route: 'user/orderStatus', key: `<span class="bi bi-bag-check"></span>&nbsp; <label class="d-none d-md-inline"> Orders</label>` }
       ];
+    } else {
+      routes = [];
     }
     this.routerArr.next(routes);
   }

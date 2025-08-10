@@ -2,11 +2,10 @@
     background: #ffc107 !important;
 }
 
-/* end common class */
+/* Top Status */
 .top-status ul {
     list-style: none;
     display: flex;
-    justify-content: space-around;
     justify-content: center;
     flex-wrap: wrap;
     padding: 0;
@@ -32,8 +31,7 @@
     box-shadow: 1px 1px 20px 1px #ffc107 inset;
 }
 
-/* end top status */
-
+/* Timeline */
 ul.timeline {
     list-style-type: none;
     position: relative;
@@ -74,25 +72,13 @@ ul.timeline>li:before {
 }
 
 ul.timeline>li.active:before {
-    content: '\2713';
     background: #28a745;
-    display: inline-block;
-    position: absolute;
-    border-radius: 50%;
-    border: 0;
-    left: 5px;
-    width: 50px;
-    height: 50px;
-    z-index: 400;
-    text-align: center;
-    line-height: 50px;
     color: #fff;
     font-size: 30px;
     border: 2px solid #28a745;
 }
 
-/* end timeline */
-
+/* Variables */
 :root {
     --outline: #646e8a;
     --header: #646e8a;
@@ -101,6 +87,7 @@ ul.timeline>li.active:before {
     --hint: #18c2c0;
 }
 
+/* Form Styles */
 .form__name {
     color: #b9bac5;
     padding: 10px;
@@ -112,173 +99,69 @@ ul.timeline>li.active:before {
 
 .form__container {
     width: 100%;
+    max-width: 500px;
     min-height: 300px;
     background-color: #fff;
     border: 1px solid #646e8a;
     border-radius: 5px;
     padding: 30px;
     margin-bottom: 100px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* PERSONAL -- FORM */
-.personal--form {
-    color: var(--font);
-    font-size: 0.7rem;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 10px 7%;
-    /* margin-top: 10px; */
-}
-
-.personal--form .last {
-    margin-left: 40px;
-}
-
-.personal--form .first,
-.personal--form .last,
-.personal--form .email {
-    display: inline-block;
-}
-
-.personal--form .first label,
-.personal--form .last label,
-.personal--form .email label {
-    margin-bottom: 10px;
-}
-
-.personal--form .first label,
-.personal--form .last label,
-.personal--form .email label,
-.personal--form .first input,
-.personal--form .last input,
-.personal--form .email input {
-    display: block;
-    min-width: 250px;
-}
-
-.personal--form .email {
-    margin-top: 20px;
-}
-
-
-/* Shipping Address */
+.personal--form,
 .shipping--form {
     color: var(--font);
     font-size: 0.7rem;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     font-weight: 700;
-    padding: 10px 55px;
-    margin-top: 10px;
+    padding: 10px 0;
 }
 
-.shipping--form .row.two,
-.shipping--form .row.three {
-    margin-top: 20px;
+.form-control {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.shipping--form .address-two,
-.shipping--form .state,
-.shipping--form .country {
-    margin-left: 40px;
-}
-
+/* Remove fixed widths and inline-blocks for form fields */
+.personal--form .first,
+.personal--form .last,
+.personal--form .email,
 .shipping--form .address,
 .shipping--form .address-two,
 .shipping--form .city,
 .shipping--form .state,
 .shipping--form .zip,
 .shipping--form .country {
-    display: inline-block;
-}
-
-.shipping--form .address label,
-.shipping--form .address-two label,
-.shipping--form .city label,
-.shipping--form .state label,
-.shipping--form .zip label,
-.shipping--form .country label {
-    margin-bottom: 10px;
-}
-
-.shipping--form .address label,
-.shipping--form .address input,
-.shipping--form .address-two label,
-.shipping--form .address-two input,
-.shipping--form .city label,
-.shipping--form .city input,
-.shipping--form .state label,
-.shipping--form .state input,
-.shipping--form .zip label,
-.shipping--form .zip input,
-.shipping--form .country label,
-.shipping--form .country input {
     display: block;
-    min-width: 250px;
+    width: 100%;
+    margin-left: 0 !important;
+    margin-top: 10px;
 }
 
-/* Questions */
-.form__question {
-    padding: 10px 55px;
-    color: var(--header);
-    align-items: center;
+.personal--form .first label,
+.personal--form .last label,
+.personal--form .email label,
+.shipping--form label {
+    min-width: 0;
+    width: 100%;
 }
 
-.form__question p {
-    display: inline-block;
-    margin-left: 10px;
-    font-weight: 500;
+.personal--form .first input,
+.personal--form .last input,
+.personal--form .email input,
+.shipping--form input {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.form__question input[type=checkbox] {
-    cursor: pointer;
-    display: inline-block;
-    vertical-align: middle;
-    /* appearance: none; */
-    width: 20px;
-    height: 20px;
-    background-color: transparent;
-    border-radius: 3px;
-    border: 2px solid #646e8a;
-    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.form__question input[type=checkbox]:checked {
-    background-color: #ffc107;
-}
-
-/* GLOBALS */
-input {
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    background: transparent;
-    border: 1px solid #646e8a;
-    border-radius: 3px;
-    outline: none;
-    padding: 10px;
-    transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    color: var(--hint);
-}
-
-input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset;
-    -webkit-text-fill-color: var(--hint);
-}
-
-input:focus {
-    border-color: var(--hint);
-}
-
-input::placeholder {
-    font-weight: 500;
-    color: var(--header);
-}
-
-/* BUTTON */
+/* Button */
 .form__confirmation {
-    padding: 10px 55px;
+    padding: 10px 0;
 }
 
 .form__confirmation button {
@@ -293,8 +176,9 @@ input::placeholder {
     border-radius: 5px;
     outline: none;
     transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    left: 0;
     position: relative;
-    left: 80%;
 }
 
 .form__confirmation button:hover {
@@ -302,11 +186,11 @@ input::placeholder {
 }
 
 .form__confirmation button:disabled {
-    cursor: none;
+    cursor: not-allowed;
     background-color: #ffc10742;
 }
 
-/* UTILITIES */
+/* Utilities */
 .box {
     cursor: default;
     user-select: none;
@@ -342,50 +226,26 @@ section:nth-child(1) {
     margin-left: 15px;
 }
 
+/* Responsive Tweaks */
 @media (max-width: 768px) {
-    .personal--form .email {
-        display: block;
+    .form__container {
+        max-width: 95vw;
+        padding: 10px;
+        margin: 10px 0;
+        min-width: 0;
     }
 
     .form__name {
         margin-top: 30px;
         font-size: 1.4rem;
-        /* Reduce margin */
     }
 
-    .form__container {
-        padding: 15px;
-        margin: 50px 10px;
-        /* margin-left: 10%; */
-        width: max-content;
-    }
-
-    /* .personal--form .first input,
-    .personal--form .last input,
-    .personal--form .email input,
-    .shipping--form .address input,
-    .shipping--form .address-two input,
-    .shipping--form .city input,
-    .shipping--form .state input,
-    .shipping--form .zip input,
-    .shipping--form .country input {
-        width: 100%; 
-    } */
-
-    .personal--form .first label,
-    .personal--form .last label,
-    .personal--form .email label,
-    .personal--form .first input,
-    .personal--form .last input,
-    .personal--form .email input {
-        display: block;
-        min-width: 250px;
+    .form__confirmation {
+        padding: 10px 0;
     }
 
     .form__confirmation button {
         width: 100%;
-        /* Make button full width */
         left: 0;
-        /* Reset left positioning */
     }
 }

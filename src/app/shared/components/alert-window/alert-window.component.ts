@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthorizeService } from 'src/app/core/guard/authorize.service';
-import { alertType, UserInteractionService, Notification } from 'src/app/core/service/user-interaction.service';
+import { alertType, Notification, UserInteractionService } from 'src/app/core/service/user-interaction.service';
 
 @Component({
   selector: 'alert',
@@ -53,8 +53,8 @@ export class AlertWindowComponent implements OnInit {
       } else if (data === 'confirmLogin') {
         this.alert = data;
         this.windowLifeTime();
-      }else if (data === 'confirm'){
-        if(this.authuntication.isUserLoggedIn){
+      } else if (data === 'confirm') {
+        if (this.authuntication.isUserLoggedIn) {
           this.alert = data;
           this.windowLifeTime();
         }
@@ -84,16 +84,17 @@ export class AlertWindowComponent implements OnInit {
 
   onLogout() {
     if (this.userRole === 'admin') {
-      this.router.navigate(['login'])
+      this.router.navigate(['/login'])
     } else {
-      this.router.navigate(['user/productsList']);
-        if(this.router.url === '/user/productsList'){
-          window.location.reload()
-        }
+      this.router.navigate(['/user/productsList']);
+      if (this.router.url === '/user/productsList') {
+        window.location.reload()
+      }
     }
     this.authuntication.clear();
     this.informerClass.sppInfo('Saved used DATA !.');
     this.informerClass.sppInfo('Redirected to Default !.');
+    this.authuntication.routes.next([])
     this.informerClass.userResponseGetter(true);
   }
 

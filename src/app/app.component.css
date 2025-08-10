@@ -105,3 +105,25 @@ main {
     text-shadow: 0 2px 4px rgba(251, 4, 4, 0.3);
     font-size: x-large;
 }
+
+@media (max-width: 767.98px) {
+    .content-with-bottom-bar {
+        padding-bottom: 60px;
+        /* Adjust to your bottom bar's height */
+    }
+}
+
+.footer-text {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .footer-text {
+        white-space: normal;
+        /* Wraps into multiple lines on mobile */
+        display: block;
+        font-size: 0.8rem;
+    }
+}

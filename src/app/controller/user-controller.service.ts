@@ -52,6 +52,10 @@ export class UserControllerService {
     })).subscribe();
   }
 
+  getShop(): any {
+    return this.http.get(this.apiBaseUrl + 'contact', { responseType: 'json' })
+  }
+
   //CartAPI's
 
   addCart(cartitems: any): Observable<any> {
