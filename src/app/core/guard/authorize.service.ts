@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { UserInteractionService } from '../service/user-interaction.service';
 
 @Injectable({
@@ -8,8 +9,11 @@ import { UserInteractionService } from '../service/user-interaction.service';
 export class AuthorizeService {
   private jwtToken = '';
   private _Token = '';
+  private routerArr = new BehaviorSubject<any[]>([])
 
   isAlerted: boolean = false;
+
+  _routerArr = this.routerArr.asObservable()
 
 
   constructor(private alert: UserInteractionService, private router: Router) {
@@ -76,20 +80,27 @@ export class AuthorizeService {
     }
   }
 
-  allowedRoutes(): { route: string; key: string; }[] {
-
+  allowedRoutes(): void {
+    let routes: { route: string; key: string; }[] = [];
     if (this.userAuthority === 'admin') {
-      return [
+      routes = [
         { route: 'admin/dashBoard', key: `<span class="bi bi-speedometer2"></span>&nbsp; <label class="d-none d-md-inline"> DashBoard</label>` },
         { route: 'admin/addProducts', key: `<span class="bi bi-cart-plus"></span>&nbsp; <label class="d-none d-md-inline"> Inventory</label>` },
-        { route: 'admin/productsList', key: `<span class="bi bi-view-list"></span>&nbsp; <label class="d-none d-md-inline"> ProductList</label>` }]
+        { route: 'admin/productsList', key: `<span class="bi bi-view-list"></span>&nbsp; <label class="d-none d-md-inline"> ProductList</label>` }
+      ];
     } else if (this.userAuthority === 'user') {
-      return [
+      routes = [
         { route: 'user/productsList', key: `<span class="bi bi-houses"></span>&nbsp; <label class="d-none d-md-inline"> Home</label>` },
         { route: 'user/viewCart', key: `<span class="bi bi-cart3"></span>&nbsp; <label class="d-none d-md-inline">  View Cart</label>` },
         { route: 'user/orderStatus', key: `<span class="bi bi-bag-check"></span>&nbsp; <label class="d-none d-md-inline"> Orders</label>` }
-      ]
+      ];
     }
-    return []
+    this.routerArr.next(routes);
+  }
+
+
+  get routes() {
+    this.allowedRoutes();
+    return this.routerArr
   }
 }

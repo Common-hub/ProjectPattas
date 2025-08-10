@@ -21,12 +21,14 @@ export class HeaderComponent implements OnInit {
   size: number = 10;
   totalPages: number = 0;
   hide: boolean = false;
-screenWidth: any;
+  screenWidth: any;
 
   constructor(private router: Router, private route: ActivatedRoute, private search: UserInteractionService, private api: UserControllerService, private authorize: AuthorizeService, private searchResult: ProductController) { }
 
   ngOnInit(): void {
-    this.navigations = this.authorize.isUserLoggedIn ? this.authorize.allowedRoutes() : [];
+    this.authorize.routes.subscribe(routes => {
+      this.navigations = routes;
+    });
     setTimeout(() => {
       this.search.getSuggestions().subscribe(respnseName => {
         const suggestions: Set<string> = new Set();
