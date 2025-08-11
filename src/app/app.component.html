@@ -17,7 +17,7 @@
     <alert></alert>
     <router-outlet></router-outlet>
 
-    <footer class="footer py-3 bg-light text-center border-top">
+    <footer class="footer py-3 bg-light d-md-none  text-center border-top">
         <div class="container">
             <small class="text-muted footer-text">
                 © {{ shopInfo.shopName }} | {{ shopInfo.address }} | 📞 {{ shopInfo.phoneNumber }} | ✉️ {{
@@ -25,9 +25,15 @@
             </small>
         </div>
     </footer>
-
 </main>
-
+<footer class="footer py-3 bg-light d-none text-center border-top">
+    <div class="container">
+        <small class="text-muted footer-text">
+            © {{ shopInfo.shopName }} | {{ shopInfo.address }} | 📞 {{ shopInfo.phoneNumber }} | ✉️ {{
+            shopInfo.mailId }}
+        </small>
+    </div>
+</footer>
 <div *ngIf="isLoggedIn" class="col-12 d-inline d-md-none justify-content-center mobile-bottom-buttons"
     style="position: fixed; bottom: 0; left: 0; right: 0; background: #fff; z-index: 1050; box-shadow: 0 -2px 8px rgba(0,0,0,0.05); padding: 8px 0;">
     <ng-container *ngFor="let item of navigations">

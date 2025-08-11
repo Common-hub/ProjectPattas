@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { CartController } from 'src/app/controller/cart-controller.service';
 import { UserControllerService } from 'src/app/controller/user-controller.service';
@@ -18,7 +19,8 @@ export class KartItemsComponent implements OnInit {
   totalPrice: number = 0;
   cartItems: inCart[] = [];
 
-  constructor(public cartController: CartController, private router: Router, private userDetails: UserControllerService) { }
+  constructor(public cartController: CartController, private router: Router, private userDetails: UserControllerService,
+    private sanitize: DomSanitizer) { }
 
   ngOnInit(): void {
     this.cartController.$inCart.subscribe(response => {
@@ -37,6 +39,10 @@ export class KartItemsComponent implements OnInit {
 
   calculateGrandTotal(products: any[]): number {
     return products.reduce((sum, item) => sum + item.finalPrice);
+  }
+
+  byPassURL(url: string) {
+    return this.sanitize.bypassSecurityTrustResourceUrl(url);
   }
 
   updateProduct(action: 'Increase' | 'Decrease', itemId: number) {

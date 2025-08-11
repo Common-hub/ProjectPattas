@@ -54,9 +54,6 @@ export class ProductController {
           tap((response: any) => {
             if (response) {
               const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
-              _FilteredProducts.map((products: Product) => {
-                products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
-              });
               this.productsList = _FilteredProducts;
               this.pagenator.chunkInitializer(response.totalElements, size);
               const productNames = _FilteredProducts.map((product: Product) => product.name);
@@ -84,9 +81,6 @@ export class ProductController {
           tap((response: any) => {
             if (response) {
               const _FilteredProducts = response.content.filter((product: Product) => product.name !== '' && product.name !== undefined && product.name !== null);
-              _FilteredProducts.map((products: Product) => {
-                products.imageUrl = products.imageUrl.replace('/', '').replace(/\\/g, '/').replace(/\/+/g, '/')
-              });
               this.productsList = _FilteredProducts;
               this.pagenator.chunkInitializer(response.totalElements, size);
               const productNames = _FilteredProducts.map((product: Product) => product.name);

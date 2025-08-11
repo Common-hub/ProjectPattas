@@ -48,7 +48,7 @@
                                     <span class="slider round"></span>
                                 </label>
                             </td>
-                            <td><img src="{{product.imageUrl}}" alt="{{product.name}}" height="60" width="50" srcset=""
+                            <td><img [src]=" product.imageUrl" alt="{{product.name}}" height="60" width="50" srcset=""
                                     class="table-image-preview"></td>
                             <td>{{product.name}}</td>
                             <td>{{product.description}}</td>
@@ -64,7 +64,7 @@
                                 </label>
                             </td>
                             <td>
-                                <img src="{{product.imageUrl}}" alt="{{product.name}}" height="60" width="50" srcset=""
+                                <img [src]="product.imageUrl" alt="{{product.name}}" height="60" width="50" srcset=""
                                     class="table-image-preview">
                                 <input type="file" name="pic" accept="png" (change)="multipart($event)">
                             </td>
@@ -76,7 +76,7 @@
                             <td><input type="text" name="" [id]="product.name + index" [(ngModel)]="flagCheck.price"
                                     (input)="restrictText($event, 'price')" maxlength="6"></td>
                             <td><input type="text" name="" [id]="product.name + index" [(ngModel)]="flagCheck.discount"
-                                    (input)="restrictText($event, 'discount')" maxlength="6"></td>
+                                    (input)="restrictText($event, 'discount')" maxlength="6" min="0" max="100"></td>
                         </ng-container>
                         <td><button type="button" class="btn btn-sm btn-outline-info" data-toggle="tooltip"
                                 data-placement="left" title="Edit" (click)="enableEdit(product.id)"><i

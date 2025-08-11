@@ -48,7 +48,6 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.activityMonitor.isUserLoggedIn ? this.search.openWindow('confirmLogout') : this.search.openWindow('confirmLogin');
-    this.activityMonitor.clear();
     this.activityMonitor.allowedRoutes();
   }
 }

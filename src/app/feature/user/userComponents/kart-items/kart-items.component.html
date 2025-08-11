@@ -20,15 +20,12 @@
     <div class="col-12 col-md-8">
 
       <!-- Product Card -->
-      <div class="card mb-3 shadow-sm border-0"
-           *ngFor="let item of (cartController.$cartProducts | async)">
+      <div class="card mb-3 shadow-sm border-0" *ngFor="let item of (cartController.$cartProducts | async)">
         <div class="row g-0 align-items-center p-2">
 
           <!-- Image -->
           <div class="col-4 col-md-3 text-center">
-            <img [src]="item.product.imageUrl" 
-                 [alt]="item.product.name" 
-                 class="img-fluid rounded product-img">
+            <img [src]="item.product.imageUrl" [alt]="item.product.name" class="img-fluid rounded product-img">
           </div>
 
           <!-- Details -->
@@ -38,9 +35,8 @@
 
               <!-- Price with discount -->
               <div class="mb-2">
-                <span *ngIf="item.product.discount > 0" 
-                      class="text-muted text-decoration-line-through me-2">
-                 <del>₹{{ (+item.product.price).toFixed(2) }}</del> 
+                <span *ngIf="item.product.discount > 0" class="text-muted text-decoration-line-through me-2">
+                  <del>₹{{ (+item.product.price).toFixed(2) }}</del>
                 </span>
                 <span class="fw-bold text-danger fs-6">
                   ₹{{ item.finalPrice }}
@@ -49,21 +45,16 @@
 
               <!-- Quantity Control -->
               <div class="d-flex align-items-center">
-                <button class="btn btn-outline-secondary btn-sm"
-                        (click)="updateProduct('Decrease', item.id)"
-                        *ngIf="item.quantity > 1">&minus;
+                <button class="btn btn-outline-secondary btn-sm" (click)="updateProduct('Decrease', item.id)"
+                  *ngIf="item.quantity > 1">&minus;
                 </button>
-                <button class="btn btn-outline-danger btn-sm"
-                        (click)="updateProduct('Decrease', item.id)"
-                        *ngIf="item.quantity <= 1">
+                <button class="btn btn-outline-danger btn-sm" (click)="updateProduct('Decrease', item.id)"
+                  *ngIf="item.quantity <= 1">
                   <i class="bi bi-trash"></i>
                 </button>
-                <input type="number" 
-                       class="form-control form-control-sm mx-2 text-center"
-                       [(ngModel)]="item.quantity" min="1" max="3"
-                       style="width: 60px;">
-                <button class="btn btn-outline-secondary btn-sm"
-                        (click)="updateProduct('Increase', item.id)">&plus;
+                <input type="number" class="form-control form-control-sm mx-2 text-center" [(ngModel)]="item.quantity"
+                  min="1" max="3" style="width: 60px;">
+                <button class="btn btn-outline-secondary btn-sm" (click)="updateProduct('Increase', item.id)">&plus;
                 </button>
               </div>
 

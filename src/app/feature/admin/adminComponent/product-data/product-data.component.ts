@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ProductController } from 'src/app/controller/productController.service';
 import { AuthorizeService } from 'src/app/core/guard/authorize.service';
 import { UserInteractionService } from 'src/app/core/service/user-interaction.service';
@@ -30,7 +31,8 @@ export class ProductDataComponent implements OnInit {
   flagCheck!: Product;
   productUpdation!: FormGroup;
 
-  constructor(private notification: UserInteractionService, public productController: ProductController, private formBuilder: FormBuilder, private authunticateUser: AuthorizeService) { }
+  constructor(private notification: UserInteractionService, public productController: ProductController, private formBuilder: FormBuilder,
+    private authunticateUser: AuthorizeService, private sanitize: DomSanitizer) { }
 
   ngOnInit(): void {
     this.productController._productList.subscribe(products => {
@@ -42,10 +44,11 @@ export class ProductDataComponent implements OnInit {
       stockQuantity: ['', Validators.required],
       price: ['', Validators.required],
       active: ['', Validators.required],
+      discount: ['', Validators.required],
     })
   }
 
-  async updateProduct(productId: number, isUpdate?: boolean) {
+  updateProduct(productId: number, isUpdate?: boolean) {
     const updatedItem = new FormData();
     const index = this.productsList.findIndex(p => p.id === productId);
     if (index === -1) return; // Product not found
@@ -61,13 +64,15 @@ export class ProductDataComponent implements OnInit {
     updatedItem.append('discount', this.flagCheck.discount.toString());
 
     if (Array.from(updatedItem as any).length !== 0) {
-      await this.productController.putProductsByid(productId, updatedItem);
-      // Update the product in the list so the view reflects the change
-      // this.productsList[index] = { ...this.productsList[index], ...this.flagCheck };
+      this.productController.putProductsByid(productId, updatedItem);
       this.editableItem = null;
       this.isEdit = false;
       this.productController.productsList = this.productsList;
     }
+  }
+
+  byPassURL(url: string) {
+    return this.sanitize.bypassSecurityTrustResourceUrl(url);
   }
 
   multipart(productImage: Event) {
@@ -161,6 +166,12 @@ export class ProductDataComponent implements OnInit {
 
     if (inputValue !== '' && !regex.test(inputValue)) {
       event.target.value = inputValue.slice(0, -1);
+    }
+    if (input === 'discount') {
+      if (inputValue > 100) {
+        this.notification.sppWarning("Max discount alloed 100");
+        this.flagCheck.discount = 100;
+      }
     }
   }
 }

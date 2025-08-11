@@ -27,8 +27,6 @@ export class AlertWindowComponent implements OnInit {
 
     this.userRole = this.authuntication.userAuthority;
 
-
-
     this.informerClass._PopUpData.subscribe(data => {
       if (data) {
         this.toastMessage = data;
@@ -84,7 +82,7 @@ export class AlertWindowComponent implements OnInit {
 
   onLogout() {
     if (this.userRole === 'admin') {
-      this.router.navigate(['/login'])
+      this.router.navigateByUrl('/login')
     } else {
       this.router.navigate(['/user/productsList']);
       if (this.router.url === '/user/productsList') {

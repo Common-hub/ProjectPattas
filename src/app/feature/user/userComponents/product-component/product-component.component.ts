@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { CartController } from 'src/app/controller/cart-controller.service';
 import { ProductController } from 'src/app/controller/productController.service';
@@ -27,7 +28,7 @@ export class ProductComponent implements OnInit {
   paginator: number[] = [];
 
   constructor(public productController: ProductController, private router: Router, private interactive: UserInteractionService, private authunticateUser: AuthorizeService,
-    private addCartItem: CartController) { }
+    private addCartItem: CartController, private sanitize: DomSanitizer) { }
 
   ngOnInit(): void {
     this.productController._productList.subscribe((products: Product[]) => {
@@ -86,6 +87,9 @@ export class ProductComponent implements OnInit {
     }
   }
 
+  byPassURL(url: string) {
+    return this.sanitize.bypassSecurityTrustResourceUrl(url);
+  }
 
   changePage(page: number) {
     this.currentPage = page;

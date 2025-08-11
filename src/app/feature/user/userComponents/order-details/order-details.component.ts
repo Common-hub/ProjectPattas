@@ -23,7 +23,7 @@ export class OrderDetailsComponent implements OnInit {
   isAdd: boolean = false;
   isOrder: boolean = true;
   isSpecorder: boolean = false;
-  placeOrder: boolean = true;
+  placeOrder: boolean = false;
   billingAdd!: address;
   shippingAdd!: address;
   addressForm!: FormGroup;
