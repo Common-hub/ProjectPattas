@@ -171,6 +171,7 @@ export class ProductDataComponent implements OnInit {
       if (inputValue > 100) {
         this.notification.sppWarning("Max discount alloed 100");
         this.flagCheck.discount = 100;
+        event.target.value = '100';
       }
     }
   }
