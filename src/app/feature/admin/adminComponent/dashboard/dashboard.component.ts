@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit {
     this.totalPrice = 0;
     this.specOrders = this.orderList[order].items;
     this.specOrders.forEach(products => {
-      this.totalPrice += products.price;
+      this.totalPrice += (products.quantity * products.price);
     });
   }
 
